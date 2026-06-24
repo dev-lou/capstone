@@ -1,0 +1,533 @@
+/* ────────────────────────────────────────────────────────────
+   RescueMind AI — Philippine Heritage Design System
+   ---
+   Filipino identity through color: deep navy (flag), warm gold
+   (sun), cream (native textiles), heritage red (flag stripe).
+   Organic rounded shapes inspired by Philippine baskets
+   (banig / tikug), warm shadows, and natural textures.
+   ──────────────────────────────────────────────────────────── */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Geist Font (Variable) ──────────────────────────────── */
+@font-face {
+  font-family: "Geist";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Variable.woff2")
+    format("woff2");
+  font-display: swap;
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/GeistMono-Variable.woff2")
+    format("woff2");
+  font-display: swap;
+  font-weight: 100 900;
+}
+
+/* ── CSS Custom Properties ──────────────────────────────── */
+@layer base {
+  :root {
+    /* 🇵🇭 Philippine Brand Palette
+       Navy    — stability, governance, flag
+       Gold    — sun, optimism, warmth
+       Cream   — native abaca / banig textiles
+       Red     — flag stripe, urgency, heritage
+       Earth   — volcanic soil, roots
+       Ocean   — archipelago waters
+    */
+    --color-ph-navy: #1B2A4A;
+    --color-ph-gold: #E8A838;
+    --color-ph-gold-light: #F5D78E;
+    --color-ph-cream: #FEF9EF;
+    --color-ph-red: #C73E3A;
+    --color-ph-earth: #8B6F5C;
+    --color-ph-ocean: #2B7A78;
+
+    /* Brand mapped */
+    --color-primary: #1B2A4A;
+    --color-primary-hover: #243B66;
+    --color-primary-muted: #E8EDF5;
+    --color-accent: var(--color-ph-gold);
+    --color-accent-hover: #D49A2E;
+    --color-accent-muted: #FEF3D6;
+
+    /* Semantic */
+    --color-success: #1A7A4A;
+    --color-warning: #B8860B;
+    --color-danger: var(--color-ph-red);
+    --color-info: var(--color-ph-ocean);
+
+    /* Surface — warm off-whites inspired by natural materials */
+    --color-bg: #FDFBF7;
+    --color-bg-secondary: #F8F5F0;
+    --color-bg-muted: #EFE9E0;
+    --color-surface: #FFFFFF;
+    --color-border: #E5DDD0;
+    --color-border-hover: #D4C9B8;
+
+    /* Text — warm dark, not pure black */
+    --color-text: #1C1814;
+    --color-text-secondary: #5C5346;
+    --color-text-muted: #9C9285;
+    --color-text-inverse: #FFFFFF;
+
+    /* Shadows — warm-tinted */
+    --shadow-sm: 0 1px 2px 0 rgba(28, 24, 20, 0.04);
+    --shadow-md: 0 4px 8px -2px rgba(28, 24, 20, 0.06);
+    --shadow-lg: 0 8px 24px -4px rgba(28, 24, 20, 0.08);
+    --shadow-focus: 0 0 0 3px rgba(27, 42, 74, 0.12);
+    --shadow-focus-accent: 0 0 0 3px rgba(232, 168, 56, 0.25);
+
+    /* Typography */
+    --font-sans: "Geist", system-ui, -apple-system, sans-serif;
+    --font-serif: "Georgia", "Times New Roman", serif;
+    --font-mono: "Geist Mono", ui-monospace, monospace;
+
+    /* Radii */
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Z-index */
+    --z-dropdown: 50;
+    --z-sticky: 100;
+    --z-toast: 200;
+    --z-modal: 300;
+  }
+
+  .dark {
+    --color-primary: #E8EDF5;
+    --color-primary-hover: #FFFFFF;
+    --color-primary-muted: #2A3A5A;
+    --color-accent: var(--color-ph-gold);
+    --color-accent-hover: var(--color-ph-gold-light);
+    --color-accent-muted: #3A2A0A;
+
+    --color-bg: #141210;
+    --color-bg-secondary: #1E1B17;
+    --color-bg-muted: #2C2822;
+    --color-surface: #1E1B17;
+    --color-border: #3C372F;
+    --color-border-hover: #5C554A;
+
+    --color-text: #F0EDE8;
+    --color-text-secondary: #A59A8D;
+    --color-text-muted: #73685B;
+    --color-text-inverse: #141210;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+    --shadow-focus: 0 0 0 3px rgba(232, 232, 237, 0.15);
+    --shadow-focus-accent: 0 0 0 3px rgba(232, 168, 56, 0.3);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+    transition: background-color var(--transition-normal),
+      color var(--transition-normal);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: var(--z-toast);
+    padding: 0.5rem 1rem;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: top var(--transition-fast);
+  }
+
+  .skip-link:focus {
+    top: 0.5rem;
+  }
+
+  ::selection {
+    background: var(--color-ph-gold-light);
+    color: var(--color-ph-navy);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-text-muted);
+    border-radius: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ── Component Styles ────────────────────────────────────── */
+@layer components {
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-bg-muted) 25%,
+      var(--color-bg-secondary) 37%,
+      var(--color-bg-muted) 63%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition-normal),
+      border-color var(--transition-normal);
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-border-hover);
+  }
+
+  .card-ph {
+    background: var(--color-surface-soft, var(--color-surface));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-ph::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-ph-navy), var(--color-ph-gold), var(--color-ph-red));
+    opacity: 0.6;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    border: none;
+    font-family: var(--font-sans);
+    text-decoration: none;
+    line-height: 1;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .btn-accent {
+    background: var(--color-accent);
+    color: var(--color-ph-navy);
+  }
+
+  .btn-accent:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: var(--color-bg-secondary);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--color-bg-muted);
+    border-color: var(--color-border-hover);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-text-secondary);
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--color-bg-muted);
+    color: var(--color-text);
+  }
+
+  .btn-danger {
+    background: var(--color-danger);
+    color: white;
+  }
+
+  .btn-danger:hover:not(:disabled) {
+    background: #A8322E;
+    box-shadow: var(--shadow-md);
+  }
+
+  .input {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    transition: all var(--transition-fast);
+    font-family: var(--font-sans);
+  }
+
+  .input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .input:hover {
+    border-color: var(--color-border-hover);
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-focus-accent);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.1875rem 0.625rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    background: var(--color-bg-muted);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: 1rem 0;
+  }
+
+  .alert {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    border: 1px solid transparent;
+  }
+
+  .alert-error {
+    background: #FDF2F0;
+    color: #A8322E;
+    border-color: #F4C8C6;
+  }
+
+  .alert-success {
+    background: #F0F9F4;
+    color: #1A7A4A;
+    border-color: #BBEAD0;
+  }
+
+  .alert-warning {
+    background: #FEF8EC;
+    color: #8B6F0A;
+    border-color: #FDEBB0;
+  }
+
+  .alert-info {
+    background: #EEF3FA;
+    color: var(--color-ph-navy);
+    border-color: #CDDAEC;
+  }
+
+  .dark .alert-error {
+    background: #2E1412;
+    color: #F4C8C6;
+    border-color: #6E2E2A;
+  }
+
+  .dark .alert-success {
+    background: #0F2E1C;
+    color: #BBEAD0;
+    border-color: #1A5A3A;
+  }
+
+  .dark .alert-warning {
+    background: #2E220A;
+    color: #FDEBB0;
+    border-color: #6E520A;
+  }
+
+  .dark .alert-info {
+    background: #141E2E;
+    color: #CDDAEC;
+    border-color: #2A3A5A;
+  }
+
+  .helper-text {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem;
+  }
+
+  .error-text {
+    font-size: 0.75rem;
+    color: var(--color-danger);
+    font-weight: 500;
+    margin-top: 0.25rem;
+  }
+
+  /* Toast / Notification */
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: var(--z-toast);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    font-size: 0.8125rem;
+    color: var(--color-text);
+    max-width: 24rem;
+    animation: toast-in 0.3s ease-out;
+  }
+
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+}
+
+/* ── Utility Classes ─────────────────────────────────────── */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Philippine flag bar decoration */
+  .flag-bar {
+    background: linear-gradient(90deg, var(--color-ph-navy) 33%, var(--color-ph-red) 33%, var(--color-ph-red) 66%, var(--color-ph-gold) 66%);
+    height: 3px;
+  }
+
+  /* Warm accent border */
+  .border-accent {
+    border-color: var(--color-accent);
+  }
+
+  /* Gold glow for emphasis */
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(232, 168, 56, 0.15);
+  }
+}

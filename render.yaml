@@ -1,0 +1,41 @@
+# ────────────────────────────────────────────────────────────
+# RescueMind AI — Render Blueprint (Infrastructure as Code)
+# ────────────────────────────────────────────────────────────
+# Deploys TWO services:
+#   1. AI Service  — Transformers.js classification (Render)
+#   2. Frontend    — Next.js app at app/frontend/ (Vercel — NOT managed here)
+#
+# USAGE:
+# 1. Push this file to GitHub
+# 2. Go to https://dashboard.render.com → New+ → Blueprint
+# 3. Connect your repo → Render creates the AI service
+# 4. Deploy the frontend on Vercel separately (link in guide)
+# ────────────────────────────────────────────────────────────
+
+services:
+  # ── AI Service (Transformers.js) ─────────────────────────
+  # Runs the open-source ML model for offline classification.
+  # The Next.js frontend (Vercel) proxies requests here.
+  - type: web
+    name: rescuemind-ai-service
+    runtime: node
+    repo: https://github.com/YOUR_USERNAME/rescuemind-ai
+    branch: main
+    region: singapore
+
+    # Root is app/ai-service/ inside the monorepo
+    rootDir: app/ai-service
+
+    buildCommand: npm install
+    startCommand: npm start
+
+    healthCheckPath: /api/health
+
+    autoDeploy: true
+
+    envVars:
+      # Port is auto-set by Render (default 10000)
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production

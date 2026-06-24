@@ -1,0 +1,27 @@
+{
+  "name": "RescueMind AI — Barangay Triage System",
+  "short_name": "RescueMind",
+  "description": "AI-powered Barangay Disaster & Complaint Triage System — offline-first classification for Philippine barangays.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["government", "utilities", "productivity"],
+  "lang": "fil-PH",
+  "dir": "ltr"
+}

@@ -1,0 +1,432 @@
+/* ============================================
+   RescueMind AI — Prototype Styles
+   Philippine Flag Inspired Color Scheme
+   ============================================ */
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 50%, #fef2f2 100%);
+  min-height: 100vh;
+  color: #1e293b;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Header --- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon {
+  font-size: 2rem;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.prototype-badge {
+  background: #f59e0b;
+  color: #78350f;
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  letter-spacing: 0.05em;
+}
+
+/* --- Cards --- */
+.card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+  padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.card-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e3a5f;
+  margin-bottom: 0.25rem;
+}
+
+.card-header p {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.card-body {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+/* --- Textarea --- */
+textarea {
+  width: 100%;
+  min-height: 140px;
+  padding: 0.875rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: white;
+}
+
+textarea::placeholder {
+  color: #94a3b8;
+}
+
+.input-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.char-count {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.btn-primary {
+  background: #1d4ed8;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+/* --- Loading Screen --- */
+.loading-card {
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.loading-card h3 {
+  margin-top: 1.5rem;
+  font-size: 1.125rem;
+  color: #1e3a5f;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-steps {
+  margin-top: 2rem;
+  text-align: left;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+}
+
+.step.active {
+  color: #1d4ed8;
+}
+
+.step.done {
+  color: #16a34a;
+}
+
+.step-icon {
+  font-size: 1.125rem;
+  width: 1.5rem;
+  text-align: center;
+}
+
+/* --- Result Screen --- */
+.result-card .result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.urgency-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.urgency-badge.high {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.urgency-badge.medium {
+  background: #fefce8;
+  color: #a16207;
+  border: 1px solid #fef08a;
+}
+
+.urgency-badge.low {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.confidence {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.result-category {
+  padding: 1rem 1.5rem 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.result-office {
+  padding: 0 1.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.office-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.office-value {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.result-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 0 1.5rem;
+}
+
+.result-explanation {
+  padding: 1rem 1.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: #334155;
+}
+
+.result-explanation p {
+  margin-bottom: 0.5rem;
+}
+
+.result-timestamp {
+  padding: 0 1.5rem 0.5rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* --- Fallback Card --- */
+.fallback-card {
+  margin-top: 1rem;
+  border: 1px solid #fed7aa;
+  background: #fff7ed;
+}
+
+.fallback-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #9a3412;
+  border-bottom: 1px solid #fed7aa;
+}
+
+.fallback-card p {
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  color: #78350f;
+  line-height: 1.6;
+}
+
+/* --- Screen Switching --- */
+.screen {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Note --- */
+.note {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: #f0f9ff;
+  border-radius: 0.75rem;
+  border: 1px solid #bae6fd;
+  font-size: 0.8125rem;
+  color: #0369a1;
+}
+
+.note code {
+  background: #e0f2fe;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.25rem;
+  }
+
+  .card-header,
+  .card-body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  textarea {
+    min-height: 120px;
+    font-size: 0.9375rem;
+  }
+}

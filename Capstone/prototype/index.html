@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fil-PH">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RescueMind AI — Prototype</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🤖</span>
+        <div>
+          <h1>RescueMind AI</h1>
+          <p class="subtitle">Barangay Disaster &amp; Complaint Triage</p>
+        </div>
+      </div>
+      <span class="badge prototype-badge">PROTOTYPE</span>
+    </header>
+
+    <!-- Screen 1: Complaint Input -->
+    <div id="screen-input" class="screen active">
+      <div class="card">
+        <div class="card-header">
+          <h2>📝 Mag-report ng Insidente</h2>
+          <p>Ilarawan ang insidente o reklamo sa inyong barangay.</p>
+        </div>
+        <div class="card-body">
+          <textarea id="complaint-input" placeholder="Halimbawa: Malakas na baha sa may kanto ng Mabini St. at Rizal Ave., hanggang tuhod ang tubig, need ng rescue."></textarea>
+          <div class="input-footer">
+            <span id="char-count" class="char-count">0 / 500</span>
+          </div>
+          <button id="btn-submit" class="btn btn-primary" onclick="submitReport()">
+            Isumite ang Report
+          </button>
+        </div>
+      </div>
+      <div class="note">
+        <p>💡 <strong>Note:</strong> Ang prototype na ito ay may hardcoded na sample response. Ang tunay na AI ay nasa <code>app/</code> folder.</p>
+      </div>
+    </div>
+
+    <!-- Screen 2: Loading -->
+    <div id="screen-loading" class="screen">
+      <div class="card loading-card">
+        <div class="spinner"></div>
+        <h3>Sinusuri ang report...</h3>
+        <div class="loading-steps">
+          <div class="step" id="step-1">
+            <span class="step-icon">⬜</span>
+            <span>Ina-analyze ang text...</span>
+          </div>
+          <div class="step" id="step-2">
+            <span class="step-icon">⬜</span>
+            <span>Kino-classify ang kategorya...</span>
+          </div>
+          <div class="step" id="step-3">
+            <span class="step-icon">⬜</span>
+            <span>Nag-ge-generate ng paliwanag...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Result -->
+    <div id="screen-result" class="screen">
+      <div class="card result-card">
+        <div class="result-header">
+          <span class="urgency-badge" id="urgency-badge">🔴 URGENT</span>
+          <span class="confidence" id="confidence">94.2% kumpiyansa</span>
+        </div>
+        <h2 class="result-category" id="result-category">Flood / Drainage</h2>
+        <div class="result-office" id="result-office">
+          <span class="office-label">Opisina:</span>
+          <span class="office-value">City Engineering / DPWH</span>
+        </div>
+        <div class="result-divider"></div>
+        <div class="result-explanation" id="result-explanation">
+          <p>Salamat sa iyong report! Na-receive namin ang iyong ulat tungkol sa baha na hanggang tuhod ang taas ng tubig. Ito ay marked as URGENT at iruruta sa City Engineering at DPWH para sa agarang aksyon. Manatiling alerto at makipag-ugnayan sa inyong barangay captain para sa updates.</p>
+        </div>
+        <div class="result-timestamp" id="result-timestamp"></div>
+        <button class="btn btn-secondary" onclick="resetForm()">
+          Mag-report Muli
+        </button>
+      </div>
+
+      <!-- Offline Fallback Notice -->
+      <div class="card fallback-card" id="fallback-card" style="display: none;">
+        <div class="fallback-header">
+          <span>📡</span>
+          <span>Offline Mode</span>
+        </div>
+        <p>Paumanhin, hindi makakuha ng karagdagang paliwanag dahil walang koneksyon sa internet. Ang iyong report ay na-classify gamit ang aming offline AI. Makipag-ugnayan sa inyong barangay para sa follow-up.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

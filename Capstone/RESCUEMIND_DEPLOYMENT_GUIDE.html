@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RescueMind AI — Deployment Guide 2026</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-dark: #1d4ed8;
+      --violet: #7c3aed;
+      --violet-dark: #6d28d9;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      color: var(--slate-800);
+      background: var(--slate-50);
+      line-height: 1.6;
+      padding: 0;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e3a5f 0%, var(--slate-900) 50%, #0f172a 100%);
+      color: white;
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+    }
+    .header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .header h1 span { color: #60a5fa; }
+    .header p { color: #94a3b8; font-size: 1rem; max-width: 640px; margin: 0 auto; }
+    .header .badge-row { margin-top: 1rem; display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge.blue { background: #1e40af; color: #93c5fd; }
+    .badge.purple { background: #4c1d95; color: #c4b5fd; }
+    .badge.green { background: #14532d; color: #86efac; }
+    .badge.amber { background: #78350f; color: #fcd34d; }
+    .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .toc {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .toc h2 { font-size: 0.85rem; margin-bottom: 0.75rem; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.06em; }
+    .toc ol { padding-left: 1.25rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc a { color: var(--blue); text-decoration: none; font-size: 0.9rem; }
+    .toc a:hover { text-decoration: underline; }
+    section { margin-bottom: 3rem; }
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--slate-200);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    h2 .step {
+      background: var(--blue);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    h2 .step.purple { background: var(--violet); }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--slate-700);
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    h4 { font-size: 0.95rem; font-weight: 600; color: var(--slate-700); margin-top: 1rem; margin-bottom: 0.35rem; }
+    p { margin-bottom: 0.75rem; color: var(--slate-600); }
+    ul, ol { padding-left: 1.5rem; margin-bottom: 0.75rem; }
+    li { margin-bottom: 0.35rem; color: var(--slate-600); }
+    .code-block {
+      background: var(--slate-900);
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 0.75rem 0 1.25rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .code-block .comment { color: #64748b; }
+    .code-block .keyword { color: #93c5fd; }
+    .code-block .string { color: #86efac; }
+    .code-block .path { color: #fde68a; }
+    .inline-code {
+      background: var(--slate-100);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'SF Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--slate-700);
+    }
+    .card {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .card.warn { border-left: 4px solid #eab308; }
+    .card.info { border-left: 4px solid var(--blue); }
+    .card.success { border-left: 4px solid #22c55e; }
+    .card.danger { border-left: 4px solid #ef4444; }
+    .card.purple { border-left: 4px solid var(--violet); }
+    .card-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1rem 0;
+    }
+    th, td {
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--slate-200);
+    }
+    th { background: var(--slate-100); font-weight: 600; color: var(--slate-700); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    tr:hover td { background: var(--slate-50); }
+    .btn {
+      display: inline-block;
+      background: var(--blue);
+      color: white;
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: var(--blue-dark); }
+    .btn.purple { background: var(--violet); }
+    .btn.purple:hover { background: var(--violet-dark); }
+    hr { border: none; border-top: 1px solid var(--slate-200); margin: 2.5rem 0; }
+    .tag {
+      display: inline-block;
+      background: var(--slate-100);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--slate-600);
+    }
+    .tag.green { background: #dcfce7; color: #166534; }
+    .tag.red { background: #fecaca; color: #991b1b; }
+    .tag.blue { background: #dbeafe; color: #1e40af; }
+    .tag.purple { background: #ede9fe; color: #5b21b6; }
+    .tag.amber { background: #fef3c7; color: #92400e; }
+
+    /* ── Architecture Diagram ── */
+    .arch {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem 1rem;
+      flex-wrap: wrap;
+    }
+    .arch-box {
+      background: white;
+      border: 2px solid var(--slate-200);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      text-align: center;
+      min-width: 140px;
+    }
+    .arch-box .icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .arch-box .name { font-weight: 700; font-size: 0.95rem; color: var(--slate-800); }
+    .arch-box .desc { font-size: 0.72rem; color: var(--slate-400); margin-top: 0.1rem; }
+    .arch-box.highlight { border-color: var(--blue); background: #eff6ff; }
+    .arch-box.purple-box { border-color: var(--violet); background: #f5f3ff; }
+    .arch-arrow { font-size: 1.5rem; color: var(--slate-300); }
+    .arch-label {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--slate-400);
+      margin-top: 0.75rem;
+    }
+    .note {
+      font-size: 0.85rem;
+      color: var(--slate-400);
+      font-style: italic;
+      margin-top: 0.25rem;
+    }
+    kbd {
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      font-size: 0.78rem;
+      font-family: 'SF Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ───────────────────────────────── -->
+<div class="header">
+  <h1>🇵🇭 RescueMind AI <span>· 2026</span></h1>
+  <p>Step-by-Step Deployment Guide — Vercel (Frontend) + Render (AI Service)<br>Next.js 15.5 · Supabase · Transformers.js · Google Gemini</p>
+  <div class="badge-row">
+    <span class="badge blue">Next.js 15.5</span>
+    <span class="badge purple">Transformers.js</span>
+    <span class="badge green">Supabase</span>
+    <span class="badge amber">Gemini 2.0</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════ -->
+<!-- ARCHITECTURE OVERVIEW                     -->
+<!-- ══════════════════════════════════════════ -->
+<section>
+  <h2>🏗️ Architecture Overview</h2>
+
+  <p>RescueMind AI uses a <strong>split architecture</strong> — the frontend runs on <strong>Vercel</strong> (serverless, fast CDN) and the heavy AI inference runs on <strong>Render</strong> (persistent Node.js server). This is the standard pattern in 2026 for apps using Transformers.js or other ML models that need a warm process.</p>
+
+  <div class="arch">
+    <div class="arch-box highlight">
+      <div class="icon">🌐</div>
+      <div class="name">User's Browser</div>
+      <div class="desc">Citizen / Official</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-box highlight">
+      <div class="icon">⚡</div>
+      <div class="name">Vercel</div>
+      <div class="desc">Next.js Frontend</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-box purple-box">
+      <div class="icon">🧠</div>
+      <div class="name">Render</div>
+      <div class="desc">AI Service</div>
+    </div>
+  </div>
+
+  <div class="card purple">
+    <div class="card-title">🧠 Why two deployments?</div>
+    <table>
+      <tr><th></th><th>Vercel (Frontend)</th><th>Render (AI Service)</th></tr>
+      <tr><td><strong>What runs here</strong></td><td>Landing page, report form, dashboard, auth, API proxy</td><td>Transformers.js ML model, classification logic</td></tr>
+      <tr><td><strong>Runtime</strong></td><td>Serverless (Edge / Node.js 20)</td><td>Persistent Node.js server</td></tr>
+      <tr><td><strong>Cold start?</strong></td><td>✅ Yes (~200ms, acceptable for pages)</td><td>❌ No — server is <em>always warm</em></td></tr>
+      <tr><td><strong>Memory limit</strong></td><td>~1 GB (Vercel Pro)</td><td>512 MB — 2.5 GB (Render Free — Starter)</td></tr>
+      <tr><td><strong>ML model loads</strong></td><td>On every cold start (~10s!)</td><td>Once at startup, stays cached</td></tr>
+      <tr><td><strong>Ideal for</strong></td><td>Fast UI, CDN caching, auth redirects</td><td>Heavy computing, model inference, large memory</td></tr>
+    </table>
+  </div>
+
+  <div class="card info">
+    <div class="card-title">🔄 How the proxy works</div>
+    <p>When a user submits a report on <code>/report</code>:</p>
+    <ol>
+      <li>The Next.js API route <code>/api/classify</code> receives the request</li>
+      <li>If <code>AI_SERVICE_URL</code> is set, it proxies the request to <code>https://rescuemind-ai-service.onrender.com/api/classify</code></li>
+      <li>The Render AI service runs Transformers.js, classifies the report, and returns the result <strong>plus</strong> the embedding vector for duplicate detection</li>
+      <li>The Next.js route then performs duplicate check + Gemini enrichment + stores to Supabase</li>
+      <li>The user sees the classification result immediately</li>
+    </ol>
+    <p class="note">💡 If <code>AI_SERVICE_URL</code> is <strong>not set</strong>, the app runs entirely on Vercel using Transformers.js inline. This works but has slower cold starts.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- DEEP DIVE: AI SERVICE                      -->
+<!-- ══════════════════════════════════════════ -->
+<section>
+  <h2>🧠 Deep Dive: The AI Service</h2>
+
+  <p>This is the most important piece to understand before deploying. Let's break down exactly what the AI service does and why it needs its own server.</p>
+
+  <h3>What is Transformers.js?</h3>
+  <p><a href="https://github.com/xenova/transformers.js" target="_blank">Transformers.js</a> is an open-source library that runs Hugging Face transformer models <strong>directly in Node.js</strong> (no Python needed). RescueMind uses the <strong>paraphrase-multilingual-MiniLM-L12-v2</strong> model — a lightweight, multilingual sentence embedding model trained to understand Tagalog and English equally well.</p>
+
+  <table>
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Model name</td><td><code>Xenova/paraphrase-multilingual-MiniLM-L12-v2</code></td></tr>
+    <tr><td>Type</td><td>Sentence embedding (feature extraction)</td></tr>
+    <tr><td>Languages</td><td>50+ languages including Tagalog, Cebuano, Ilocano</td></tr>
+    <tr><td>Download size</td><td><strong>~85 MB</strong> (ONNX quantized)</td></tr>
+    <tr><td>RAM at inference</td><td>~300 MB</td></tr>
+    <tr><td>Inference time</td><td>~500 ms per sentence (first run slower)</td></tr>
+    <tr><td>License</td><td>MIT — fully open source</td></tr>
+    <tr><td>First-load time</td><td>~5-10 seconds (download + cache model)</td></tr>
+  </table>
+
+  <h3>How classification works (step by step)</h3>
+  <ol>
+    <li><strong>Embedding:</strong> The citizen's complaint text is converted into a 384-dimensional vector (embedding) — a mathematical representation of its meaning</li>
+    <li><strong>Similarity matching:</strong> This embedding is compared against 10 pre-computed category embeddings (Flood, Road Damage, Garbage, etc.) using <strong>cosine similarity</strong></li>
+    <li><strong>Threshold check:</strong> If the best match is below 60% confidence, it's flagged as "Needs Human Review"</li>
+    <li><strong>Duplicate detection:</strong> The same embedding is also compared against the last 20 stored complaints. If similarity > 85%, the citizen sees a yellow warning: <em>"Mayroon nang 2 kahalintulad na ulat mula sa inyong lugar."</em></li>
+    <li><strong>Optional enrichment:</strong> If <code>GEMINI_API_KEY</code> is set, the report text + classification is sent to Gemini 2.0 Flash to generate an empathetic Tagalog explanation</li>
+  </ol>
+
+  <div class="card purple">
+    <div class="card-title">⚡ Why serverless (Vercel) struggles with ML</div>
+    <p><strong>Serverless cold starts:</strong> Every time a Vercel function wakes up after being idle, it must re-download or re-load the 85 MB model into memory. This takes <strong>5–10 seconds</strong> before the first classification can run. For a citizen waiting for their report to be processed, this is a terrible experience.</p>
+    <p><strong>Memory limits:</strong> Vercel's free tier gives 1 GB of memory, but the model (~300 MB at inference) combined with Next.js itself (~200 MB) can cause memory pressure during peak usage.</p>
+    <p><strong>Render's solution:</strong> A persistent Node.js server loads the model <strong>once at startup</strong> and keeps it in memory. Every subsequent classification completes in ~500ms — no cold starts, no memory spikes.</p>
+  </div>
+
+  <h3>AI Service Files</h3>
+  <table>
+    <tr><th>File</th><th>Purpose</th></tr>
+    <tr><td><code>app/ai-service/server.js</code></td><td>Express server with POST /api/classify + GET /api/health endpoints</td></tr>
+    <tr><td><code>app/ai-service/package.json</code></td><td>Dependencies: express, cors, @xenova/transformers</td></tr>
+  </table>
+
+  <div class="card warn">
+    <div class="card-title">📦 First deployment takes ~5 minutes</div>
+    <p>The first time Render builds the AI service, it needs to download the ~85 MB model from Hugging Face. The model is then <strong>cached</strong> — subsequent builds reuse it instantly.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                          -->
+<!-- ══════════════════════════════════════════ -->
+<div class="toc">
+  <h2>TABLE OF CONTENTS</h2>
+  <ol>
+    <li><a href="#step1">Create a Supabase Project (Database &amp; Auth)</a></li>
+    <li><a href="#step2">Run the Database Schema</a></li>
+    <li><a href="#step3">Get Your Google Gemini API Key (Optional)</a></li>
+    <li><a href="#step4">Configure Local Environment Variables</a></li>
+    <li><a href="#step5">Set Up Supabase Auth (Disable Email Confirmation)</a></li>
+    <li><a href="#step6">Push Your Code to GitHub</a></li>
+    <li><a href="#step7">Deploy the AI Service to Render (Step 1)</a></li>
+    <li><a href="#step8">Deploy the Frontend to Vercel (Step 2)</a></li>
+    <li><a href="#step9">Connect Frontend → AI Service</a></li>
+    <li><a href="#step10">Verify the Full Chain</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+  </ul>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 1                                     -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step1">
+  <h2><span class="step">1</span> Create a Supabase Project</h2>
+  <p>Supabase provides the database and authentication for RescueMind AI. It's free for small projects.</p>
+
+  <ol>
+    <li>Go to <a href="https://supabase.com" target="_blank">supabase.com</a> and click <strong>Start your project</strong></li>
+    <li>Sign in with GitHub (recommended) or email</li>
+    <li>Click <strong>New project</strong></li>
+    <li>Fill in:
+      <ul>
+        <li><strong>Name:</strong> <code>rescuemind-ai</code></li>
+        <li><strong>Database Password:</strong> Create a strong password — save this safely!</li>
+        <li><strong>Region:</strong> <strong>Southeast Asia (Singapore)</strong> — fastest for Philippines</li>
+        <li><strong>Pricing Plan:</strong> <strong>Free</strong></li>
+      </ul>
+    </li>
+    <li>Click <strong>Create new project</strong> — wait ~2 minutes for provisioning</li>
+    <li>Once created, go to <strong>Project Settings → API</strong> in the left sidebar</li>
+  </ol>
+
+  <div class="card info">
+    <div class="card-title">📋 Copy these values</div>
+    <ul>
+      <li><strong>Project URL</strong> — looks like <code>https://abcdefghijklm.supabase.co</code></li>
+      <li><strong>anon public key</strong> — a long base64 string starting with <code>eyJ...</code></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 2                                     -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step2">
+  <h2><span class="step">2</span> Run the Database Schema</h2>
+  <p>The schema is already prepared — you just paste it into Supabase's SQL Editor.</p>
+
+  <ol>
+    <li>In your Supabase dashboard, go to <strong>SQL Editor</strong> (left sidebar)</li>
+    <li>Click <strong>New query</strong></li>
+    <li>Open the file <span class="inline-code">Capstone/supabase/schema.sql</span> and copy its entire contents</li>
+    <li>Paste into the editor and click <strong>Run</strong></li>
+  </ol>
+
+  <p>This creates:</p>
+  <table>
+    <tr><th>Table</th><th>Purpose</th></tr>
+    <tr><td><code>public.reports</code></td><td>Stores classified citizen reports with tracking ID, category, urgency, status, location</td></tr>
+    <tr><td><code>public.profiles</code></td><td>User roles (citizen/official), barangay, province</td></tr>
+  </table>
+
+  <div class="card success">
+    <div class="card-title">✅ Done — you should see <em>"Success. No rows returned"</em></div>
+    <p>RLS policies, triggers (auto-create profile, update timestamp), and indexes are already included in the schema.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 3                                     -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step3">
+  <h2><span class="step">3</span> Get Your Google Gemini API Key</h2>
+  <p>Gemini 2.0 Flash enriches each classified report with a friendly Tagalog explanation. <strong>This is optional</strong> — the system works without it using only the offline Transformers.js classification.</p>
+
+  <div class="card info">
+    <div class="card-title">✨ Two AI models, one pipeline</div>
+    <table>
+      <tr><th></th><th>Transformers.js (Offline)</th><th>Google Gemini (Cloud)</th></tr>
+      <tr><td><strong>Job</strong></td><td>Classify category, urgency, office</td><td>Write empathetic Tagalog explanation</td></tr>
+      <tr><td><strong>Internet?</strong></td><td>❌ No — runs locally</td><td>✅ Yes — API call</td></tr>
+      <tr><td><strong>Required?</strong></td><td>✅ Core feature</td><td>❌ Optional enhancement</td></tr>
+      <tr><td><strong>Cost</strong></td><td>Free (open source)</td><td>Free tier: 1,500 req/day</td></tr>
+    </table>
+  </div>
+
+  <ol>
+    <li>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></li>
+    <li>Sign in with your Google account</li>
+    <li>Click <strong>Create API Key</strong></li>
+    <li>Choose an existing Google Cloud project or create a new one</li>
+    <li>Copy your API key — starts with <code>AIzaSy...</code></li>
+  </ol>
+
+  <div class="card warn">
+    <div class="card-title">💰 Pricing — Gemini 2.0 Flash Free Tier</div>
+    <p><strong>1,500 requests per day for free</strong>. For a barangay triage app, that's more than enough. Beyond that, ~$0.10 per 1K requests.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 4                                     -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step4">
+  <h2><span class="step">4</span> Configure Local Environment Variables</h2>
+
+  <ol>
+    <li>Navigate to <span class="inline-code">Capstone/app/frontend/</span></li>
+    <li>Copy <span class="inline-code">.env.example</span> to <span class="inline-code">.env.local</span></li>
+  </ol>
+
+  <div class="code-block"><span class="comment"># ────────────────────────────────────────────────────────────</span>
+<span class="comment"># RescueMind AI — Environment Variables</span>
+<span class="comment"># ────────────────────────────────────────────────────────────</span>
+
+<span class="comment"># Supabase — required</span>
+<span class="comment"># From: Supabase Dashboard → Settings → API</span>
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+
+<span class="comment"># Google Gemini AI — optional</span>
+<span class="comment"># Without this, the app still works (offline explanation only)</span>
+<span class="comment"># Get from: https://aistudio.google.com/app/apikey</span>
+GEMINI_API_KEY=your-gemini-api-key
+
+<span class="comment"># AI Service (Render) — optional for local dev</span>
+<span class="comment"># When set, classification proxies to this URL instead of</span>
+<span class="comment"># running Transformers.js in the Vercel serverless function.</span>
+<span class="comment"># Leave empty to run locally (recommended for development).</span>
+<span class="comment"># Example: https://rescuemind-ai-service.onrender.com</span>
+AI_SERVICE_URL=
+
+<span class="comment"># App URL (update to your Vercel URL after deploy)</span>
+NEXT_PUBLIC_APP_URL=http://localhost:3000</div>
+
+  <div class="card success">
+    <div class="card-title">✅ Test locally first</div>
+    <p>Before deploying, verify the app works locally: <kbd>cd Capstone/app/frontend && pnpm dev</kbd>. The Transformers.js model will download on the first classification (~10s).</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 5                                     -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step5">
+  <h2><span class="step">5</span> Set Up Supabase Auth</h2>
+  <p>For testing, disable email confirmation so users can sign up without verifying.</p>
+
+  <ol>
+    <li>In Supabase dashboard, go to <strong>Authentication → Providers</strong></li>
+    <li>Under <strong>Email</strong>, click <strong>Edit</strong></li>
+    <li><strong>Turn OFF</strong> the toggle <strong>"Confirm email"</strong></li>
+    <li>Click <strong>Save</strong></li>
+  </ol>
+
+  <div class="card warn">
+    <div class="card-title">⚠️ For production, keep email confirmation <strong>ON</strong></div>
+    <p>Add a transactional email service (SendGrid, Resend) in Supabase Auth settings for proper email verification.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 6                                     -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step6">
+  <h2><span class="step">6</span> Push Your Code to GitHub</h2>
+
+  <ol>
+    <li>Go to <a href="https://github.com" target="_blank">GitHub.com</a> → <strong>New repository</strong> → Name it <code>rescuemind-ai</code></li>
+    <li>Keep it <strong>Public</strong> or <strong>Private</strong></li>
+    <li>Do <strong>not</strong> initialize with README (you already have one)</li>
+    <li>Click <strong>Create repository</strong></li>
+  </ol>
+
+  <p>In your terminal:</p>
+  <div class="code-block"><span class="comment"># Initialize (if not already done)</span>
+git init
+git add .
+git commit -m "Initial commit — RescueMind AI v1.0"
+
+<span class="comment"># Link to GitHub (replace YOUR_USERNAME)</span>
+git remote add origin https://github.com/YOUR_USERNAME/rescuemind-ai.git
+git branch -M main
+git push -u origin main</div>
+
+  <div class="card info">
+    <div class="card-title">📁 Repository structure (what gets deployed where)</div>
+    <table>
+      <tr><th>Directory</th><th>Deploys to</th><th>Purpose</th></tr>
+      <tr><td><code>Capstone/app/frontend/</code></td><td><span class="tag blue">Vercel</span></td><td>Next.js frontend + API routes</td></tr>
+      <tr><td><code>Capstone/app/ai-service/</code></td><td><span class="tag purple">Render</span></td><td>Express + Transformers.js AI service</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 7                                     -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step7">
+  <h2><span class="step purple">7</span> Deploy the AI Service to Render</h2>
+
+  <div class="card purple">
+    <div class="card-title">🧠 This is where Transformers.js will run</div>
+    <p>Render provides a persistent Node.js server that loads the ML model <strong>once</strong> at startup and keeps it warm. This avoids the 5-10 second cold start that would happen on Vercel's serverless functions.</p>
+  </div>
+
+  <ol>
+    <li>Go to <a href="https://render.com" target="_blank">render.com</a> → <strong>Get Started</strong> → Sign up with GitHub</li>
+    <li>Click <strong>New +</strong> → <strong>Blueprint</strong> (if using <code>render.yaml</code>) <strong>OR</strong> → <strong>Web Service</strong></li>
+  </ol>
+
+  <h4>Option A: One-click with Blueprint (recommended)</h4>
+  <p>The project includes a <span class="inline-code">render.yaml</span> file at the root. When you connect your repo via <strong>New + → Blueprint</strong>, Render auto-detects the configuration.</p>
+
+  <h4>Option B: Manual Web Service</h4>
+  <ol>
+    <li>Click <strong>New + → Web Service</strong></li>
+    <li>Connect your GitHub account → select <code>rescuemind-ai</code></li>
+    <li>Configure:</li>
+  </ol>
+
+  <div class="card">
+    <div class="card-title">⚙️ AI Service Configuration (Manual)</div>
+    <table>
+      <tr><th>Setting</th><th>Value</th></tr>
+      <tr><td><strong>Name</strong></td><td><code>rescuemind-ai-service</code></td></tr>
+      <tr><td><strong>Root Directory</strong></td><td><code>Capstone/app/ai-service</code> ⬅️ <strong>Critical!</strong></td></tr>
+      <tr><td><strong>Region</strong></td><td><strong>Singapore</strong> (closest to 🇵🇭)</td></tr>
+      <tr><td><strong>Branch</strong></td><td><code>main</code></td></tr>
+      <tr><td><strong>Runtime</strong></td><td><strong>Node</strong></td></tr>
+      <tr><td><strong>Build Command</strong></td><td><code>npm install</code></td></tr>
+      <tr><td><strong>Start Command</strong></td><td><code>node server.js</code></td></tr>
+      <tr><td><strong>Plan</strong></td><td><strong>Free</strong> (512 MB RAM, 0.1 CPU) or <strong>Starter</strong> ($7/mo, 2.5 GB RAM)</td></tr>
+      <tr><td><strong>Health Check Path</strong></td><td><code>/api/health</code></td></tr>
+    </table>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">⚠️ Root Directory must be <code>Capstone/app/ai-service</code></div>
+    <p>Without this, Render won't find the <span class="inline-code">package.json</span> and the build will fail. The <span class="inline-code">render.yaml</span> blueprint handles this automatically.</p>
+  </div>
+
+  <ol start="6">
+    <li>Click <strong>Create Web Service</strong></li>
+    <li>Wait ~5 minutes for the first build (includes downloading the 85 MB model from Hugging Face)</li>
+  </ol>
+
+  <div class="card success">
+    <div class="card-title">✅ AI Service is live!</div>
+    <p>Visit <code>https://rescuemind-ai-service.onrender.com/api/health</code> — you should see JSON with <code>"status": "ok"</code> and <code>"model": "loaded"</code>.</p>
+    <p class="note">If <code>"model": "loading"</code> appears, wait 10 more seconds and refresh — the model is still downloading.</p>
+  </div>
+
+  <h3>📊 Memory & Performance</h3>
+  <table>
+    <tr><th>Metric</th><th>Render Free</th><th>Render Starter ($7/mo)</th></tr>
+    <tr><td>RAM</td><td>512 MB</td><td>2.5 GB</td></tr>
+    <tr><td>Model memory usage</td><td>~300 MB</td><td>~300 MB</td></tr>
+    <tr><td>Remaining for Express</td><td>~200 MB ✅</td><td>~2.2 GB ✅✅</td></tr>
+    <tr><td>First request latency</td><td>~5-10s (model download)</td><td>~3-5s</td></tr>
+    <tr><td>Subsequent requests</td><td>~500ms</td><td>~300ms</td></tr>
+    <tr><td>Idle sleep (after 15 min)</td><td>✅ Yes (Free plan)</td><td>❌ No (always on)</td></tr>
+  </table>
+
+  <div class="card info">
+    <div class="card-title">💡 Render Free plan spins down after 15 min of inactivity</div>
+    <p>When the first request hits after idle time, it takes ~5-10 seconds to wake up (including model re-load). This is acceptable for a capstone demo. For production, upgrade to the <strong>Starter</strong> plan ($7/month) for always-on service.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 8                                     -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step8">
+  <h2><span class="step">8</span> Deploy the Frontend to Vercel</h2>
+
+  <ol>
+    <li>Go to <a href="https://vercel.com" target="_blank">vercel.com</a> → <strong>Sign up</strong> with GitHub</li>
+    <li>Click <strong>Add New → Project</strong></li>
+    <li>Select the <code>rescuemind-ai</code> repository</li>
+    <li>Configure:</li>
+  </ol>
+
+  <div class="card">
+    <div class="card-title">⚙️ Frontend Configuration</div>
+    <table>
+      <tr><th>Setting</th><th>Value</th></tr>
+      <tr><td><strong>Framework Preset</strong></td><td><strong>Next.js</strong> (auto-detected)</td></tr>
+      <tr><td><strong>Root Directory</strong></td><td><code>Capstone/app/frontend</code> ⬅️ <strong>Critical!</strong></td></tr>
+      <tr><td><strong>Build Command</strong></td><td><code>npm run build</code> (auto-detected)</td></tr>
+      <tr><td><strong>Output Directory</strong></td><td><code>.next</code> (auto-detected)</td></tr>
+    </table>
+  </div>
+
+  <ol start="5">
+    <li>Click <strong>Environment Variables</strong> and add these:</li>
+  </ol>
+
+  <div class="card">
+    <div class="card-title">🔑 Environment Variables (Vercel)</div>
+    <table>
+      <tr><th>Key</th><th>Value</th><th>Source</th></tr>
+      <tr><td><code>NEXT_PUBLIC_SUPABASE_URL</code></td><td>Your Supabase URL</td><td>Step 1</td></tr>
+      <tr><td><code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code></td><td>Your Supabase anon key</td><td>Step 1</td></tr>
+      <tr><td><code>GEMINI_API_KEY</code></td><td>Your Gemini API key</td><td>Step 3 (optional)</td></tr>
+      <tr><td><code>AI_SERVICE_URL</code></td><td><code>https://rescuemind-ai-service.onrender.com</code></td><td>Step 7</td></tr>
+      <tr><td><code>NEXT_PUBLIC_APP_URL</code></td><td><code>https://rescuemind-ai.vercel.app</code></td><td>Your Vercel URL</td></tr>
+    </table>
+  </div>
+
+  <ol start="6">
+    <li>Click <strong>Deploy</strong></li>
+    <li>Wait ~2 minutes — Vercel will build and deploy</li>
+    <li>Once done, you'll see your production URL: <code>https://rescuemind-ai.vercel.app</code></li>
+  </ol>
+
+  <div class="card success">
+    <div class="card-title">✅ Frontend is live!</div>
+    <p>Visit your Vercel URL. The landing page should load instantly.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 9                                     -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step9">
+  <h2><span class="step">9</span> Connect Frontend → AI Service</h2>
+
+  <p>Now wire them together. If you set <code>AI_SERVICE_URL</code> in Vercel (Step 8), the frontend is already pointing at your Render AI service. Let's verify:</p>
+
+  <ol>
+    <li>Go to <strong>Vercel Dashboard → rescuemind-ai → Settings → Environment Variables</strong></li>
+    <li>Confirm <code>AI_SERVICE_URL</code> is set to <code>https://rescuemind-ai-service.onrender.com</code></li>
+    <li>Go to <strong>Deployments</strong> → find the latest deployment → click <strong>Redeploy</strong></li>
+    <li>Wait for the build to finish</li>
+  </ol>
+
+  <div class="card info">
+    <div class="card-title">📡 How the connection works</div>
+    <p>When <code>AI_SERVICE_URL</code> is set, the Next.js API route <code>/api/classify</code> acts as a <strong>proxy</strong>:</p>
+    <div class="code-block">Citizen submits report
+  → /api/classify (Vercel)
+    → POST https://rescuemind-ai-service.onrender.com/api/classify
+      → Transformers.js classifies (warm, ~500ms)
+      → Returns: category + urgency + office + embedding
+    → Vercel checks duplicates + calls Gemini (if key set)
+    → Returns final result to citizen</div>
+    <p class="note">💡 If <code>AI_SERVICE_URL</code> is empty, Vercel runs Transformers.js inline (slower cold starts but works).</p>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">⚠️ After adding AI_SERVICE_URL, you must <strong>Redeploy</strong></div>
+    <p>Environment variable changes don't take effect until the next deployment. Trigger a manual re-deploy from the Vercel dashboard.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 10                                    -->
+<!-- ══════════════════════════════════════════ -->
+<section id="step10">
+  <h2><span class="step">10</span> Verify the Full Chain</h2>
+
+  <h3>Quick checks</h3>
+  <table>
+    <tr><th>What to check</th><th>URL</th><th>Expected result</th></tr>
+    <tr><td>AI Service health</td><td><code>https://rescuemind-ai-service.onrender.com/api/health</code></td><td>JSON: <code>{"status":"ok","model":"loaded"}</code></td></tr>
+    <tr><td>Frontend landing</td><td><code>https://rescuemind-ai.vercel.app/</code></td><td>Hero section with features, CTA buttons</td></tr>
+    <tr><td>Report form</td><td><code>https://rescuemind-ai.vercel.app/report</code></td><td>Report form with textarea, location selector</td></tr>
+    <tr><td>Dashboard</td><td><code>https://rescuemind-ai.vercel.app/dashboard</code></td><td>Redirects to /auth if not logged in</td></tr>
+    <tr><td>Auth</td><td><code>https://rescuemind-ai.vercel.app/auth</code></td><td>Sign in / Sign up form</td></tr>
+    <tr><td>Frontend health</td><td><code>https://rescuemind-ai.vercel.app/api/health</code></td><td>JSON: <code>{"status":"ok"}</code></td></tr>
+    <tr><td>404 page</td><td><code>https://rescuemind-ai.vercel.app/non-existent</code></td><td>Custom 404 with Philippine flag colors</td></tr>
+    <tr><td>Privacy</td><td><code>https://rescuemind-ai.vercel.app/privacy</code></td><td>Data Privacy Act compliance page</td></tr>
+    <tr><td>Terms</td><td><code>https://rescuemind-ai.vercel.app/terms</code></td><td>Terms of service page</td></tr>
+  </table>
+
+  <h3>🚦 Test the full report flow</h3>
+  <ol>
+    <li>Go to <code>https://rescuemind-ai.vercel.app/report</code></li>
+    <li>Type: <em>"Malakas na baha sa may kanto ng Mabini St., hanggang tuhod ang tubig, kailangan ng rescue."</em></li>
+    <li>Select Region → Province → City/Municipality (optional but recommended)</li>
+    <li>Click <strong>Submit Report</strong></li>
+    <li>Expected result (~1-3 seconds):
+      <ul>
+        <li>✅ <strong>Tracking ID</strong> — e.g., <code>RM-20260623-A1B2</code></li>
+        <li>✅ <strong>Category</strong> — <em>Flood / Drainage</em></li>
+        <li>✅ <strong>Urgency</strong> — <span class="tag red">HIGH</span></li>
+        <li>✅ <strong>Office</strong> — <em>City Engineering / DPWH</em></li>
+        <li>✅ <strong>Explanation</strong> — Empathetic Tagalog text (if Gemini configured)</li>
+        <li>✅ <strong>Duplicate indicator</strong> — Yellow banner if similar reports found</li>
+      </ul>
+    </li>
+    <li>Go to <code>/dashboard</code> → Sign up / Sign in → See your report in the list</li>
+    <li>Click the report → Full detail page at <code>/dashboard/{trackingId}</code></li>
+  </ol>
+
+  <div class="card success">
+    <div class="card-title">✅ All green! Your system is live.</div>
+    <p>From this point, every <code>git push</code> to <code>main</code> auto-deploys <strong>both</strong> services — Vercel handles the frontend, Render handles the AI.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- TROUBLESHOOTING                            -->
+<!-- ══════════════════════════════════════════ -->
+<hr>
+
+<section id="troubleshooting">
+  <h2>🔧 Troubleshooting</h2>
+
+  <div class="card warn">
+    <div class="card-title">❌ AI Service health check returns <code>"model": "loading"</code></div>
+    <p><strong>Cause:</strong> The 85 MB model is still downloading from Hugging Face on first deploy. This can take 1-3 minutes.</p>
+    <p><strong>Fix:</strong> Wait 30 seconds and refresh. The model is cached for subsequent deploys. If it never loads, check Render logs for download errors (rare — usually a network issue).</p>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">❌ "Module not found: @xenova/transformers" on Vercel</div>
+    <p><strong>Cause:</strong> Next.js tries to bundle Transformers.js as a client-side module, but it's a Node.js library.</p>
+    <p><strong>Fix:</strong> Make sure your <span class="inline-code">next.config.js</span> has:</p>
+    <div class="code-block">const nextConfig = {
+  serverExternalPackages: ["@xenova/transformers"],
+};</div>
+    <p>This tells Next.js to keep the package on the server only.</p>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">❌ Report submission fails — "AI Service not reachable"</div>
+    <p><strong>Cause:</strong> The <code>AI_SERVICE_URL</code> env var is set but the Render service isn't running or the URL is wrong.</p>
+    <p><strong>Fix:</strong></p>
+    <ol>
+      <li>Check your Render AI service is live: visit <code>https://rescuemind-ai-service.onrender.com/api/health</code></li>
+      <li>Verify <code>AI_SERVICE_URL</code> in Vercel env vars has <strong>no trailing slash</strong></li>
+      <li>Redeploy the Vercel project after changing env vars</li>
+      <li>If Render is on the Free plan and was idle, the first request takes 5-10s to wake up</li>
+    </ol>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">❌ Classification always returns "Needs Human Review"</div>
+    <p><strong>Cause:</strong> The confidence threshold isn't being met. This can happen if the Transformers.js model fails to load and falls back to the character-level hash embedding (low quality).</p>
+    <p><strong>Fix:</strong> Check your Render AI service logs. If the model fails to load, the service uses a simple character-counting fallback that produces poor embeddings. Force a re-deploy of the AI service on Render to re-download the model.</p>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">❌ Auth not working — "Invalid login credentials"</div>
+    <p><strong>Fix:</strong> Go to <strong>Supabase → Authentication → Providers → Email</strong> and make sure <strong>"Enable email confirmations"</strong> is OFF for testing. For production, keep it ON.</p>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">❌ Render build fails — "Could not find package.json"</div>
+    <p><strong>Cause:</strong> Root directory is set to <code>/</code> instead of <code>Capstone/ai-service</code>.</p>
+    <p><strong>Fix:</strong> Update the Root Directory setting in Render to <code>Capstone/app/ai-service</code>. If using Blueprint, verify <code>render.yaml</code> has <code>rootDir: app/ai-service</code> and it's at the repo root.</p>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">❌ Gemini not responding — shows offline explanation</div>
+    <p>This is <strong>expected</strong> if the key is missing or invalid. To fix:</p>
+    <ol>
+      <li>Verify <code>GEMINI_API_KEY</code> is set in <strong>Vercel</strong> env vars (not Render — Render doesn't call Gemini)</li>
+      <li>Ensure it's not the placeholder <code>your-gemini-api-key</code></li>
+      <li>Check the key has billing enabled (free tier should work)</li>
+    </ol>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">❌ AI Service runs out of memory on Render Free (512 MB)</div>
+    <p><strong>Cause:</strong> The Transformers.js model uses ~300 MB + Node.js uses ~100 MB = ~400 MB total. On the Free plan's 512 MB limit, this is tight but functional.</p>
+    <p><strong>Solutions:</strong></p>
+    <ul>
+      <li>Stay on Free: works fine for 1-2 concurrent requests</li>
+      <li>Upgrade to Starter ($7/mo, 2.5 GB): handles 10+ concurrent requests</li>
+      <li>Reduce model memory: set <code>{ quantized: true }</code> in <code>loadModel()</code> (already configured)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- QUICK REFERENCE                            -->
+<!-- ══════════════════════════════════════════ -->
+<hr>
+
+<section>
+  <h2>📋 Quick Reference Card</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🔗 Key URLs</div>
+      <table>
+        <tr><td>Supabase</td><td><a href="https://supabase.com">supabase.com</a></td></tr>
+        <tr><td>Google AI Studio</td><td><a href="https://aistudio.google.com">aistudio.google.com</a></td></tr>
+        <tr><td>Vercel</td><td><a href="https://vercel.com">vercel.com</a></td></tr>
+        <tr><td>Render</td><td><a href="https://render.com">render.com</a></td></tr>
+        <tr><td>GitHub</td><td><a href="https://github.com">github.com</a></td></tr>
+        <tr><td>Transformers.js</td><td><a href="https://github.com/xenova/transformers.js">github.com/xenova/transformers.js</a></td></tr>
+        <tr><td>MiniLM model</td><td><a href="https://huggingface.co/Xenova/paraphrase-multilingual-MiniLM-L12-v2">huggingface.co/Xenova/paraphrase-multilingual-MiniLM-L12-v2</a></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🛠️ Key Commands</div>
+      <div class="code-block" style="font-size:0.78rem; padding:0.75rem;"><span class="comment"># Local dev (frontend)</span>
+cd Capstone/app/frontend && pnpm dev
+
+<span class="comment"># Local AI service test</span>
+cd Capstone/app/ai-service && node server.js
+
+<span class="comment"># Build + test (frontend)</span>
+cd Capstone/app/frontend && pnpm build && pnpm test
+
+<span class="comment"># Deploy (push to main = auto-deploy both)</span>
+git add . && git commit -m "msg"
+git push</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔐 Vercel Environment Variables</div>
+      <table>
+        <tr><td><code>NEXT_PUBLIC_SUPABASE_URL</code></td><td><span class="tag red">Required</span></td></tr>
+        <tr><td><code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code></td><td><span class="tag red">Required</span></td></tr>
+        <tr><td><code>GEMINI_API_KEY</code></td><td><span class="tag amber">Optional</span></td></tr>
+        <tr><td><code>AI_SERVICE_URL</code></td><td><span class="tag blue">Recommended</span></td></tr>
+        <tr><td><code>NEXT_PUBLIC_APP_URL</code></td><td><span class="tag blue">Recommended</span></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📁 Render AI Service Config</div>
+      <table>
+        <tr><td>Root Directory</td><td><code>Capstone/app/ai-service</code></td></tr>
+        <tr><td>Runtime</td><td>Node</td></tr>
+        <tr><td>Build</td><td><code>npm install</code></td></tr>
+        <tr><td>Start</td><td><code>node server.js</code></td></tr>
+        <tr><td>Health check</td><td><code>/api/health</code></td></tr>
+        <tr><td>Free plan RAM</td><td>512 MB (enough for model)</td></tr>
+        <tr><td>Region</td><td>Singapore</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card info">
+    <div class="card-title">📡 System Architecture (simplified)</div>
+    <div class="code-block" style="font-size:0.75rem; line-height:1.8;">
+Citizen Browser  ──→  Vercel (Next.js 15.5)  ──→  Render (Express + Transformers.js)
+                          │                                  │
+                          ├─ Landing page                     ├─ POST /api/classify (classification)
+                          ├─ Report form                      └─ GET /api/health
+                          ├─ Dashboard
+                          ├─ Auth (Supabase)
+                          └─ API: /api/classify (proxy)
+                               │
+                     ┌─────────┴──────────┐
+                     ↓                     ↓
+              Supabase (DB)         Google Gemini (optional)
+        (reports, profiles,       (Tagalog enrichment)
+         auth, RLS policies)</div>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────────── -->
+<hr>
+<p style="text-align:center; color:#94a3b8; font-size:0.85rem;">
+  RescueMind AI — Capstone Project 2026<br>
+  Built with ❤️ for Philippine Barangay Governance
+</p>
+
+</div><!-- /container -->
+</body>
+</html>
