@@ -4,6 +4,7 @@
   "nav.home": "Home",
   "nav.report": "Mag-Report",
   "nav.dashboard": "Dashboard",
+  "nav.submitReport": "Mag-ulat",
   "locale.label": "Filipino",
   "locale.auto": "Auto-detect",
   "app.subtitle": "Barangay Disaster & Complaint Triage",

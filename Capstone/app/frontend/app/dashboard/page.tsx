@@ -195,7 +195,7 @@ export default function DashboardPage() {
                   title={sidebarCollapsed ? t("nav.dashboard") : undefined}
                 >
                   <IconPlus className="w-5 h-5 text-[var(--color-ph-gold)] shrink-0" />
-                  {!sidebarCollapsed && <span>{t("nav.dashboard")}</span>}
+                  {!sidebarCollapsed && <span>{t("nav.submitReport")}</span>}
                 </Link>
               </div>
             </div>
@@ -230,7 +230,7 @@ export default function DashboardPage() {
 
           {/* Official Profile Lockup */}
           {sidebarCollapsed ? (
-            <div className="w-12 h-12 rounded-2xl bg-[var(--color-ph-navy)] text-[var(--color-ph-gold)] flex items-center justify-center font-black text-base mx-auto border border-white/10 shadow-md" title="Barangay Admin">
+            <div className="w-12 h-12 rounded-2xl bg-[var(--color-ph-navy)] text-[var(--color-ph-gold)] flex items-center justify-center font-black text-base mx-auto border border-white/10 shadow-md" title="Barangay Resident">
               <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM128,76a32,32,0,1,1-32,32A32,32,0,0,1,128,76Zm0,48a16,16,0,1,0-16-16A16,16,0,0,0,128,124Zm0,76c-17.57,0-33.22-5.59-44.83-14.54A8,8,0,0,1,91.53,175c8.6,5.45,17.35,9,36.47,9s27.87-3.55,36.47-9a8,8,0,1,1,8.38,13.63C161.22,194.41,145.57,200,128,200Z" /></svg>
             </div>
           ) : (
@@ -240,8 +240,8 @@ export default function DashboardPage() {
                   <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM128,76a32,32,0,1,1-32,32A32,32,0,0,1,128,76Zm0,48a16,16,0,1,0-16-16A16,16,0,0,0,128,124Zm0,76c-17.57,0-33.22-5.59-44.83-14.54A8,8,0,0,1,91.53,175c8.6,5.45,17.35,9,36.47,9s27.87-3.55,36.47-9a8,8,0,1,1,8.38,13.63C161.22,194.41,145.57,200,128,200Z" /></svg>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="font-extrabold text-sm text-slate-800 dark:text-slate-200 truncate">Barangay Admin</div>
-                  <div className="text-xs text-slate-400 font-medium truncate">E-Governance Standard</div>
+                  <div className="font-extrabold text-sm text-slate-800 dark:text-slate-200 truncate">Barangay Resident</div>
+                  <div className="text-xs text-slate-400 font-medium truncate">Citizen Portal</div>
                 </div>
               </div>
               <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0 mr-1" />

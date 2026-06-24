@@ -4,6 +4,7 @@
   "nav.home": "Home",
   "nav.report": "Report",
   "nav.dashboard": "Dashboard",
+  "nav.submitReport": "Submit Report",
   "locale.label": "English",
   "locale.auto": "Auto-detect",
   "app.subtitle": "Barangay Disaster & Complaint Triage",
