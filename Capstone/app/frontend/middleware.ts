@@ -7,9 +7,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-// Force Node.js runtime for rate limiter persistence
-export const runtime = "nodejs";
-
 // ── Rate Limiter ─────────────────────────────────────────
 
 interface RateLimitEntry {
@@ -19,17 +16,16 @@ interface RateLimitEntry {
 
 const rateLimitMap = new Map<string, RateLimitEntry>();
 
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, entry] of rateLimitMap.entries()) {
-    if (entry.resetAt < now) rateLimitMap.delete(key);
-  }
-}, 5 * 60 * 1000);
-
 function getRateLimitInfo(ip: string) {
   const windowMs = 60 * 1000;
   const maxRequests = 30;
   const now = Date.now();
+  
+  // Basic cleanup to prevent memory leaks in the isolate
+  for (const [key, entry] of rateLimitMap.entries()) {
+    if (entry.resetAt < now) rateLimitMap.delete(key);
+  }
+
   const entry = rateLimitMap.get(ip);
 
   if (!entry || entry.resetAt < now) {
@@ -58,29 +54,38 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const response = NextResponse.next();
 
-  // ── Step 1: Refresh Supabase auth session ──────────────
+  // ── Step 1: Check Env Vars ─────────────────────────────
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            request.cookies.set(name, value);
-            response.cookies.set(name, value, options);
-          });
-        },
-      },
+  let user = null;
+
+  if (supabaseUrl && supabaseKey) {
+    try {
+      const supabase = createServerClient(
+        supabaseUrl,
+        supabaseKey,
+        {
+          cookies: {
+            getAll() {
+              return request.cookies.getAll();
+            },
+            setAll(cookiesToSet) {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                request.cookies.set(name, value);
+                response.cookies.set(name, value, options);
+              });
+            },
+          },
+        }
+      );
+
+      const { data } = await supabase.auth.getUser();
+      user = data.user;
+    } catch (error) {
+      console.error("Middleware Supabase error:", error);
     }
-  );
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  }
 
   // ── Step 2: Route Protection ───────────────────────────
 
