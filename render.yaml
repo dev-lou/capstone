@@ -3,13 +3,14 @@
 # ────────────────────────────────────────────────────────────
 # Deploys TWO services:
 #   1. AI Service  — Transformers.js classification (Render)
-#   2. Frontend    — Next.js app at app/frontend/ (Vercel — NOT managed here)
+#   2. Frontend    — Next.js app (Vercel — deploy separately)
 #
 # USAGE:
 # 1. Push this file to GitHub
 # 2. Go to https://dashboard.render.com → New+ → Blueprint
 # 3. Connect your repo → Render creates the AI service
-# 4. Deploy the frontend on Vercel separately (link in guide)
+# 4. Deploy the frontend on Vercel separately
+# 5. Call POST /api/warmup on both services before demo to pre-load model
 # ────────────────────────────────────────────────────────────
 
 services:
@@ -31,11 +32,26 @@ services:
 
     healthCheckPath: /api/health
 
+    # Give enough time for model download on cold start
+    # Note: Configure health check timeout in Render dashboard if needed
     autoDeploy: true
 
     envVars:
-      # Port is auto-set by Render (default 10000)
       - key: NODE_VERSION
         value: "20"
       - key: NODE_ENV
         value: production
+      # Render auto-sets PORT to 10000
+
+  # Note: Also deploy the frontend on Vercel:
+  #   - Root: app/frontend
+  #   - Framework: Next.js
+  #   - Set AI_SERVICE_URL to this service's URL
+  #   - Set GEMINI_API_KEY, NEXT_PUBLIC_SUPABASE_URL, etc.
+
+  # ── Post-deploy warmup ──────────────────────────────────
+  # After deployment, run these steps:
+  #   1. Wait for health check to pass
+  #   2. POST /api/warmup on the frontend to load model
+  #   3. Confirm "status: ok" response
+  #   4. Demo is now ready — model is cached

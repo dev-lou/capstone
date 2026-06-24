@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { AuthNav } from "./auth-nav";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./components/toast";
+import { ChatWidget } from "./components/chat-widget";
 import { IconSun, IconMoon } from "./components/icons";
 import { NavLink } from "./components/nav-link";
 
@@ -159,6 +160,7 @@ export default function RootLayout({
           </footer>
 
           <Toaster />
+          <ChatWidget />
         </ThemeProvider>
       </body>
     </html>

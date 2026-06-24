@@ -135,7 +135,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text, location: body.location }),
-          signal: AbortSignal.timeout(30000),
+          signal: AbortSignal.timeout(120000), // 2 min for cold-start model download
         });
 
         const aiData = await aiResponse.json();
