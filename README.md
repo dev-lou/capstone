@@ -4,6 +4,13 @@
 
 RescueMind AI is a modern, production-ready, **offline-first**, and multi-dialect bilingual AI system designed specifically for Philippine local government units (LGUs/Barangays). It classifies citizen reports, assigns urgency levels, routes incidents to correct government offices, and provides a secure, traceable management ledger for local officials.
 
+> [!IMPORTANT]
+> **Live Demo Deployments:**
+> All services are fully deployed and operational for the live demonstration:
+> - **AI Service:** Deployed on **Render** (Singapore Region)
+> - **Citizen Portal (Frontend):** Deployed on **Vercel**
+> - **Admin Portal:** Deployed on **Vercel**
+
 ---
 
 ## 🏗️ Monorepo Architecture
