@@ -39,17 +39,17 @@ interface SelectProps {
 // Chevron Icon (animated)
 // ────────────────────────────────────────────────────────────
 
-function ChevronDown({ open }: { open: boolean }) {
+function ChevronDown({ open, direction }: { open: boolean; direction: "down" | "up" }) {
   return (
     <motion.svg
-      width="14"
-      height="14"
+      width="16"
+      height="16"
       viewBox="0 0 256 256"
       fill="currentColor"
       aria-hidden="true"
-      animate={{ rotate: open ? 180 : 0 }}
+      animate={{ rotate: open ? (direction === "up" ? 0 : 180) : (direction === "up" ? 180 : 0) }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="shrink-0"
+      className="shrink-0 text-slate-400"
     >
       <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z" />
     </motion.svg>
@@ -63,8 +63,8 @@ function ChevronDown({ open }: { open: boolean }) {
 function CheckIcon() {
   return (
     <svg
-      width="14"
-      height="14"
+      width="16"
+      height="16"
       viewBox="0 0 256 256"
       fill="currentColor"
       aria-hidden="true"
@@ -75,7 +75,7 @@ function CheckIcon() {
 }
 
 // ────────────────────────────────────────────────────────────
-// Select Component
+// Select Component — High-End Dynamic Droptop & Generous Hitbox
 // ────────────────────────────────────────────────────────────
 
 export function Select({
@@ -88,9 +88,10 @@ export function Select({
   className = "",
   id: externalId,
   error = false,
-  size = "sm",
+  size = "md",
 }: SelectProps) {
   const [open, setOpen] = useState(false);
+  const [direction, setDirection] = useState<"down" | "up">("down");
   const [focusedIdx, setFocusedIdx] = useState(-1);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -101,6 +102,21 @@ export function Select({
   // Find selected option label
   const selectedOption = options.find((opt) => opt.value === value);
   const displayText = selectedOption?.label ?? (value || placeholder);
+
+  // ── Dynamic Placement / Collision Detection ─────────────────────────────
+  useEffect(() => {
+    if (!open || !triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const estimatedDropdownHeight = 260; // 240px max-height + padding
+
+    // If there isn't enough space below AND there is more space above, drop UP ("droptop")
+    if (rect.bottom + estimatedDropdownHeight > viewportHeight && rect.top > estimatedDropdownHeight) {
+      setDirection("up");
+    } else {
+      setDirection("down");
+    }
+  }, [open]);
 
   // ── Close on click outside ─────────────────────────────
   useEffect(() => {
@@ -124,7 +140,7 @@ export function Select({
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (!open) {
-        if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+        if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown" || e.key === "ArrowUp") {
           e.preventDefault();
           setOpen(true);
           setFocusedIdx(options.findIndex((opt) => opt.value === value));
@@ -188,13 +204,13 @@ export function Select({
       {label && (
         <label
           id={`${id}-label`}
-          className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5"
+          className="block text-sm font-bold text-[var(--color-ph-navy)] dark:text-slate-300 mb-2"
         >
           {label}
         </label>
       )}
 
-      {/* Trigger Button */}
+      {/* Trigger Button — Expanded Premium Hitbox */}
       <button
         ref={triggerRef}
         id={id}
@@ -211,36 +227,36 @@ export function Select({
         }}
         onKeyDown={handleKeyDown}
         className={`
-          w-full flex items-center justify-between gap-2
+          w-full flex items-center justify-between gap-3
           font-sans leading-none
           transition-all duration-150
           border
-          ${size === "sm" ? "text-xs py-2 px-3" : "text-sm py-2.5 px-3.5"}
+          py-3 px-5 text-sm font-bold
           ${
             error
-              ? "border-[var(--color-danger)] focus:shadow-[0_0_0_3px_rgba(199,62,58,0.2)]"
-              : "border-[var(--color-border)] hover:border-[var(--color-border-hover)] focus:border-[var(--color-accent)] focus:shadow-[0_0_0_3px_rgba(232,168,56,0.25)]"
+              ? "border-red-500 focus:shadow-[0_0_0_4px_rgba(239,68,68,0.2)]"
+              : "border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 focus:border-[var(--color-ph-gold)] focus:shadow-[0_0_0_4px_rgba(232,168,56,0.25)]"
           }
           ${
             disabled
-              ? "opacity-50 cursor-not-allowed text-[var(--color-text-muted)]"
-              : "cursor-pointer text-[var(--color-text)]"
+              ? "opacity-50 cursor-not-allowed text-slate-400"
+              : "cursor-pointer text-slate-800 dark:text-slate-100"
           }
-          bg-[var(--color-bg)]
-          rounded-[var(--radius-md)]
+          bg-white dark:bg-slate-900
+          rounded-2xl shadow-sm
         `}
       >
         <span
           className={`truncate ${
-            !selectedOption && value ? "text-[var(--color-text-muted)]" : ""
+            !selectedOption && value ? "text-slate-400 font-medium" : ""
           }`}
         >
           {displayText}
         </span>
-        <ChevronDown open={open} />
+        <ChevronDown open={open} direction={direction} />
       </button>
 
-      {/* Dropdown */}
+      {/* Dropdown / Droptop */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -249,21 +265,21 @@ export function Select({
             role="listbox"
             aria-labelledby={label ? `${id}-label` : id}
             tabIndex={-1}
-            initial={{ opacity: 0, y: -4, scale: 0.96 }}
+            initial={{ opacity: 0, y: direction === "up" ? 4 : -4, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -4, scale: 0.96 }}
+            exit={{ opacity: 0, y: direction === "up" ? 4 : -4, scale: 0.96 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
             className={`
-              absolute z-[var(--z-dropdown)] left-0 right-0 mt-1
-              bg-[var(--color-surface)]
-              border border-[var(--color-border)]
-              ${size === "sm" ? "rounded-[var(--radius-md)]" : "rounded-[var(--radius-lg)]"}
-              shadow-lg overflow-hidden
+              absolute z-50 left-0 right-0
+              ${direction === "up" ? "bottom-full mb-2" : "top-full mt-2"}
+              bg-white dark:bg-slate-900
+              border border-slate-200 dark:border-slate-800
+              rounded-2xl shadow-2xl shadow-black/20 overflow-hidden
             `}
-            style={{ maxHeight: "220px", overflowY: "auto" }}
+            style={{ maxHeight: "240px", overflowY: "auto" }}
           >
             {options.length === 0 ? (
-              <div className="px-3 py-6 text-center text-xs text-[var(--color-text-muted)]">
+              <div className="px-4 py-6 text-center text-sm font-medium text-slate-400">
                 No options available
               </div>
             ) : (
@@ -286,22 +302,22 @@ export function Select({
                     }}
                     onMouseEnter={() => setFocusedIdx(idx)}
                     className={`
-                      w-full flex items-center justify-between gap-2 text-left
+                      w-full flex items-center justify-between gap-3 text-left
                       font-sans leading-none cursor-pointer
                       transition-colors duration-100
-                      ${size === "sm" ? "text-xs py-2 px-3" : "text-sm py-2.5 px-3.5"}
+                      py-3 px-5 text-sm font-bold
                       ${
                         isSelected
-                          ? "bg-[var(--color-accent-muted)] text-[var(--color-ph-navy)] font-medium"
+                          ? "bg-[var(--color-ph-navy)] text-[var(--color-ph-gold)] font-black"
                           : isFocused
-                            ? "bg-[var(--color-bg-secondary)] text-[var(--color-text)]"
-                            : "bg-transparent text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]"
+                            ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white"
+                            : "bg-transparent text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                       }
                     `}
                   >
                     <span className="truncate">{option.label}</span>
                     {isSelected && (
-                      <span className="text-[var(--color-accent)] shrink-0">
+                      <span className="text-[var(--color-ph-gold)] shrink-0">
                         <CheckIcon />
                       </span>
                     )}

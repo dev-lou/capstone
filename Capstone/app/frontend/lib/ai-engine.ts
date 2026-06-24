@@ -337,7 +337,7 @@ export async function enrichWithGemini(
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `Ikaw ay isang helpful AI assistant ng Barangay Response System ng Pilipinas.
 Ang user ay nag-report ng insidente. Sagutin mo sa Tagalog o Taglish (mix of Tagalog and English).
