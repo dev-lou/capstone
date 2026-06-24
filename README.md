@@ -54,14 +54,38 @@ graph TD
 
 ---
 
-## ⚡ Key Features
+## ⚡ Key Features & Portals
 
-*   **Bilingual & Regional Dialects Support:** Out-of-the-box local translation files for English, Tagalog (Filipino), Cebuano, and Ilocano. Multi-dialect support works dynamically on both landing pages and entry portals.
-*   **Dual-Tiered AI Classification Engine:**
-    *   *Tier 1 (Offline Vector Embeddings):* Classifies reports locally across 10 LGU-specific categories (Flood, Road Damage, Garbage, Noise, Health, permits, Water, Electricity, Public Safety, Others).
-    *   *Tier 2 (Cloud LLM Enrichment):* If online, invokes Gemini 2.0 Flash to translate, generate Tagalog summaries, and provide agency-specific justifications.
-*   **Philippine Standard Geographic Code (PSGC):** Built-in geographical dataset comprising all 17 regions and 82 provinces for manual selection, alongside GPS-based automatic coordinate reverse-lookup.
-*   **Edge-Runtime and High Performance:** Designed with strict rate-limiting (30 req/min per IP), security headers, optimized bundle sizes, and dark mode compliance.
+### 🖥️ Citizen Portal (Frontend Dashboard)
+*   **Dynamic Complaint/Disaster Intake:** Single-card form for writing reports in plain text.
+*   **Bilingual & Dialect Switching:** Switch UI instantly between English, Tagalog (Filipino), Cebuano (Bisaya), and Ilocano (Amihanang Luzon) on the landing page and report forms.
+*   **One-Click Geolocation:** Automatically queries browser GPS coordinates and reverse-maps them to region/province labels using the local database.
+*   **Offline-First Safety Ledger:** Falls back to local classification, localStorage queues, and caches report history when the internet connection is disrupted.
+*   **Real-time Ledger Tracking:** Residents can monitor status (Pending, In Progress, Resolved) and look up reports using custom tracking codes (`RM-YYYYMMDD-XXXX`).
+
+### 🛠️ Barangay Admin Portal
+*   **Secure Authentication:** Controlled email/password dashboard access powered by Supabase Auth and Row Level Security (RLS) tables.
+*   **Operational Workflow Controls:** Shift active items along the standard state pipeline: `Pending` ➡️ `In Progress` ➡️ `Resolved`.
+*   **Audit Resolution Notes:** Log internal resolution steps or dispatch notes directly into the database associated with specific reports.
+*   **Human Review & Overrides:** Dedicated review flags for low confidence classifications (< 60%), allowing officials to override routing and category choices.
+*   **CSV/JSON Data Export:** Export the complete active incident ledger to Excel/JSON formats for municipal reporting.
+
+### 🧠 Core System Capabilities
+*   **Dual-Tier AI Engine:** Fast offline similarity matching (Transformers.js paraphrase-multilingual-MiniLM model) with optional Cloud Enrichment (Google Gemini 2.0 Flash) for dialect reasons and office-routing logic.
+*   **Integrated PSGC Dataset:** All 17 regions and 82 provinces embedded locally for manual location drop-downs.
+*   **Production Guardrails:** Edge-routing compatibility, rate limiting (30 requests/minute), and dark-mode options.
+
+---
+
+## 🔄 End-to-End Workflow Lifecycle
+
+1. **Intake:** Resident submits report text (e.g. *"Baha sa kalsada"* or *"Strong floods near school"*) on the Citizen Portal, with optional GPS/PSGC location tracking.
+2. **AI Classification:** The intake request hits `rescuemind-ai-service` on Render, extracting the category (e.g., `Flood`), routing department (e.g., `DPWH`), urgency (`high`), and confidence score.
+3. **Reasoning & Translations:** If online, Gemini is invoked to write a translation and explanation in the target dialect.
+4. **Validation:** If the score is below 60%, the system flags the report as `needs_human_review`.
+5. **Persistence:** The classified report is pushed to Supabase and client-side state.
+6. **LGU Action:** Officials view the incident ledger on the Admin Portal, assign status, and write internal notes.
+7. **Resolution:** Ledger transitions to `Resolved`, notifying the resident checking the portal.
 
 ---
 
