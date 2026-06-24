@@ -119,6 +119,14 @@ async function loadModel() {
   if (pipe) return pipe;
   if (modelLoadPromise) return modelLoadPromise;
 
+  // ── Memory guard: skip if too high to avoid OOM crash ──
+  const rssMB = Math.round(process.memoryUsage().rss / 1024 / 1024);
+  if (rssMB > 250) {
+    console.warn(`[AI Service] Memory too high (${rssMB}MB) to load model. Using keywords.`);
+    modelLoadPromise = null;
+    return null;
+  }
+
   modelLoadPromise = (async () => {
     console.log("[AI Service] Loading Transformers.js model...");
     const start = Date.now();
@@ -127,7 +135,7 @@ async function loadModel() {
       pipe = await createPipeline(
         "feature-extraction",
         "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
-        { quantized: true }
+        { quantized: true, dtype: "q8" }
       );
       const elapsed = ((Date.now() - start) / 1000).toFixed(1);
       console.log(`[AI Service] Model loaded in ${elapsed}s`);
@@ -377,9 +385,5 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`[AI Service] Health:  GET http://0.0.0.0:${PORT}/api/health`);
   console.log(`[AI Service] Warmup:  POST http://0.0.0.0:${PORT}/api/warmup`);
   console.log(`[AI Service] Classify: POST http://0.0.0.0:${PORT}/api/classify`);
-
-  // Start loading model in background (non-blocking)
-  loadModel().then(() => {
-    console.log("[AI Service] ✅ Model loaded — ML classification active.");
-  });
+  console.log("[AI Service] ⏸️ Model NOT auto-loaded. Call POST /api/warmup to load.");
 });

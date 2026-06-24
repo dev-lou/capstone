@@ -105,12 +105,18 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const handleSignOut = useCallback(async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push("/auth");
+    router.push("/");
     router.refresh();
   }, [router]);
 
+  const isLoginPage = pathname === "/";
+
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const isDeptActive = (slug: string) => pathname === `/departments/${slug}`;
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] flex flex-col md:flex-row">
@@ -119,7 +125,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
         <div className={`space-y-8 w-full ${sidebarCollapsed ? "flex flex-col items-center" : ""}`}>
           
           {/* Logo */}
-          <Link href="/" className={`flex items-center gap-3.5 pt-2 ${sidebarCollapsed ? "justify-center" : "px-2"}`}>
+          <Link href="/dashboard" className={`flex items-center gap-3.5 pt-2 ${sidebarCollapsed ? "justify-center" : "px-2"}`}>
             <div className="w-11 h-11 rounded-2xl bg-[var(--color-ph-navy)] dark:bg-[var(--color-ph-gold)] text-white dark:text-slate-900 flex items-center justify-center font-black text-base shadow-md shrink-0 border border-white/10">
               RM
             </div>
@@ -135,13 +141,13 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           <div className="w-full">
             {!sidebarCollapsed && <div className="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 px-3">Navigation</div>}
             <div className={`space-y-1.5 w-full ${sidebarCollapsed ? "flex flex-col items-center" : ""}`}>
-              <Link href="/"
+              <Link href="/dashboard"
                 className={sidebarCollapsed
-                  ? `w-12 h-12 flex items-center justify-center rounded-2xl ${isActive("/") && !isDeptActive("") ? "bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold shadow-md border border-slate-200/80 dark:border-slate-800/80" : "text-slate-600 dark:text-slate-400"} mx-auto transition-all`
-                  : `flex items-center gap-3.5 px-4 py-3.5 rounded-2xl ${isActive("/") && !pathname.startsWith("/departments") && !pathname.startsWith("/reports") ? "bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold shadow-md border border-slate-200/80 dark:border-slate-800/80" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60"} font-bold text-sm transition-all`}
+                  ? `w-12 h-12 flex items-center justify-center rounded-2xl ${isActive("/dashboard") && !isDeptActive("") ? "bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold shadow-md border border-slate-200/80 dark:border-slate-800/80" : "text-slate-600 dark:text-slate-400"} mx-auto transition-all`
+                  : `flex items-center gap-3.5 px-4 py-3.5 rounded-2xl ${isActive("/dashboard") && !pathname.startsWith("/departments") && !pathname.startsWith("/reports") ? "bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold shadow-md border border-slate-200/80 dark:border-slate-800/80" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60"} font-bold text-sm transition-all`}
                 title={sidebarCollapsed ? "Dashboard" : undefined}
               >
-                <IconChartBar className={`w-5 h-5 shrink-0 ${isActive("/") && !pathname.startsWith("/departments") ? "text-[var(--color-ph-gold)]" : "text-slate-400"}`} />
+                <IconChartBar className={`w-5 h-5 shrink-0 ${isActive("/dashboard") && !pathname.startsWith("/departments") ? "text-[var(--color-ph-gold)]" : "text-slate-400"}`} />
                 {!sidebarCollapsed && <span>Dashboard</span>}
               </Link>
             </div>

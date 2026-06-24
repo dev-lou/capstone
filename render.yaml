@@ -45,7 +45,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: NODE_OPTIONS
-        value: "--max-old-space-size=400"
+        value: "--max-old-space-size=180 --optimize-for-size --max-semi-space-size=16"
       # Render auto-sets PORT to 10000
 
   # Note: Also deploy the frontend on Vercel:
