@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { t, getLangFromStorage, type Language } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n";
 import { getReports } from "@/lib/storage";
+import { useAuth } from "@/lib/auth-context";
 import {
   IconLightning,
   IconShield,
@@ -16,6 +17,13 @@ import {
   IconArrowRight,
   IconChartBar,
 } from "./components/icons";
+import {
+  DILGLogo,
+  DICTLogo,
+  NDRRMCLogo,
+  DPWHLogo,
+  DataPrivacyLogo,
+} from "./components/agency-logos";
 
 // ── Motion Variants ────────────────────────────────────────────
 const fadeUp = {
@@ -168,13 +176,13 @@ const TESTIMONIALS = [
 
 // ── Main Component ─────────────────────────────────────────────
 export default function HomePage() {
-  const [lang, setLang] = useState<Language>("fil");
+  const { user } = useAuth();
+  const { t, lang } = useI18n();
   const [isClient, setIsClient] = useState(false);
   const [reportCount, setReportCount] = useState(0);
 
   useEffect(() => {
     setIsClient(true);
-    setLang(getLangFromStorage());
     setReportCount(getReports().length);
   }, []);
 
@@ -196,79 +204,70 @@ export default function HomePage() {
           SECTION 1 — HIGH-END HERO WITH TOPOGRAPHIC BACKGROUND + SVG WAVE + SCROLL INDICATOR
           Ref: Image 2 (Elite 2026 Non-AI Slop Aesthetic)
       ══════════════════════════════════════════════════════════ */}
-      <section className="bg-[#0a1915] dark:bg-[#06120e] relative overflow-hidden pt-28 pb-36 sm:pt-36 sm:pb-48 text-white">
-        {/* Stunning Topographic / Contour Line SVG Overlay */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="topographic" width="400" height="400" patternUnits="userSpaceOnUse">
-                <path d="M50 0 Q75 50 100 100 T150 200 T200 300 T250 400 M150 0 Q175 50 200 100 T250 200 T300 300 T350 400 M250 0 Q275 50 300 100 T350 200 T400 300 T450 400 M0 50 Q50 75 100 100 T200 150 T300 200 T400 250 M0 150 Q50 175 100 200 T200 250 T300 300 T400 350" fill="none" stroke="#22c55e" strokeWidth="1" strokeOpacity="0.4" />
-                <path d="M20 0 Q45 60 90 120 T140 220 T190 320 T240 400 M120 0 Q145 60 190 120 T240 220 T290 320 T340 400 text-green-500" fill="none" stroke="#22c55e" strokeWidth="0.5" strokeOpacity="0.2" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#topographic)" />
-          </svg>
-        </div>
-
-        {/* Deep rich radial glow accent */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 z-10">
+      <section className="bg-[#08101a] dark:bg-[#050b12] bg-[url('/rescuemind_hero_flood.jpg')] bg-cover bg-center bg-no-repeat relative overflow-hidden min-h-[100dvh] flex flex-col justify-center pt-28 pb-32 sm:pt-32 sm:pb-36 text-white">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 z-10 w-full mt-8 sm:mt-0">
           <motion.div
             variants={stagger}
             initial="initial"
             animate="animate"
-            className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 xl:gap-28 items-center relative"
           >
             {/* Left: Premium Civic Copy & Clean Buttons */}
-            <motion.div variants={fadeUp} className="lg:col-span-6 space-y-8">
+            <motion.div variants={fadeUp} className="lg:col-span-6 flex flex-col items-start space-y-8 lg:space-y-10 relative">
+              {/* Architectural Grounding Left-Border */}
+              <div className="hidden lg:block absolute -left-8 lg:-left-12 top-2 bottom-2 w-[2px] bg-gradient-to-b from-transparent via-[var(--color-ph-gold)]/50 to-transparent rounded-full shadow-[0_0_15px_rgba(200,145,30,0.5)]" />
+
               {/* Civic Intelligence Badge */}
-              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-bold tracking-widest uppercase shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
-                <span>Civic Disaster &amp; Complaint Intelligence</span>
+              <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-950/80 border border-blue-500/30 backdrop-blur-xl text-blue-400 text-xs font-black tracking-widest uppercase shadow-lg">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+                </span>
+                <span>Civic Intelligence</span>
               </div>
 
               {/* Primary heading */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.08] text-white">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black tracking-tighter leading-[1.05] text-white">
                 Report Barangay <br />Issues Instantly.
               </h1>
 
-              {/* Refined description — Crystal clear for everyone */}
-              <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl font-medium">
+              {/* Refined description */}
+              <p className="text-base sm:text-lg lg:text-xl text-slate-300 leading-relaxed max-w-xl font-medium tracking-wide">
                 {lang === "fil"
-                  ? "Walang kumplikadong pormularyo o pagpila. Ilarawan lamang ang problema sa inyong komunidad—tulad ng baha, sirang kalsada, o nawawalang kuryente—at agad itong ipapadala ng ating AI sa tamang sangay ng gobyerno (DILG, DPWH, BFP, o PNP). Mabilis, ligtas, at bukas sa publiko."
-                  : "No confusing forms or waiting in line. Simply describe your community concern—from street floods to broken lights—and our smart system immediately alerts the correct government office (DILG, DPWH, BFP, or PNP). Fast, secure, and public."}
+                  ? "Walang kumplikadong pormularyo o pagpila. Ilarawan lamang ang problema sa inyong komunidad—tulad ng baha, sirang kalsada, o nawawalang kuryente—at agad itong ipapadala ng ating AI sa tamang sangay."
+                  : "No confusing forms or waiting in line. Simply describe your community concern—from street floods to broken lights—and our smart system immediately alerts the correct government office."}
               </p>
 
-              {/* Clean Pill Buttons matching Image 2 Ref */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
-                <Link href="/report" className="px-8 py-4 rounded-full bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all text-center flex items-center justify-center gap-2">
-                  <span>{t("landing.reportNow", lang)}</span>
-                  <IconArrowRight className="w-4 h-4" />
+              {/* Clean Pill Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2 w-full sm:w-auto">
+                <Link href="/report" className="px-8 py-4 lg:py-5 lg:px-10 rounded-full bg-[var(--color-ph-gold)] hover:bg-yellow-400 text-slate-950 font-black text-sm lg:text-base tracking-wide shadow-xl shadow-black/50 hover:shadow-[var(--color-ph-gold)]/20 transition-all text-center flex items-center justify-center gap-2">
+                  <span>{t("landing.reportNow")}</span>
+                  <IconArrowRight className="w-5 h-5" />
                 </Link>
-                <Link href="/dashboard" className="px-8 py-4 rounded-full bg-slate-900/80 hover:bg-slate-800/80 border border-slate-700/80 text-white font-bold text-sm backdrop-blur-xl transition-all text-center flex items-center justify-center gap-2">
-                  <IconChartBar className="w-4 h-4 text-emerald-400" />
-                  <span>{t("landing.viewDashboard", lang)}</span>
+                <Link href="/dashboard" className="px-8 py-4 lg:py-5 lg:px-10 rounded-full bg-slate-900/60 hover:bg-slate-800/80 border border-white/15 text-white font-bold text-sm lg:text-base tracking-wide backdrop-blur-2xl transition-all text-center flex items-center justify-center gap-2">
+                  <IconChartBar className="w-5 h-5 text-[var(--color-ph-gold)]" />
+                  <span>{t("landing.viewDashboard")}</span>
                 </Link>
               </div>
 
               {/* Ledger text below buttons */}
-              <div className="pt-8 border-t border-slate-800/80 text-[0.65rem] font-black uppercase tracking-widest text-emerald-500/80 flex flex-wrap items-center gap-2">
+              <div className="pt-8 border-t border-white/10 w-full max-w-sm text-[0.65rem] font-black uppercase tracking-widest text-[var(--color-ph-gold)] flex flex-wrap items-center gap-2 opacity-90">
                 <span>LIVE LEDGER &middot; PUBLIC RECORD</span>
-                <span className="text-slate-600">|</span>
-                <span className="text-slate-400">DILG &middot; DICT &middot; NDRRMC &middot; PNP</span>
               </div>
             </motion.div>
 
-            {/* Right: INCIDENT LEDGER - LIVE Widget (Non-AI Slop, Bespoke Interactive Ref) */}
-            <motion.div variants={fadeUp} className="lg:col-span-6">
-              <div className="p-6 sm:p-8 rounded-[2rem] bg-slate-950/80 backdrop-blur-2xl border border-emerald-500/20 shadow-2xl shadow-black/80 text-slate-100 max-w-lg lg:ml-auto space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-800/80">
-                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-400">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            {/* Right: INCIDENT LEDGER - LIVE Widget */}
+            <motion.div variants={fadeUp} className="lg:col-span-6 relative">
+              {/* Decorative floating aura behind ledger */}
+              <div className="absolute -inset-4 bg-gradient-to-tr from-[var(--color-ph-gold)]/20 to-blue-500/20 blur-3xl opacity-50 rounded-full pointer-events-none" />
+              
+              <div className="relative p-6 sm:p-8 rounded-[2rem] bg-slate-950/50 border border-white/15 backdrop-blur-xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] text-slate-100 max-w-lg lg:ml-auto space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[var(--color-ph-gold)]">
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                     <span>INCIDENT LEDGER &middot; LIVE</span>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 text-[0.65rem] font-black uppercase tracking-widest">
+                  <span className="px-2.5 py-1 rounded-full bg-blue-950 text-blue-400 border border-blue-800 text-[0.65rem] font-black uppercase tracking-widest">
                     SYS-ONLINE
                   </span>
                 </div>
@@ -279,8 +278,8 @@ export default function HomePage() {
                   <div className="flex items-center justify-between gap-4 py-1 border-b border-slate-900 pb-4">
                     <div>
                       <div className="text-xs font-black font-mono text-white">RPT-7781</div>
-                      <div className="text-[0.65rem] font-bold text-emerald-500 flex items-center gap-1 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <div className="text-[0.65rem] font-bold text-blue-400 flex items-center gap-1 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-50" />
                         <span>ROUTING LIVE</span>
                       </div>
                     </div>
@@ -289,7 +288,7 @@ export default function HomePage() {
                       <div className="text-[0.65rem] text-slate-400 truncate">14.58&deg;N 120.97&deg;E &middot; DILG-LGU</div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="text-xs font-black text-emerald-400">98.4%</div>
+                      <div className="text-xs font-black text-blue-400">98.4%</div>
                       <div className="text-[0.65rem] text-slate-500">AI CONFIDENCE</div>
                     </div>
                   </div>
@@ -298,8 +297,8 @@ export default function HomePage() {
                   <div className="flex items-center justify-between gap-4 py-1 border-b border-slate-900 pb-4">
                     <div>
                       <div className="text-xs font-black font-mono text-white">RPT-7780</div>
-                      <div className="text-[0.65rem] font-bold text-emerald-500 flex items-center gap-1 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <div className="text-[0.65rem] font-bold text-green-500 flex items-center gap-1 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
                         <span>RESOLVED</span>
                       </div>
                     </div>
@@ -308,7 +307,7 @@ export default function HomePage() {
                       <div className="text-[0.65rem] text-slate-400 truncate">9.74&deg;N 118.73&deg;E &middot; DPWH</div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="text-xs font-black text-emerald-400">96.1%</div>
+                      <div className="text-xs font-black text-green-400">96.1%</div>
                       <div className="text-[0.65rem] text-slate-500">CLOSED IN 2H 12M</div>
                     </div>
                   </div>
@@ -317,8 +316,8 @@ export default function HomePage() {
                   <div className="flex items-center justify-between gap-4 py-1 border-b border-slate-900 pb-4">
                     <div>
                       <div className="text-xs font-black font-mono text-white">RPT-7779</div>
-                      <div className="text-[0.65rem] font-bold text-emerald-500 flex items-center gap-1 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <div className="text-[0.65rem] font-bold text-blue-400 flex items-center gap-1 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                         <span>ACTIVE</span>
                       </div>
                     </div>
@@ -327,7 +326,7 @@ export default function HomePage() {
                       <div className="text-[0.65rem] text-slate-400 truncate">7.19&deg;N 125.45&deg;E &middot; MERALCO</div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="text-xs font-black text-emerald-400">91.7%</div>
+                      <div className="text-xs font-black text-blue-400">91.7%</div>
                       <div className="text-[0.65rem] text-slate-500">DISPATCHED</div>
                     </div>
                   </div>
@@ -336,8 +335,8 @@ export default function HomePage() {
                   <div className="flex items-center justify-between gap-4 py-1">
                     <div>
                       <div className="text-xs font-black font-mono text-white">RPT-7777</div>
-                      <div className="text-[0.65rem] font-bold text-amber-500 flex items-center gap-1 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      <div className="text-[0.65rem] font-bold text-red-500 flex items-center gap-1 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
                         <span>CRITICAL</span>
                       </div>
                     </div>
@@ -346,7 +345,7 @@ export default function HomePage() {
                       <div className="text-[0.65rem] text-slate-400 truncate">10.32&deg;N 123.91&deg;E &middot; BFP</div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="text-xs font-black text-emerald-400">94.6%</div>
+                      <div className="text-xs font-black text-red-400">94.6%</div>
                       <div className="text-[0.65rem] text-slate-500">ESCALATED</div>
                     </div>
                   </div>
@@ -355,10 +354,10 @@ export default function HomePage() {
                 {/* Footer status */}
                 <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-[0.65rem] font-bold text-slate-400">
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span className="w-2 h-2 rounded-full bg-blue-500" />
                     <span>All systems operational</span>
                   </div>
-                  <Link href="/report" className="text-emerald-400 hover:underline">
+                  <Link href="/report" className="text-blue-400 hover:underline">
                     Mag-file ng report &rarr;
                   </Link>
                 </div>
@@ -368,24 +367,137 @@ export default function HomePage() {
         </div>
 
         {/* ── Scroll Indicator (Image 2 Ref) ────────────────────────────────────── */}
-        <div className="absolute bottom-16 sm:bottom-24 left-1/2 -translate-x-1/2 text-center z-20 pointer-events-none animate-bounce">
+        <div className="absolute bottom-16 sm:bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 text-center z-20 pointer-events-none animate-bounce">
           <div className="text-[0.65rem] font-black uppercase tracking-widest text-slate-400 mb-1">
             Scroll the Record
           </div>
-          <div className="text-emerald-400 font-bold text-sm">
+          <div className="text-[var(--color-ph-gold)] font-bold text-sm">
             &darr;
           </div>
         </div>
 
-        {/* ── Seamless SVG Wave at the Bottom (Image 2 Ref) ────────────────────────────────────── */}
+        {/* ── Seamless Layered Multi-Wave at the Bottom (Image 2 Ref) ────────────────────────────────────── */}
         <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden leading-none z-20 pointer-events-none">
           <svg
-            className="relative block w-full h-12 sm:h-20 md:h-28 text-[var(--color-surface)] fill-current"
+            className="relative block w-full h-10 sm:h-16 md:h-20 text-[var(--color-bg)] fill-current"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
           >
-            <path d="M0,96L80,85.3C160,75,320,53,480,53.3C640,53,800,75,960,80C1120,85,1200,75,1240,70L1280,65L1280,120L1240,120C1200,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" />
+            <path d="M0,60 C300,120 600,0 1200,60 L1200,120 L0,120 Z" className="opacity-30" />
+            <path d="M0,80 C400,0 800,120 1200,40 L1200,120 L0,120 Z" className="opacity-60" />
+            <path d="M0,96 C320,40 640,120 1200,70 L1200,120 L0,120 Z" />
           </svg>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 1.5 — TRUST & COMPLIANCE STRIP
+      ══════════════════════════════════════════════════════════ */}
+      <section className="bg-[var(--color-bg)] py-10 sm:py-12 border-b border-[var(--color-border)] dark:border-white/5 relative z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <p className="text-center text-[0.65rem] sm:text-xs font-black uppercase tracking-[0.25em] text-[var(--color-text-secondary)] mb-8">
+            {lang === "fil" ? "Dinisenyo para sa Local Government Units" : "Engineered for Philippine Local Government Units"}
+          </p>
+          
+          <div className="flex overflow-hidden relative w-full [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]">
+            <div className="animate-marquee-css">
+              
+              {/* Loop 1 */}
+              <div className="flex items-center space-x-12 sm:space-x-20 lg:space-x-32 px-6 sm:px-10 lg:px-16 opacity-95 hover:opacity-100 transition-opacity duration-500">
+                {/* DILG */}
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-full bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-white/10 flex items-center justify-center overflow-hidden group-hover:border-[var(--color-ph-gold)] group-hover:bg-slate-100 dark:group-hover:bg-slate-900 transition-all">
+                    <DILGLogo className="w-9 h-9" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-black text-[var(--color-text)] tracking-tight leading-none group-hover:text-[var(--color-ph-gold)] transition-colors">DILG</span>
+                    <span className="text-[0.6rem] sm:text-[0.65rem] font-bold text-[var(--color-text-secondary)] tracking-widest uppercase mt-0.5">Routing Standard</span>
+                  </div>
+                </div>
+                
+                {/* DICT */}
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-full bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-white/10 flex items-center justify-center overflow-hidden group-hover:border-blue-600 group-hover:bg-slate-100 dark:group-hover:bg-slate-900 transition-all">
+                    <DICTLogo className="w-9 h-9" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-black text-[var(--color-text)] tracking-tight leading-none group-hover:text-blue-600 transition-colors">DICT</span>
+                    <span className="text-[0.6rem] sm:text-[0.65rem] font-bold text-[var(--color-text-secondary)] tracking-widest uppercase mt-0.5">E-Gov Framework</span>
+                  </div>
+                </div>
+
+                {/* NDRRMC */}
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-full bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-white/10 flex items-center justify-center overflow-hidden group-hover:border-red-600 group-hover:bg-slate-100 dark:group-hover:bg-slate-900 transition-all">
+                    <NDRRMCLogo className="w-9 h-9" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-black text-[var(--color-text)] tracking-tight leading-none group-hover:text-red-600 transition-colors">NDRRMC</span>
+                    <span className="text-[0.6rem] sm:text-[0.65rem] font-bold text-[var(--color-text-secondary)] tracking-widest uppercase mt-0.5">Disaster Ready</span>
+                  </div>
+                </div>
+
+                {/* DPA 2012 */}
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-full bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-white/10 flex items-center justify-center overflow-hidden group-hover:border-emerald-600 group-hover:bg-slate-100 dark:group-hover:bg-slate-900 transition-all">
+                    <DataPrivacyLogo className="w-9 h-9" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-black text-[var(--color-text)] tracking-tight leading-none group-hover:text-emerald-600 transition-colors">RA 10173</span>
+                    <span className="text-[0.6rem] sm:text-[0.65rem] font-bold text-[var(--color-text-secondary)] tracking-widest uppercase mt-0.5">Data Privacy Act</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Loop 2 (Duplicate for seamless scrolling) */}
+              <div className="flex items-center space-x-12 sm:space-x-20 lg:space-x-32 px-6 sm:px-10 lg:px-16 opacity-95 hover:opacity-100 transition-opacity duration-500" aria-hidden="true">
+                {/* DILG */}
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-full bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-white/10 flex items-center justify-center overflow-hidden group-hover:border-[var(--color-ph-gold)] group-hover:bg-slate-100 dark:group-hover:bg-slate-900 transition-all">
+                    <DILGLogo className="w-9 h-9" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-black text-[var(--color-text)] tracking-tight leading-none group-hover:text-[var(--color-ph-gold)] transition-colors">DILG</span>
+                    <span className="text-[0.6rem] sm:text-[0.65rem] font-bold text-[var(--color-text-secondary)] tracking-widest uppercase mt-0.5">Routing Standard</span>
+                  </div>
+                </div>
+                
+                {/* DICT */}
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-full bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-white/10 flex items-center justify-center overflow-hidden group-hover:border-blue-600 group-hover:bg-slate-100 dark:group-hover:bg-slate-900 transition-all">
+                    <DICTLogo className="w-9 h-9" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-black text-[var(--color-text)] tracking-tight leading-none group-hover:text-blue-600 transition-colors">DICT</span>
+                    <span className="text-[0.6rem] sm:text-[0.65rem] font-bold text-[var(--color-text-secondary)] tracking-widest uppercase mt-0.5">E-Gov Framework</span>
+                  </div>
+                </div>
+
+                {/* NDRRMC */}
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-full bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-white/10 flex items-center justify-center overflow-hidden group-hover:border-red-600 group-hover:bg-slate-100 dark:group-hover:bg-slate-900 transition-all">
+                    <NDRRMCLogo className="w-9 h-9" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-black text-[var(--color-text)] tracking-tight leading-none group-hover:text-red-600 transition-colors">NDRRMC</span>
+                    <span className="text-[0.6rem] sm:text-[0.65rem] font-bold text-[var(--color-text-secondary)] tracking-widest uppercase mt-0.5">Disaster Ready</span>
+                  </div>
+                </div>
+
+                {/* DPA 2012 */}
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-10 h-10 rounded-full bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-white/10 flex items-center justify-center overflow-hidden group-hover:border-emerald-600 group-hover:bg-slate-100 dark:group-hover:bg-slate-900 transition-all">
+                    <DataPrivacyLogo className="w-9 h-9" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-black text-[var(--color-text)] tracking-tight leading-none group-hover:text-emerald-600 transition-colors">RA 10173</span>
+                    <span className="text-[0.6rem] sm:text-[0.65rem] font-bold text-[var(--color-text-secondary)] tracking-widest uppercase mt-0.5">Data Privacy Act</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
       </section>
 
@@ -393,8 +505,10 @@ export default function HomePage() {
           SECTION 2 — ASYMMETRICAL BENTO GRID
           Elite 2026 Feature Presentation
       ══════════════════════════════════════════════════════════ */}
-      <section className="bg-[var(--color-bg)] py-20 sm:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="bg-[var(--color-bg)] pt-12 pb-24 sm:pt-20 sm:pb-32 relative">
+        {/* Global Architectural Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           {/* Section header */}
           <motion.div
             variants={fadeUp}
@@ -403,14 +517,15 @@ export default function HomePage() {
             viewport={{ once: true, margin: "-80px" }}
             className="max-w-3xl mb-16"
           >
-            <p className="section-label mb-3">
-              {lang === "fil" ? "Bento System v2" : "Bento System v2"}
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-[var(--color-ph-navy)] dark:text-white tracking-tight">
-              {t("landing.featuresTitle", lang)}
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-[var(--color-ph-gold)]/30 text-[var(--color-ph-gold)] text-xs font-black uppercase tracking-widest bg-[var(--color-ph-gold)]/5">
+              <IconTarget className="w-3.5 h-3.5" />
+              <span>{lang === "fil" ? "Bento System v2" : "Bento System v2"}</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[var(--color-text)] tracking-tight leading-[1.1]">
+              {t("landing.featuresTitle")}
             </h2>
-            <p className="mt-4 text-xl text-[var(--color-text-secondary)] leading-relaxed">
-              {t("landing.featuresDesc", lang)}
+            <p className="mt-6 text-xl text-[var(--color-text-secondary)] leading-relaxed font-medium">
+              {t("landing.featuresDesc")}
             </p>
           </motion.div>
 
@@ -420,28 +535,26 @@ export default function HomePage() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-80px" }}
-            className="grid grid-cols-1 md:grid-cols-12 gap-8"
+            className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8"
           >
             {/* Box 1: Large Span with Background Asset */}
-            <motion.div variants={fadeUp} className="md:col-span-8 outer-shell group">
-              <div className="inner-core p-8 sm:p-12 h-full flex flex-col justify-between relative overflow-hidden bg-[var(--color-ph-navy)] text-white">
-                <div className="absolute inset-0 z-0 opacity-40 group-hover:opacity-50 transition-opacity duration-500">
-                  <img src="/bento_resilience_bg.png" alt="Resilience background" className="w-full h-full object-cover" />
-                </div>
-                <div className="relative z-10 space-y-6 max-w-xl">
-                  <div className="w-14 h-14 rounded-2xl bg-[var(--color-ph-gold)] text-[var(--color-ph-navy)] flex items-center justify-center shadow-lg">
-                    <IconLightning className="w-7 h-7" />
+            <motion.div variants={fadeUp} className="md:col-span-8 group">
+              <div className="h-full rounded-[2rem] p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden bg-slate-900 border border-slate-800 dark:bg-[#080d14] dark:border-white/10 shadow-xl dark:shadow-[0_0_40px_rgba(0,0,0,0.5)] text-white hover:border-[var(--color-ph-gold)]/50 transition-colors duration-500">
+                <div className="absolute inset-0 z-0 opacity-20 dark:opacity-40 bg-[url('/bento_resilience_bg.png')] bg-cover bg-center mix-blend-overlay group-hover:scale-105 transition-transform duration-1000" />
+                <div className="relative z-10 space-y-8 max-w-xl">
+                  <div className="w-16 h-16 rounded-2xl bg-[var(--color-ph-gold)] text-slate-950 flex items-center justify-center shadow-[0_0_30px_rgba(200,145,30,0.4)]">
+                    <IconLightning className="w-8 h-8" />
                   </div>
-                  <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
+                  <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
                     {lang === "fil" ? FEATURES[0].titleFil : FEATURES[0].titleEn}
                   </h3>
-                  <p className="text-lg sm:text-xl text-slate-200 leading-relaxed">
+                  <p className="text-lg sm:text-xl text-slate-300 leading-relaxed font-medium">
                     {lang === "fil" ? FEATURES[0].descFil : FEATURES[0].descEn}
                   </p>
                 </div>
-                <div className="relative z-10 pt-8 mt-8 border-t border-white/10 flex items-center justify-between text-sm text-[var(--color-ph-gold-light)] font-bold uppercase tracking-wider">
-                  <span>🇵🇭 Offline Neural Engine</span>
-                  <span>100% On-Device</span>
+                <div className="relative z-10 pt-8 mt-12 border-t border-white/15 flex flex-wrap items-center justify-between gap-4 text-xs font-black uppercase tracking-widest text-[var(--color-ph-gold-light)]">
+                  <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" /> 🇵🇭 Offline Neural Engine</span>
+                  <span className="opacity-70">100% On-Device</span>
                 </div>
               </div>
             </motion.div>
@@ -530,37 +643,39 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 3 — HOW IT WORKS
-          Step-by-step visual process · mobile-first · numbered
+          SECTION 3 — HOW IT WORKS (Architectural Timeline)
       ══════════════════════════════════════════════════════════ */}
-      <section className="bg-[var(--color-surface)] py-20 sm:py-32 border-y border-[var(--color-border)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="bg-[var(--color-surface)] py-24 sm:py-32 relative border-y border-[var(--color-border)] dark:border-white/5">
+        {/* Global Architectural Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           {/* Section header */}
           <motion.div
             variants={fadeUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-80px" }}
-            className="text-center mb-20"
+            className="text-center mb-24"
           >
-            <p className="section-label mb-3">
-              {lang === "fil" ? "Paano Gumagana" : "How It Works"}
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-[var(--color-ph-navy)] dark:text-white tracking-tight">
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest bg-blue-500/5">
+              <IconChartBar className="w-3.5 h-3.5" />
+              <span>{lang === "fil" ? "Paano Gumagana" : "How It Works"}</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[var(--color-text)] tracking-tight">
               {lang === "fil" ? "Tatlong Hakbang Lamang" : "Three Simple Steps"}
             </h2>
-            <p className="mt-4 text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-6 text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed font-medium">
               {lang === "fil"
                 ? "Mabilis, madali, at tumpak. Gumagana kahit offline para sa lahat ng mamamayan."
                 : "Fast, simple, and accurate. Works even without internet for all citizens."}
             </p>
           </motion.div>
 
-          {/* Steps with connectors */}
+          {/* Architectural Timeline Grid */}
           <div className="relative">
-            {/* Horizontal connecting line */}
+            {/* Glowing connecting track line hidden on mobile */}
             <div
-              className="hidden sm:block absolute top-10 h-px bg-gradient-to-r from-transparent via-[var(--color-ph-gold)]/40 to-transparent pointer-events-none"
+              className="hidden md:block absolute top-12 h-1 bg-gradient-to-r from-transparent via-[var(--color-ph-gold)]/30 to-transparent shadow-[0_0_15px_rgba(200,145,30,0.5)] rounded-full"
               style={{ left: "16.5%", right: "16.5%" }}
             />
 
@@ -569,27 +684,28 @@ export default function HomePage() {
               initial="initial"
               whileInView="animate"
               viewport={{ once: true, margin: "-80px" }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-12 sm:gap-8"
+              className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 relative z-10"
             >
               {STEPS.map((step, i) => (
                 <motion.div
                   key={i}
                   variants={fadeUp}
-                  className="flex flex-row sm:flex-col sm:items-center items-start gap-6 sm:gap-0"
+                  className="flex flex-col items-center text-center relative group"
                 >
-                  {/* Numbered circle */}
-                  <div className="flex-shrink-0 w-20 h-20 rounded-full bg-[var(--color-ph-navy)] flex items-center justify-center sm:mb-8 shadow-xl shadow-[var(--color-ph-navy)]/20 relative z-10 border-2 border-[var(--color-ph-gold)]">
-                    <span className="text-[var(--color-ph-gold)] font-black text-2xl tracking-tight">
+                  {/* Premium Numbered Node */}
+                  <div className="w-24 h-24 rounded-full bg-white dark:bg-slate-900 border-2 border-[var(--color-ph-gold)] text-[var(--color-text)] flex items-center justify-center mb-10 shadow-2xl shadow-[var(--color-ph-gold)]/10 group-hover:scale-110 transition-transform duration-500 relative">
+                    <div className="absolute inset-2 rounded-full border border-[var(--color-ph-gold)]/30 border-dashed animate-spin-slow" />
+                    <span className="font-space font-black text-3xl tracking-tighter text-[var(--color-ph-navy)] dark:text-white">
                       {step.num}
                     </span>
                   </div>
 
-                  {/* Step content */}
-                  <div className="sm:text-center space-y-3">
-                    <h3 className="text-2xl font-bold text-[var(--color-ph-navy)] dark:text-white tracking-tight">
+                  {/* Node Content */}
+                  <div className="space-y-4 max-w-sm">
+                    <h3 className="text-2xl font-black text-[var(--color-text)] tracking-tight">
                       {lang === "fil" ? step.titleFil : step.titleEn}
                     </h3>
-                    <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed">
+                    <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed font-medium">
                       {lang === "fil" ? step.descFil : step.descEn}
                     </p>
                   </div>
@@ -601,27 +717,28 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 4 — CATEGORIES
-          Gray bg · 5-col grid on md · icon-based, no emoji
+          SECTION 4 — CATEGORIES (Architectural Tiles)
       ══════════════════════════════════════════════════════════ */}
-      <section className="bg-[var(--color-bg)] py-20 sm:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="bg-[var(--color-bg)] py-24 sm:py-32 relative">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           {/* Section header */}
           <motion.div
             variants={fadeUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-80px" }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <p className="section-label mb-3">
-              {lang === "fil" ? "Mga Kategorya" : "Categories"}
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-[var(--color-ph-navy)] dark:text-white tracking-tight">
-              {t("landing.categoriesTitle", lang)}
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest bg-blue-500/5">
+              <IconChartBar className="w-3.5 h-3.5" />
+              <span>{lang === "fil" ? "Mga Kategorya" : "Categories"}</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[var(--color-text)] tracking-tight">
+              {t("landing.categoriesTitle")}
             </h2>
-            <p className="mt-4 text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed">
-              {t("landing.categoriesDesc", lang)}
+            <p className="mt-6 text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed font-medium">
+              {t("landing.categoriesDesc")}
             </p>
           </motion.div>
 
@@ -637,13 +754,14 @@ export default function HomePage() {
               <motion.div
                 key={i}
                 variants={scaleIn}
-                className="outer-shell group cursor-default"
+                className="group cursor-default"
               >
-                <div className="inner-core p-6 text-center h-full flex flex-col items-center justify-center bg-[var(--color-surface)] group-hover:border-[var(--color-ph-gold)] transition-all">
-                  <div className="w-12 h-12 rounded-2xl bg-[var(--color-ph-navy-pale)] text-[var(--color-ph-navy)] flex items-center justify-center mb-4 group-hover:bg-[var(--color-ph-navy)] group-hover:text-white transition-colors duration-300 shadow-xs">
-                    <cat.icon className="w-6 h-6" />
+                <div className="p-8 text-center h-full flex flex-col items-center justify-center bg-white dark:bg-[#0a111a] border border-slate-200 dark:border-white/5 rounded-3xl shadow-lg dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:border-[var(--color-ph-gold)]/40 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--color-ph-gold)]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-[var(--color-ph-navy)] dark:text-slate-300 flex items-center justify-center mb-6 group-hover:bg-[var(--color-ph-gold)] group-hover:text-slate-950 transition-colors duration-300 shadow-inner relative z-10">
+                    <cat.icon className="w-7 h-7" />
                   </div>
-                  <div className="text-base font-bold text-[var(--color-text)] leading-snug">
+                  <div className="text-base font-black text-[var(--color-text)] leading-snug tracking-wide relative z-10">
                     {lang === "fil" ? cat.labelFil : cat.labelEn}
                   </div>
                 </div>
@@ -654,27 +772,32 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 5 — TESTIMONIALS
-          White surface · 3 cards · gold stars · blockquote
+          SECTION 5 — TESTIMONIALS (Glassmorphic Blocks)
       ══════════════════════════════════════════════════════════ */}
-      <section className="bg-[var(--color-surface)] py-20 sm:py-32 border-t border-[var(--color-border)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="bg-[var(--color-surface)] py-24 sm:py-32 border-t border-[var(--color-border)] dark:border-white/5 relative overflow-hidden">
+        {/* Global Architectural Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+        
+        {/* Decorative blur orb */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--color-ph-gold)]/10 dark:bg-[var(--color-ph-gold)]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           {/* Section header */}
           <motion.div
             variants={fadeUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-80px" }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <p className="section-label mb-3">
-              {lang === "fil" ? "Testimonya" : "Testimonials"}
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-[var(--color-ph-navy)] dark:text-white tracking-tight">
-              {t("landing.testimonialsTitle", lang)}
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest bg-blue-500/5">
+              <IconStar className="w-3.5 h-3.5" />
+              <span>{lang === "fil" ? "Testimonya" : "Testimonials"}</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[var(--color-text)] tracking-tight">
+              {t("landing.testimonialsTitle")}
             </h2>
-            <p className="mt-4 text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed">
-              {t("landing.testimonialsDesc", lang)}
+            <p className="mt-6 text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed font-medium">
+              {t("landing.testimonialsDesc")}
             </p>
           </motion.div>
 
@@ -687,38 +810,38 @@ export default function HomePage() {
             className="grid md:grid-cols-3 gap-8"
           >
             {TESTIMONIALS.map((item, i) => (
-              <motion.div key={i} variants={fadeUp} className="outer-shell">
-                <div className="inner-core p-10 h-full flex flex-col justify-between bg-[var(--color-surface)]">
+              <motion.div key={i} variants={fadeUp} className="group">
+                <div className="h-full rounded-3xl p-10 flex flex-col justify-between bg-white/50 dark:bg-slate-900/50 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 shadow-xl dark:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-[var(--color-ph-gold)]/30 transition-all duration-300">
                   <div>
                     {/* 5 gold stars */}
                     <div
-                      className="flex gap-1.5 mb-6"
+                      className="flex gap-1.5 mb-8"
                       aria-label={lang === "fil" ? "5 bituin" : "5 stars"}
                     >
                       {Array.from({ length: 5 }).map((_, j) => (
                         <IconStar
                           key={j}
-                          className="w-5 h-5 text-[var(--color-ph-gold)]"
+                          className="w-5 h-5 text-[var(--color-ph-gold)] fill-[var(--color-ph-gold)]"
                         />
                       ))}
                     </div>
 
                     {/* Quote */}
-                    <blockquote className="text-[var(--color-text)] text-lg font-medium leading-relaxed mb-8 italic">
+                    <blockquote className="text-[var(--color-text)] text-lg lg:text-xl font-medium leading-relaxed mb-10 tracking-wide">
                       &ldquo;{item.quote}&rdquo;
                     </blockquote>
                   </div>
 
                   {/* Author */}
-                  <div className="flex items-center gap-4 pt-6 border-t border-[var(--color-border)]">
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-ph-navy)] text-[var(--color-ph-gold)] flex items-center justify-center font-black text-lg shrink-0 shadow-md">
+                  <div className="flex items-center gap-4 pt-6 border-t border-slate-200 dark:border-white/10">
+                    <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-[var(--color-text)] flex items-center justify-center font-black text-lg shrink-0 shadow-inner group-hover:bg-[var(--color-ph-gold)] group-hover:text-slate-950 group-hover:border-[var(--color-ph-gold)] transition-colors duration-300">
                       {item.initial}
                     </div>
                     <div>
-                      <div className="font-bold text-[var(--color-text)] text-base">
+                      <div className="font-black text-[var(--color-text)] text-base tracking-wide">
                         {item.name}
                       </div>
-                      <div className="text-sm font-medium text-[var(--color-text-muted)]">
+                      <div className="text-sm font-bold tracking-widest uppercase text-[var(--color-text-muted)]">
                         {item.position}
                       </div>
                     </div>
@@ -731,44 +854,56 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 6 — FINAL CTA
-          Deep navy · gold section label · white text · accent btn
+          SECTION 6 — FINAL CTA (Premium Floating Card)
       ══════════════════════════════════════════════════════════ */}
-      <section className="bg-[var(--color-ph-navy)] py-24 sm:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#c8911e_1px,transparent_1px)] [background-size:24px_24px]" />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
+      <section className="bg-[var(--color-bg)] px-4 sm:px-6 pb-24 sm:pb-32 pt-12 relative overflow-hidden">
+        {/* Global Architectural Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+        
+        {/* Decorative background glow behind the card */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[60%] bg-[var(--color-ph-gold)]/10 blur-[100px] pointer-events-none rounded-full" />
+        
+        <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
             variants={fadeUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-80px" }}
-            className="text-center space-y-8"
+            className="bg-gradient-to-br from-slate-900 via-[#0a111a] to-[#04080f] rounded-[2rem] sm:rounded-[2.5rem] py-20 sm:py-28 relative overflow-hidden shadow-2xl shadow-black/50 dark:shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-slate-800 dark:border-white/10 group"
           >
-            <p className="section-label text-[var(--color-ph-gold)]">
-              {lang === "fil" ? "Handa Ka Na Ba?" : "Are You Ready?"}
-            </p>
+            {/* Top architectural glow line */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-ph-gold)]/60 to-transparent shadow-[0_0_20px_rgba(200,145,30,0.6)]" />
 
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">
-              {t("landing.ctaTitle", lang)}
-            </h2>
+            {/* High-End Technical Grid Layer */}
+            <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff15_1px,transparent_1px),linear-gradient(to_bottom,#ffffff15_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none group-hover:scale-105 transition-transform duration-1000 ease-out [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_80%)]" />
+            
+            {/* Dramatic Inner Glow */}
+            <div className="absolute inset-0 opacity-60 bg-[radial-gradient(ellipse_at_center,_var(--color-ph-gold)_0%,_transparent_70%)] mix-blend-overlay pointer-events-none" />
 
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              {t("landing.ctaDesc", lang)}
-            </p>
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 text-center space-y-8">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--color-ph-gold)]/30 text-[var(--color-ph-gold)] text-xs font-black uppercase tracking-widest bg-slate-950/80 shadow-[0_0_20px_rgba(200,145,30,0.15)] backdrop-blur-md">
+                <IconTarget className="w-3.5 h-3.5" />
+                <span>{lang === "fil" ? "Handa Ka Na Ba?" : "Are You Ready?"}</span>
+              </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
-              <Link href="/report" className="btn-island btn-island-accent">
-                <span>{t("landing.reportNow", lang)}</span>
-                <span className="icon-wrapper">
-                  <IconPaperPlane className="w-4 h-4" />
-                </span>
-              </Link>
-              <Link href="/auth" className="btn-island btn-island-secondary">
-                <span>{t("landing.signIn", lang)}</span>
-                <span className="icon-wrapper">
-                  <IconArrowRight className="w-4 h-4" />
-                </span>
-              </Link>
+              <h2 className="text-5xl sm:text-6xl md:text-[4.5rem] font-black text-white tracking-tighter leading-[1.05]">
+                {t("landing.ctaTitle")}
+              </h2>
+
+              <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-medium tracking-wide">
+                {t("landing.ctaDesc")}
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+                <Link href="/report" className="w-full sm:w-auto px-8 py-4 sm:py-4.5 rounded-full bg-[var(--color-ph-gold)] hover:bg-[var(--color-ph-gold-light)] text-slate-950 font-black text-base tracking-wide shadow-xl shadow-[var(--color-ph-gold)]/20 hover:shadow-[var(--color-ph-gold)]/40 hover:-translate-y-1 transition-all text-center flex items-center justify-center gap-2.5">
+                  <span>{t("landing.reportNow")}</span>
+                  <IconArrowRight className="w-5 h-5" />
+                </Link>
+                <Link href={user ? "/dashboard" : "/auth"} className="w-full sm:w-auto px-8 py-4 sm:py-4.5 rounded-full bg-slate-900/60 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-500 text-white font-bold text-base tracking-wide shadow-lg hover:-translate-y-1 transition-all text-center flex items-center justify-center gap-2.5 backdrop-blur-xl">
+                  <span>{user ? (lang === "fil" ? "Pumunta sa Dashboard" : "Go to Dashboard") : t("landing.signIn")}</span>
+                </Link>
+              </div>
             </div>
           </motion.div>
         </div>

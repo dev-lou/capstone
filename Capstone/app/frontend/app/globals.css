@@ -272,6 +272,27 @@
         scrollbar-color: var(--color-border-strong) var(--color-bg-alt);
     }
 
+    /* Custom dark scrollbar for dark dropdowns in light mode */
+    .custom-scrollbar-dark::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .custom-scrollbar-dark::-webkit-scrollbar-track {
+        background: #0f172a;
+        border-radius: 9999px;
+    }
+    .custom-scrollbar-dark::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 9999px;
+    }
+    .custom-scrollbar-dark::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+    }
+    .custom-scrollbar-dark {
+        scrollbar-width: thin;
+        scrollbar-color: #334155 #0f172a;
+    }
+
     /* ── Reduced Motion ─────────────────────────────────────── */
     @media (prefers-reduced-motion: reduce) {
         *,
@@ -1050,4 +1071,24 @@
     100% {
         box-shadow: 0 0 0 0 rgba(200, 145, 30, 0);
     }
+}
+
+/* Marquee infinite ticker */
+@keyframes marquee-css {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee-css {
+    display: flex;
+    width: max-content;
+    animation: marquee-css 35s linear infinite;
+}
+
+.animate-marquee-css:hover {
+    animation-play-state: paused;
 }

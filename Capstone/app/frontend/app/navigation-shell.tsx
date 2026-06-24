@@ -1,58 +1,79 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AuthNav } from "./auth-nav";
 import { IconSun, IconMoon } from "./components/icons";
 import { NavLink } from "./components/nav-link";
+import { LanguageSelector } from "./components/language-selector";
+import { useTheme } from "./theme-provider";
 
 export function SiteNavbar() {
   const pathname = usePathname();
-  if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/report")) return null;
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    // Initial check
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/report") || pathname?.startsWith("/auth")) return null;
 
   return (
-    <div className="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 max-w-7xl mx-auto w-full pointer-events-none">
+    <div className={`fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 mx-auto w-full pointer-events-none transition-all duration-500 ease-in-out ${scrolled ? 'py-4 max-w-6xl' : 'max-w-7xl py-0'}`}>
       <nav
-        className="pointer-events-auto bg-[#0a1915]/60 dark:bg-[#06120e]/60 backdrop-blur-2xl border border-white/15 rounded-full shadow-2xl shadow-black/50 px-6 sm:px-8 flex items-center justify-between h-16 transition-all duration-300 relative"
+        className={`pointer-events-auto flex items-center justify-between w-full relative transition-all duration-500 ease-in-out ${
+          scrolled 
+            ? "bg-white/95 dark:bg-slate-950/90 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 shadow-xl shadow-black/5 dark:shadow-black/50 py-3 px-6 rounded-[2rem]" 
+            : "bg-transparent py-6 px-4 sm:px-8 rounded-none border-transparent shadow-none"
+        }`}
         role="navigation"
         aria-label="Main navigation"
       >
         {/* Left: Shield wordmark + nav links */}
-        <div className="flex items-center gap-2 sm:gap-6 mt-0.5">
+        <div className="flex items-center gap-4 sm:gap-8 mt-0.5">
           {/* Brand wordmark */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 mr-2 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ph-gold)]"
+            className="flex items-center gap-3 mr-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ph-gold)]"
             aria-label="RescueMind AI — Bumalik sa home"
           >
-            {/* Shield badge */}
-            <span
-              className="w-10 h-10 rounded-full bg-[var(--color-ph-navy)] text-[var(--color-ph-gold)] flex items-center justify-center text-xs font-black tracking-tight shrink-0 shadow-sm border border-white/10"
-              aria-hidden="true"
-            >
-              RM
-            </span>
+            {/* Real generated logo */}
+            <img
+              src="/rescuemind_logo.png"
+              alt="RescueMind Logo"
+              className="w-10 h-10 rounded-full object-cover border border-[var(--color-ph-gold)]/40 shadow-md shadow-black/50 shrink-0 group-hover:border-[var(--color-ph-gold)] transition-all"
+            />
 
             {/* Text lockup */}
             <span className="flex flex-col -space-y-0.5">
-              <span className="text-sm font-extrabold text-white tracking-tight leading-tight">
+              <span className={`text-base font-black tracking-tight leading-tight group-hover:text-[var(--color-ph-gold)] transition-colors ${scrolled ? "text-slate-900 dark:text-white" : "text-white"}`}>
                 RescueMind
               </span>
               {/* Subtitle: sm+ only */}
-              <span className="hidden sm:block text-[0.65rem] text-[var(--color-ph-gold)] font-bold uppercase tracking-wider leading-tight">
+              <span className="hidden sm:block text-[0.65rem] text-[var(--color-ph-gold)] font-extrabold uppercase tracking-wider leading-tight">
                 AI Triage System
               </span>
             </span>
           </Link>
 
           {/* Primary nav links */}
-          <NavLink href="/" label="Home" />
-          <NavLink href="/report" label="Mag-Report" />
-          <NavLink href="/dashboard" label="Dashboard" />
+          <div className="flex items-center gap-1 sm:gap-4">
+            <NavLink href="/" label="Home" scrolled={scrolled} />
+            <NavLink href="/report" label="Mag-Report" scrolled={scrolled} />
+            <NavLink href="/dashboard" label="Dashboard" scrolled={scrolled} />
+          </div>
         </div>
 
-        {/* Right: Theme toggle + Auth */}
-        <div className="flex items-center gap-3 mt-0.5">
+        {/* Right: Language, Theme toggle + Auth */}
+        <div className="flex items-center gap-2 mt-0.5">
+          <LanguageSelector />
           <ThemeToggle />
           <AuthNav />
         </div>
@@ -63,7 +84,7 @@ export function SiteNavbar() {
 
 export function SiteFooter() {
   const pathname = usePathname();
-  if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/report")) return null;
+  if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/report") || pathname?.startsWith("/auth")) return null;
 
   return (
     <footer className="bg-[var(--color-ph-navy)] text-white relative overflow-hidden" role="contentinfo">
@@ -82,12 +103,11 @@ export function SiteFooter() {
               className="inline-flex items-center gap-3 mb-6 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ph-gold)] rounded-full"
               aria-label="RescueMind AI Home"
             >
-              <span
-                className="w-11 h-11 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-sm font-black tracking-tight group-hover:bg-[var(--color-ph-gold)] group-hover:text-[var(--color-ph-navy)] transition-all shadow-md"
-                aria-hidden="true"
-              >
-                RM
-              </span>
+              <img
+                src="/rescuemind_logo.png"
+                alt="RescueMind Logo"
+                className="w-11 h-11 rounded-full object-cover border border-white/20 shadow-md shrink-0 group-hover:border-[var(--color-ph-gold)] transition-all"
+              />
               <span className="text-lg font-bold text-white tracking-tight">
                 RescueMind AI
               </span>
@@ -203,15 +223,35 @@ function FooterLink({ href, label }: { href: string; label: string }) {
 }
 
 export function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <button
       id="theme-toggle"
-      className="w-10 h-10 rounded-full border border-[var(--color-border)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-bg-alt)] transition-all flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-strong)] shadow-xs"
+      onClick={toggleTheme}
+      className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-slate-950/60 hover:bg-slate-900/80 border border-white/15 hover:border-[var(--color-ph-gold)]/50 backdrop-blur-2xl text-slate-200 hover:text-white shadow-xl shadow-black/50 transition-all group focus:outline-none"
       aria-label="Toggle dark mode"
       title="Toggle dark mode"
     >
-      <IconSun className="hidden dark:block w-4 h-4" />
-      <IconMoon className="block dark:hidden w-4 h-4" />
+      {/* Real physical toggle switch track */}
+      <div className="relative w-11 h-6 rounded-full bg-slate-800 border border-slate-700 p-1 flex items-center transition-colors duration-300 group-hover:border-[var(--color-ph-gold)]/50">
+        <div
+          className={`w-4 h-4 rounded-full bg-[var(--color-ph-gold)] text-slate-950 flex items-center justify-center shadow-md transition-transform duration-300 transform ${
+            theme === "dark" ? "translate-x-5" : "translate-x-0"
+          }`}
+        >
+          {theme === "dark" ? (
+            <IconMoon className="w-2.5 h-2.5 font-bold" />
+          ) : (
+            <IconSun className="w-2.5 h-2.5 font-bold" />
+          )}
+        </div>
+      </div>
+
+      {/* Label */}
+      <span className="text-xs font-bold tracking-wide hidden sm:block">
+        {theme === "dark" ? "Dark Mode" : "Light Mode"}
+      </span>
     </button>
   );
 }

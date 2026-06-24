@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth-context";
 
 // ────────────────────────────────────────────────────────────
@@ -11,8 +12,8 @@ import { useAuth } from "@/lib/auth-context";
 function IconUser({ className = "" }: { className?: string }) {
   return (
     <svg
-      width="16"
-      height="16"
+      width="20"
+      height="20"
       viewBox="0 0 256 256"
       fill="currentColor"
       className={className}
@@ -59,11 +60,12 @@ function IconArrowRight({ className = "" }: { className?: string }) {
 
 export function AuthNav() {
   const { user, loading, signOut } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
 
   // Loading skeleton
   if (loading) {
     return (
-      <div className="w-20 h-8 bg-slate-100 dark:bg-slate-800 rounded-lg skeleton" />
+      <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-full skeleton" />
     );
   }
 
@@ -74,29 +76,67 @@ export function AuthNav() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.2 }}
-        className="flex items-center gap-2"
+        className="relative"
       >
-        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--color-surface-dim)] border border-[var(--color-border)]">
-          <IconUser className="text-[var(--color-text-muted)] shrink-0" />
-          <span className="text-sm text-[var(--color-text-secondary)] truncate max-w-[110px] font-medium">
-            {user.email}
-          </span>
-        </div>
         <button
-          onClick={signOut}
-          className="btn btn-ghost text-sm py-2 px-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 border border-[var(--color-border)] hover:border-red-200"
-          aria-label="Sign out"
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center gap-2 px-2 py-1.5 pr-3 rounded-full bg-slate-950/60 hover:bg-slate-900/80 border border-white/15 hover:border-[var(--color-ph-gold)]/50 backdrop-blur-2xl text-slate-200 hover:text-white shadow-xl shadow-black/50 transition-all group focus:outline-none"
+          aria-label="Profile menu"
         >
-          <IconSignOut />
-          <span className="hidden sm:inline">Sign Out</span>
+          <div className="w-7 h-7 rounded-full bg-[var(--color-ph-gold)] text-slate-950 flex items-center justify-center shadow-inner font-black text-xs group-hover:scale-105 transition-transform">
+            {user.email ? user.email[0].toUpperCase() : "U"}
+          </div>
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 256 256"
+            fill="currentColor"
+            className={`w-3 h-3 text-slate-400 group-hover:text-[var(--color-ph-gold)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+            aria-hidden="true"
+          >
+            <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z" />
+          </svg>
         </button>
+
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 8, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              className="absolute right-0 mt-3 w-64 rounded-[1.5rem] bg-slate-950/95 backdrop-blur-2xl border border-slate-800 shadow-2xl shadow-black/90 p-4 z-50 text-white space-y-4"
+            >
+              <div className="flex items-center gap-3 pb-3 border-b border-slate-800/80">
+                <div className="w-10 h-10 rounded-full bg-[var(--color-ph-gold)] text-slate-950 font-black flex items-center justify-center text-sm shrink-0 shadow-inner">
+                  {user.email ? user.email[0].toUpperCase() : "U"}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Signed in as</p>
+                  <p className="text-sm font-extrabold text-slate-100 truncate">{user.email}</p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  signOut();
+                }}
+                className="w-full py-3 px-4 rounded-xl bg-red-900/20 hover:bg-red-900/40 border border-red-500/30 hover:border-red-500 text-red-400 font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                <IconSignOut className="w-4 h-4" />
+                <span>Sign Out</span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     );
   }
 
   // Not logged in
   return (
-    <Link href="/auth" className="btn btn-primary text-sm py-2 px-4">
+    <Link href="/auth" className="btn btn-primary text-sm py-2 px-4 rounded-full">
       <IconArrowRight />
       <span>Sign In</span>
     </Link>

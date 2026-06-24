@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function NavLink({ href, label }: { href: string; label: string }) {
+export function NavLink({ href, label, scrolled = false }: { href: string; label: string; scrolled?: boolean }) {
   const pathname = usePathname();
   const isActive =
     pathname === href || (href !== "/" && pathname.startsWith(href));
@@ -12,10 +12,12 @@ export function NavLink({ href, label }: { href: string; label: string }) {
     <Link
       href={href}
       prefetch={true}
-      className={`relative inline-flex items-center px-4 py-2 text-sm transition-all duration-150 rounded-full ${
+      className={`relative inline-flex items-center px-3 py-1.5 text-sm tracking-wide transition-colors duration-150 ${
         isActive
-          ? "text-[var(--color-ph-gold)] font-black bg-white/15 shadow-sm border border-white/10"
-          : "text-slate-300 hover:text-white hover:bg-white/10 font-bold"
+          ? "text-[var(--color-ph-gold)] font-black"
+          : scrolled 
+            ? "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-bold"
+            : "text-slate-300 hover:text-white font-bold"
       }`}
     >
       {label}

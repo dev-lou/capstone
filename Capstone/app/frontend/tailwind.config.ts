@@ -8,18 +8,15 @@ const config: Config = {
       // ── Typography ─────────────────────────────────────────────
       fontFamily: {
         sans: [
-          "Geist",
+          "var(--font-outfit)",
           "system-ui",
           "-apple-system",
-          "BlinkMacSystemFont",
-          '"Segoe UI"',
           "sans-serif",
         ],
         mono: [
-          "Geist Mono",
+          "var(--font-space)",
           "ui-monospace",
           "SFMono-Regular",
-          "Consolas",
           "monospace",
         ],
       },
@@ -92,6 +89,10 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.6" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
 
       // ── Animation Utilities ────────────────────────────────────
@@ -101,6 +102,7 @@ const config: Config = {
         "scale-in": "scale-in 0.2s ease-out",
         shimmer: "shimmer 1.6s ease-in-out infinite",
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
+        marquee: "marquee 30s linear infinite",
       },
     },
   },

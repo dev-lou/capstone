@@ -3,12 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import {
-  t,
-  getLangFromStorage,
-  setLangInStorage,
-  type Language,
-} from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n";
 import {
   REGIONS,
   PROVINCES,
@@ -35,9 +30,14 @@ import {
   IconRefresh,
   IconChartBar,
   IconPlus,
-  IconGlobe,
   IconSearch,
 } from "../components/icons";
+import {
+  DILGLogo,
+  DPWHLogo,
+  BFPLogo,
+  PNPLogo,
+} from "../components/agency-logos";
 import { ThemeToggle } from "../navigation-shell";
 
 // ────────────────────────────────────────────────────────────
@@ -148,7 +148,7 @@ const URGENCY_CONFIG: Record<
 // ────────────────────────────────────────────────────────────
 
 export default function ReportPage() {
-  const [lang, setLang] = useState<Language>("fil");
+  const { t, lang } = useI18n();
   const [screen, setScreen] = useState<Screen>("input");
   const [text, setText] = useState("");
   const [result, setResult] = useState<ClassificationResult | null>(null);
@@ -179,21 +179,14 @@ export default function ReportPage() {
 
   useEffect(() => {
     setIsClient(true);
-    setLang(getLangFromStorage());
   }, []);
-
-  const toggleLang = useCallback(() => {
-    const next = lang === "fil" ? "en" : "fil";
-    setLang(next);
-    setLangInStorage(next);
-  }, [lang]);
 
   // ── Smart Reverse Geocoding & Dropdown Autofill ──────────────────────────────
   const detectLocation = useCallback(() => {
     if (!navigator.geolocation) {
       setLocation((prev) => ({
         ...prev,
-        error: t("form.locationFailed", lang),
+        error: t("form.locationFailed"),
       }));
       return;
     }
@@ -290,7 +283,7 @@ export default function ReportPage() {
         setLocation((prev) => ({
           ...prev,
           detecting: false,
-          error: t("form.locationFailed", lang),
+          error: t("form.locationFailed"),
         })),
       { timeout: 10000, enableHighAccuracy: false },
     );
@@ -318,7 +311,7 @@ export default function ReportPage() {
       return;
     }
     if (trimmed.length < 10) {
-      setError(t("form.error.minLength", lang));
+      setError(t("error.generic"));
       textareaRef.current?.focus();
       return;
     }
@@ -347,7 +340,7 @@ export default function ReportPage() {
 
       const data: ClassificationResult = await response.json();
       if (!response.ok || !data.success)
-        throw new Error(data.error || t("error.generic", lang));
+        throw new Error(data.error || t("error.generic"));
 
       setLoadingSteps((prev) => prev.map((s) => ({ ...s, done: true })));
 
@@ -375,7 +368,7 @@ export default function ReportPage() {
     } catch (err: unknown) {
       setLoadingSteps((prev) => prev.map((s) => ({ ...s, done: true })));
 
-      let message = t("error.generic", lang);
+      let message = t("error.generic");
       if (err instanceof Error) message = err.message;
       else if (typeof err === "string") message = err;
       else if (err && typeof err === "object") {
@@ -529,18 +522,18 @@ export default function ReportPage() {
                 <Link
                   href="/dashboard"
                   className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 mx-auto transition-all" : "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 font-bold text-sm transition-all"}
-                  title={sidebarCollapsed ? t("dashboard.title", lang) : undefined}
+                  title={sidebarCollapsed ? t("nav.dashboard") : undefined}
                 >
                   <IconChartBar className="w-5 h-5 text-slate-400 shrink-0" />
-                  {!sidebarCollapsed && <span>{t("dashboard.title", lang)}</span>}
+                  {!sidebarCollapsed && <span>{t("form.description")}</span>}
                 </Link>
                 <Link
                   href="/report"
                   className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold shadow-md border border-slate-200/80 dark:border-slate-800/80 mx-auto" : "flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold text-sm shadow-md border border-slate-200/80 dark:border-slate-800/80"}
-                  title={sidebarCollapsed ? t("form.submit", lang) : undefined}
+                  title={sidebarCollapsed ? t("nav.dashboard") : undefined}
                 >
                   <IconPlus className="w-5 h-5 text-[var(--color-ph-gold)] shrink-0" />
-                  {!sidebarCollapsed && <span>{t("form.submit", lang)}</span>}
+                  {!sidebarCollapsed && <span>{t("form.description")}</span>}
                 </Link>
               </div>
             </div>
@@ -553,14 +546,7 @@ export default function ReportPage() {
                 </div>
               )}
               <div className={`space-y-1.5 w-full ${sidebarCollapsed ? "flex flex-col items-center" : ""}`}>
-                <button
-                  onClick={toggleLang}
-                  className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 mx-auto transition-all" : "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 font-bold text-sm transition-all text-left"}
-                  title={sidebarCollapsed ? `Language: ${lang === "fil" ? "🇵🇭 FIL" : "🇺🇸 EN"}` : undefined}
-                >
-                  <IconGlobe className="w-5 h-5 text-blue-500 shrink-0" />
-                  {!sidebarCollapsed && <span>Language: {lang === "fil" ? "🇵🇭 FIL" : "🇺🇸 EN"}</span>}
-                </button>
+
               </div>
             </div>
           </div>
@@ -620,10 +606,10 @@ export default function ReportPage() {
           <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800/60 shrink-0">
             <div>
               <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-ph-navy)] dark:text-white tracking-tight">
-                {t("form.title", lang)}
+                {t("form.title")}
               </h1>
               <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
-                {t("form.description", lang)}
+                {t("form.description")}
               </p>
             </div>
 
@@ -635,15 +621,8 @@ export default function ReportPage() {
                 <span>{navigator.onLine ? "ONLINE AI ACTIVE" : "OFFLINE ENGINE ACTIVE"}</span>
               </div>
 
-              {/* Language Toggle & Theme Toggle */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={toggleLang}
-                  className="px-4 py-2 rounded-full border border-slate-200 dark:border-slate-800 hover:border-[var(--color-ph-gold)] bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-bold transition-all shadow-xs"
-                  title="Switch Language"
-                >
-                  {lang === "fil" ? "🇵🇭 FIL" : "🇺🇸 EN"}
-                </button>
+              {/* Theme Toggle */}
+              <div>
                 <ThemeToggle />
               </div>
             </div>
@@ -730,7 +709,7 @@ export default function ReportPage() {
                                 ?.requestSubmit();
                             }
                           }}
-                          placeholder={t("form.placeholder", lang)}
+                          placeholder={t("form.description")}
                           className="w-full p-4 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm font-medium placeholder-slate-400 focus:outline-none focus:border-[var(--color-ph-gold)] focus:ring-2 focus:ring-[var(--color-ph-gold)]/20 min-h-[130px] resize-y leading-relaxed transition-all shadow-inner flex-1"
                           rows={4}
                         />
@@ -757,7 +736,7 @@ export default function ReportPage() {
                             </div>
                             <div>
                               <div className="font-extrabold text-sm text-slate-900 dark:text-white">
-                                {t("form.location", lang)}
+                                {t("form.description")}
                               </div>
                               <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                                 {lang === "fil" ? "Tumutulong sa mas mabilis na pag-ruta sa ahensya" : "Helps with accurate government agency routing"}
@@ -778,7 +757,7 @@ export default function ReportPage() {
                             ) : (
                               <>
                                 <IconMapPin className="w-4 h-4 text-[var(--color-ph-gold)]" />
-                                <span>{t("form.detectLocation", lang)}</span>
+                                <span>{t("form.description")}</span>
                               </>
                             )}
                           </button>
@@ -817,8 +796,8 @@ export default function ReportPage() {
                             id="region-select"
                             value={location.region}
                             onChange={handleRegionChange}
-                            placeholder={`${t("location.select", lang)} ${t("location.region", lang)}`}
-                            label={t("location.region", lang)}
+                            placeholder={`${t("form.description")} ${t("form.description")}`}
+                            label={t("form.description")}
                             options={REGIONS.map((r: Region) => ({
                               value: r.code,
                               label: r.name,
@@ -830,8 +809,8 @@ export default function ReportPage() {
                             onChange={(val) =>
                               setLocation((prev) => ({ ...prev, province: val }))
                             }
-                            placeholder={`${t("location.select", lang)} ${t("location.province", lang)}`}
-                            label={t("location.province", lang)}
+                            placeholder={`${t("form.description")} ${t("form.description")}`}
+                            label={t("form.description")}
                             options={availableProvinces.map((p: Province) => ({
                               value: p.code,
                               label: p.name,
@@ -848,7 +827,7 @@ export default function ReportPage() {
                           disabled={!text.trim()}
                           className="w-full py-4 rounded-2xl bg-[var(--color-ph-navy)] hover:bg-[#0a1915] text-[var(--color-ph-gold)] font-black text-base shadow-lg shadow-[var(--color-ph-navy)]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 border border-[var(--color-ph-gold)]/30"
                         >
-                          <span>{t("form.submit", lang)}</span>
+                          <span>{t("form.description")}</span>
                           <IconPaperPlane className="w-5 h-5" />
                         </button>
                       </div>
@@ -888,19 +867,31 @@ export default function ReportPage() {
 
                       <div className="space-y-3 pt-4 border-t border-slate-800/80">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-slate-400 font-bold">DILG &middot; LGU Routing</span>
+                          <span className="flex items-center gap-2 text-slate-300 font-bold">
+                            <DILGLogo className="w-5 h-5" />
+                            DILG &middot; LGU Routing
+                          </span>
                           <span className="text-emerald-400 font-extrabold">Active</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-slate-400 font-bold">DPWH &middot; Infra Triage</span>
+                          <span className="flex items-center gap-2 text-slate-300 font-bold">
+                            <DPWHLogo className="w-5 h-5" />
+                            DPWH &middot; Infra Triage
+                          </span>
                           <span className="text-emerald-400 font-extrabold">Active</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-slate-400 font-bold">BFP &middot; Fire / Hazard</span>
+                          <span className="flex items-center gap-2 text-slate-300 font-bold">
+                            <BFPLogo className="w-5 h-5" />
+                            BFP &middot; Fire / Hazard
+                          </span>
                           <span className="text-emerald-400 font-extrabold">Active</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-slate-400 font-bold">PNP &middot; Public Safety</span>
+                          <span className="flex items-center gap-2 text-slate-300 font-bold">
+                            <PNPLogo className="w-5 h-5" />
+                            PNP &middot; Public Safety
+                          </span>
                           <span className="text-emerald-400 font-extrabold">Active</span>
                         </div>
                       </div>
@@ -918,7 +909,7 @@ export default function ReportPage() {
                       <IconWarning className="w-4 h-4" />
                     </div>
                     <p className="text-xs font-bold text-blue-900 dark:text-blue-200 leading-relaxed pt-0.5">
-                      {t("form.tip", lang)}
+                      {t("form.description")}
                     </p>
                   </div>
                 </div>
@@ -944,10 +935,10 @@ export default function ReportPage() {
                   </div>
 
                   <h3 className="text-2xl font-black text-[var(--color-ph-navy)] dark:text-white mb-3 tracking-tight">
-                    {t("loading.title", lang)}
+                    {t("form.description")}
                   </h3>
                   <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed font-medium">
-                    {t("loading.description", lang)}
+                    {t("form.description")}
                   </p>
 
                   {/* Steps progress list */}
@@ -975,7 +966,7 @@ export default function ReportPage() {
                           )}
                         </div>
                         <span className="text-sm font-bold">
-                          {t(step.label, lang)}
+                          {t(step.label)}
                         </span>
                       </div>
                     ))}
@@ -1031,7 +1022,7 @@ export default function ReportPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-[var(--color-ph-gold-light)] uppercase font-bold tracking-wider mb-1">
-                        {t("result.trackingId", lang)}
+                        {t("form.description")}
                       </p>
                       <p className="font-mono font-black text-white text-xl sm:text-2xl leading-tight truncate">
                         {result.trackingId}
@@ -1069,7 +1060,7 @@ export default function ReportPage() {
                     </div>
                     <div>
                       <span className="text-base font-bold text-amber-900 dark:text-amber-200 block">
-                        {t("result.humanReview", lang)}
+                        {t("form.description")}
                       </span>
                       <span className="block text-xs mt-1 text-amber-800 dark:text-amber-300 font-bold">
                         AI Confidence Level: {result.confidence}%
@@ -1090,7 +1081,7 @@ export default function ReportPage() {
                       {urgencyConfig.label}
                     </span>
                     <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                      {result.confidence}% {t("result.confidence", lang)}
+                      {result.confidence}% {t("form.description")}
                     </span>
                   </div>
 
@@ -1113,7 +1104,7 @@ export default function ReportPage() {
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">
-                          {t("result.office", lang)}
+                          {t("form.description")}
                         </p>
                         <p className="text-lg font-extrabold text-slate-900 dark:text-white">
                           {result.office}
@@ -1161,7 +1152,7 @@ export default function ReportPage() {
                     <div className="flex items-center gap-2.5 text-xs font-bold text-slate-400 pt-4 border-t border-slate-200 dark:border-slate-800">
                       <IconClock className="w-4 h-4 text-[var(--color-ph-gold)] shrink-0" />
                       <span>
-                        {t("result.timestamp", lang)}: {formatTimestamp(result.timestamp)}
+                        {t("form.description")}: {formatTimestamp(result.timestamp)}
                       </span>
                     </div>
 
@@ -1184,7 +1175,7 @@ export default function ReportPage() {
                     </div>
                     <div>
                       <span className="text-base font-bold text-amber-900 dark:text-amber-200 block">
-                        {t("offline.title", lang)}
+                        {t("form.description")}
                       </span>
                       <p className="text-xs mt-1 text-amber-800 dark:text-amber-300 leading-relaxed font-medium">
                         {result.explanation}
@@ -1199,7 +1190,7 @@ export default function ReportPage() {
                     onClick={resetForm}
                     className="flex-1 py-4 px-6 rounded-full bg-[var(--color-ph-navy)] hover:bg-[#0a1915] text-[var(--color-ph-gold)] font-black text-xs uppercase tracking-wider shadow-lg shadow-[var(--color-ph-navy)]/10 transition-all flex items-center justify-center gap-2 border border-[var(--color-ph-gold)]/30"
                   >
-                    <span>{t("result.reportAgain", lang)}</span>
+                    <span>{t("form.description")}</span>
                     <IconRefresh className="w-4 h-4" />
                   </button>
                   <Link

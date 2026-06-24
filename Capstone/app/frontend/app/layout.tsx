@@ -1,10 +1,26 @@
 import type { Metadata, Viewport } from "next";
+import { Outfit, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./components/toast";
 import { ChatWidget } from "./components/chat-widget";
 import { SiteNavbar, SiteFooter } from "./navigation-shell";
+import { I18nProvider } from "@/lib/i18n";
+
+// ── Typography ──────────────────────────────────────────────────────────────
+
+const fontOutfit = Outfit({ 
+  subsets: ["latin"], 
+  variable: "--font-outfit",
+  display: "swap" 
+});
+
+const fontSpace = Space_Grotesk({ 
+  subsets: ["latin"], 
+  variable: "--font-space",
+  display: "swap"
+});
 
 // ── Metadata ────────────────────────────────────────────────────────────────
 
@@ -59,9 +75,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fil-PH" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col bg-[var(--color-bg)]">
+    <html lang="fil-PH" suppressHydrationWarning className={`${fontOutfit.variable} ${fontSpace.variable}`}>
+      <body className="min-h-screen flex flex-col bg-[var(--color-bg)] font-sans antialiased text-[var(--color-text)] selection:bg-[var(--color-ph-gold)]/30">
         <ThemeProvider>
+          <I18nProvider>
           <AuthProvider>
             {/* Skip to main content — accessibility */}
             <a href="#main-content" className="skip-link">
@@ -88,6 +105,7 @@ export default function RootLayout({
 
           <Toaster />
           <ChatWidget />
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>
