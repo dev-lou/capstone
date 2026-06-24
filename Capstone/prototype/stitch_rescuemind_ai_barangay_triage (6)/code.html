@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Disaster Map | RescueMind AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-critical {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(186, 26, 26, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(186, 26, 26, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(186, 26, 26, 0); }
+        }
+        .glass-panel {
+            background: rgba(248, 249, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .map-overlay-shadow {
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+        }
+        /* Custom scrollbar for data density */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#410008",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "inverse-surface": "#213145",
+                        "outline-variant": "#c4c6cf",
+                        "surface-container-high": "#dce9ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdad9",
+                        "tertiary": "#4a000b",
+                        "surface-container-low": "#eff4ff",
+                        "on-secondary-fixed": "#001b3c",
+                        "on-secondary-container": "#003d79",
+                        "background": "#f8f9ff",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container": "#e5eeff",
+                        "on-primary-fixed-variant": "#2e476f",
+                        "secondary-container": "#72aafe",
+                        "primary-container": "#1b365d",
+                        "on-secondary-fixed-variant": "#004689",
+                        "tertiary-fixed-dim": "#ffb3b2",
+                        "primary-fixed-dim": "#aec7f7",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary-fixed": "#001b3d",
+                        "secondary-fixed": "#d5e3ff",
+                        "surface-variant": "#d3e4fe",
+                        "on-surface": "#0b1c30",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#aec7f7",
+                        "on-tertiary-container": "#ff7176",
+                        "on-primary-container": "#87a0cd",
+                        "secondary-fixed-dim": "#a8c8ff",
+                        "secondary": "#175ead",
+                        "primary": "#002046",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#92001f",
+                        "tertiary-container": "#720016",
+                        "surface-tint": "#465f88",
+                        "outline": "#74777f",
+                        "primary-fixed": "#d6e3ff",
+                        "on-surface-variant": "#44474e",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "48px",
+                        "gutter": "24px",
+                        "container-max": "1440px",
+                        "sm": "16px",
+                        "lg": "32px",
+                        "md": "24px",
+                        "xs": "8px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Geist"],
+                        "label-sm": ["Geist"],
+                        "label-md": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "display-lg": ["Geist"],
+                        "headline-md": ["Geist"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface overflow-hidden">
+<!-- Sidebar Navigation Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 hidden md:flex flex-col bg-surface-container-low border-r border-outline-variant p-md gap-xs z-50">
+<div class="mb-lg">
+<h1 class="font-headline-sm text-headline-sm font-black text-on-surface">Brgy. RescueMind</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Official Portal</p>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<!-- Home -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<!-- Emergency -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="emergency">emergency</span>
+<span class="font-label-md text-label-md">Emergency</span>
+</a>
+<!-- Complaints -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+<span class="font-label-md text-label-md">Complaints</span>
+</a>
+<!-- Disaster Map (ACTIVE) -->
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container font-bold rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-md text-label-md">Disaster Map</span>
+</a>
+<!-- Resources -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="folder_shared">folder_shared</span>
+<span class="font-label-md text-label-md">Resources</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 border-t border-outline-variant flex flex-col gap-1">
+<button class="bg-error text-on-error py-3 rounded-xl font-bold flex items-center justify-center gap-2 mb-4 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="add_alert">add_alert</span>
+                Report Emergency
+            </button>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Map Canvas -->
+<main class="md:ml-64 h-screen w-full relative overflow-hidden">
+<!-- Interactive Map Background -->
+<div class="absolute inset-0 z-0 bg-[#0f172a] overflow-hidden" data-location="Manila" style="">
+<div class="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none" style="background-image: radial-gradient(#334155 1px, transparent 1px); background-size: 40px 40px;"></div>
+<!-- Large Image serving as the Map base -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-500 scale-105" data-alt="A highly detailed dark-mode satellite map of a dense Philippine urban district, showing intricate street grids, barangay boundaries, and the Pasig river. The map features luminous neon-blue road network overlays, translucent amber-colored heatmaps indicating flood risk zones, and glowing cyan markers for emergency stations. The aesthetic is cyber-industrial and authoritative, with high-contrast accessibility in mind." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBf5kbMnQpwLxaGIO5oALPQsunUicTxMEDxOX7scbn4ktgk3bE3hN49i1koQi0x5i28sabTEfs0okXqfubtkec7wITlRfMdnvKwEEY9EiP-WZ85uxMa4nn9gOFYs4dx26B38Ml13tTbbXZ5Vybomas2MzNZsmvNCpDdsjNoRkxly_dV01OM06h9EJkQhGCF6_2Fp1li44w0eEIA4Qq1_Ak9xc07iWpGvdKaAm3OEb8pGBAQ5Cd6OMUJPjFMH0dym0FDqYLqiLfONio')">
+</div>
+<!-- Heatmap Overlays (Simulated with translucent SVGs) -->
+<div class="absolute inset-0 z-10 pointer-events-none">
+<!-- Flooding Heatmap (Blue/Purple Tints) -->
+<div class="absolute top-1/4 left-1/3 w-[400px] h-[400px] bg-blue-500/20 blur-[80px] rounded-full animate-pulse"></div>
+<div class="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-indigo-600/15 blur-[100px] rounded-full"></div>
+<!-- Damage Heatmap (Red/Orange Tints) -->
+<div class="absolute top-1/2 left-1/2 w-[300px] h-[300px] bg-error/10 blur-[60px] rounded-full"></div>
+</div>
+<!-- Specific Critical Marker: RM-20260623-RESCUE -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer">
+<div class="relative">
+<div class="pulse-critical absolute -inset-4 bg-error/30 rounded-full"></div>
+<div class="w-8 h-8 bg-error text-on-error rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+<span class="material-symbols-outlined text-[20px]" data-icon="medical_services" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<!-- Detailed Tooltip/Card on Hover or Fixed -->
+<div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 glass-panel p-4 rounded-xl shadow-2xl border border-outline-variant opacity-100 group-hover:scale-105 transition-transform">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-error text-on-error text-[10px] px-2 py-0.5 rounded-full font-bold">CRITICAL</span>
+<span class="text-on-surface-variant font-label-sm">4 mins ago</span>
+</div>
+<h4 class="font-bold text-sm text-on-surface">RM-20260623-RESCUE</h4>
+<p class="text-xs text-on-surface-variant mt-1">Zone 4: Flash Flood Entrapment (3 pax)</p>
+<div class="mt-3 flex gap-2">
+<button class="bg-primary text-on-primary text-[11px] px-3 py-1.5 rounded-lg flex-1 font-bold">DISPATCH</button>
+<button class="bg-surface text-primary border border-primary text-[11px] px-3 py-1.5 rounded-lg font-bold">VIEW CCTV</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Generic Markers -->
+<div class="absolute top-[30%] left-[60%] z-20">
+<div class="w-6 h-6 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-md border-2 border-white">
+<span class="material-symbols-outlined text-[14px]" data-icon="local_fire_department">local_fire_department</span>
+</div>
+</div>
+<div class="absolute top-[70%] left-[20%] z-20">
+<div class="w-6 h-6 bg-outline text-on-surface rounded-full flex items-center justify-center shadow-md border-2 border-white">
+<span class="material-symbols-outlined text-[14px]" data-icon="info">info</span>
+</div>
+</div>
+</div>
+<!-- High-Visibility Header -->
+<header class="absolute top-6 left-6 right-6 z-30 flex justify-between items-center pointer-events-none">
+<div class="bg-primary text-on-primary px-gutter py-4 rounded-full shadow-2xl flex items-center gap-4 pointer-events-auto border-l-4 border-error">
+<div class="relative flex items-center justify-center">
+<span class="absolute inline-flex h-full w-full rounded-full bg-error opacity-75 animate-ping"></span>
+<span class="material-symbols-outlined text-error" data-icon="sensors">sensors</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md tracking-tight leading-none uppercase">LIVE DISASTER TRACKING</h2>
+<p class="font-label-md text-label-md text-on-primary-container opacity-80">ZONE 4 - HIGH ACTIVITY DETECTED</p>
+</div>
+</div>
+<div class="flex items-center gap-3 pointer-events-auto">
+<div class="glass-panel flex items-center gap-4 px-6 py-3 rounded-full border border-outline-variant shadow-lg">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="font-label-md">12 Critical</span>
+</div>
+<div class="w-px h-4 bg-outline-variant"></div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-[#eab308]"></div>
+<span class="font-label-md">45 Pending</span>
+</div>
+</div>
+<button class="bg-surface-container-highest w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant shadow-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Right Side Overlays (Active Incidents & Legend) -->
+<div class="absolute right-6 top-24 bottom-24 w-80 z-30 flex flex-col gap-4 pointer-events-none">
+<!-- Active Incident List -->
+<section class="glass-panel rounded-xl border border-outline-variant shadow-xl overflow-hidden flex flex-col flex-1 pointer-events-auto">
+<div class="p-4 border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<h3 class="font-bold text-sm uppercase tracking-wider">Active Incidents</h3>
+<span class="text-[10px] bg-primary-container text-on-primary-container px-2 py-0.5 rounded">AUTO-TRIAGE ON</span>
+</div>
+<div class="flex-1 overflow-y-auto p-2 space-y-2">
+<!-- Incident Item 1 -->
+<div class="p-3 bg-white border-l-4 border-error rounded-lg shadow-sm hover:border-l-8 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="font-bold text-xs text-on-background">RM-20260623-R</span>
+<span class="text-[10px] text-error font-black animate-pulse">RESCUE REQ</span>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-1">Flood Entrapment - Zone 4 Market</p>
+<div class="mt-2 flex items-center gap-2">
+<span class="text-[9px] bg-surface-variant px-1.5 py-0.5 rounded">PHASE 2</span>
+<span class="text-[9px] text-on-surface-variant italic">Disp: Fire Station A</span>
+</div>
+</div>
+<!-- Incident Item 2 -->
+<div class="p-3 bg-white border-l-4 border-[#eab308] rounded-lg shadow-sm hover:border-l-8 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="font-bold text-xs text-on-background">RM-20260623-F</span>
+<span class="text-[10px] text-[#854d0e] font-bold">STRUCTURAL</span>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-1">Crack Report - Elevated Walkway</p>
+</div>
+<!-- Incident Item 3 -->
+<div class="p-3 bg-white border-l-4 border-outline rounded-lg shadow-sm hover:opacity-75 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="font-bold text-xs text-on-background">RM-20260623-O</span>
+<span class="text-[10px] text-on-surface-variant">ROUTINE</span>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-1">Power Outage - Cluster 12</p>
+</div>
+<!-- Incident Item 4 -->
+<div class="p-3 bg-white border-l-4 border-error rounded-lg shadow-sm hover:border-l-8 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="font-bold text-xs text-on-background">RM-20260623-M</span>
+<span class="text-[10px] text-error font-black">MEDICAL</span>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-1">Cardiac Arrest - Purok 4</p>
+</div>
+</div>
+</section>
+<!-- Map Layers Toggles -->
+<section class="glass-panel rounded-xl border border-outline-variant shadow-xl p-4 pointer-events-auto">
+<h3 class="font-bold text-[11px] uppercase tracking-widest text-on-surface-variant mb-3">Map Layers</h3>
+<div class="space-y-2">
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="text-xs text-on-surface font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary" data-icon="layers">layers</span>
+                            Heatmap Overlays
+                        </span>
+<div class="relative w-8 h-4 bg-secondary rounded-full transition-colors">
+<div class="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</label>
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="text-xs text-on-surface font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary" data-icon="videocam">videocam</span>
+                            CCTV Feeds
+                        </span>
+<div class="relative w-8 h-4 bg-outline-variant rounded-full">
+<div class="absolute left-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</label>
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="text-xs text-on-surface font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-error" data-icon="ambulance">ambulance</span>
+                            Rescue Units
+                        </span>
+<div class="relative w-8 h-4 bg-secondary rounded-full transition-colors">
+<div class="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</label>
+</div>
+</section>
+</div>
+<!-- Left Side Legend Overlay -->
+<div class="absolute left-6 bottom-24 w-64 z-30 pointer-events-none">
+<section class="glass-panel rounded-xl border border-outline-variant shadow-xl p-4 pointer-events-auto">
+<h3 class="font-bold text-[11px] uppercase tracking-widest text-on-surface-variant mb-4">Map Legend</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-4 h-4 rounded bg-error border border-white"></div>
+<span class="text-xs text-on-surface">Immediate Life Threat</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-4 h-4 rounded bg-[#eab308] border border-white"></div>
+<span class="text-xs text-on-surface">High Damage Potential</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-4 h-4 rounded bg-secondary-container border border-white"></div>
+<span class="text-xs text-on-surface">Flood Surge Zone</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-4 h-4 rounded-full border-2 border-secondary bg-white flex items-center justify-center">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+</div>
+<span class="text-xs text-on-surface">Shelter Point (Evac)</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant">
+<p class="text-[10px] text-on-surface-variant leading-relaxed italic">
+                        AI Confidence: 98.4%. Data updated from Barangay Nodes 12-40.
+                    </p>
+</div>
+</section>
+</div>
+<!-- Floating Map Controls -->
+<div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
+<div class="glass-panel rounded-full p-1 border border-outline-variant shadow-2xl flex gap-1">
+<button class="w-10 h-10 rounded-full hover:bg-surface-variant flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<div class="w-px h-6 bg-outline-variant self-center"></div>
+<button class="w-10 h-10 rounded-full hover:bg-surface-variant flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<div class="w-px h-6 bg-outline-variant self-center"></div>
+<button class="w-10 h-10 rounded-full hover:bg-surface-variant flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</button>
+<div class="w-px h-6 bg-outline-variant self-center"></div>
+<button class="px-4 h-10 rounded-full hover:bg-surface-variant flex items-center gap-2 transition-colors font-bold text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="my_location">my_location</span>
+                    RECENTER
+                </button>
+</div>
+</div>
+<!-- Bottom Safe Area Indicator (Visual only) -->
+<div class="absolute bottom-0 left-0 w-full h-1 md:hidden bg-primary"></div>
+</main>
+<!-- Bottom Navigation Mobile Pivot -->
+<nav class="fixed bottom-0 left-0 w-full h-16 flex justify-around items-center px-4 pb-safe bg-surface border-t border-outline-variant shadow-lg md:hidden z-50">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-[10px]">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="add_alert">add_alert</span>
+<span class="font-label-sm text-[10px]">Report</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-sm text-[10px]">Map</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-[10px]">Profile</span>
+</div>
+</nav>
+<script>
+        // Micro-interactions for map movement simulation
+        const mainCanvas = document.querySelector('main');
+        const mapImg = mainCanvas.querySelector('div[data-alt]');
+        
+        mainCanvas.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 100;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 100;
+            mapImg.style.transform = `scale(1.1) translate(${xAxis}px, ${yAxis}px)`;
+        });
+
+        // Layer Toggle Logic Simulation
+        document.querySelectorAll('label').forEach(label => {
+            label.addEventListener('click', () => {
+                const dot = label.querySelector('div > div');
+                const bg = label.querySelector('div');
+                if (dot.classList.contains('right-0.5')) {
+                    dot.classList.replace('right-0.5', 'left-0.5');
+                    bg.classList.replace('bg-secondary', 'bg-outline-variant');
+                } else {
+                    dot.classList.replace('left-0.5', 'right-0.5');
+                    bg.classList.replace('bg-outline-variant', 'bg-secondary');
+                }
+            });
+        });
+    </script>
+</body></html>

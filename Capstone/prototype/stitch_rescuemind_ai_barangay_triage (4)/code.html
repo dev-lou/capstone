@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RescueMind AI | Barangay Reporting Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .loading-ring {
+            border: 4px solid rgba(0, 32, 70, 0.1);
+            border-left-color: #175ead;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .bento-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .bento-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px -5px rgba(0, 32, 70, 0.1);
+        }
+        [data-state] { display: none; }
+        [data-state="active"] { display: block; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#4a000b",
+                        "surface": "#f8f9ff",
+                        "on-primary-fixed": "#001b3d",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-tint": "#465f88",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#44474e",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#aec7f7",
+                        "on-primary-container": "#87a0cd",
+                        "surface-dim": "#cbdbf5",
+                        "primary-fixed": "#d6e3ff",
+                        "secondary-fixed-dim": "#a8c8ff",
+                        "on-surface": "#0b1c30",
+                        "tertiary-container": "#720016",
+                        "primary": "#002046",
+                        "primary-container": "#1b365d",
+                        "inverse-surface": "#213145",
+                        "surface-container-low": "#eff4ff",
+                        "secondary-fixed": "#d5e3ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb3b2",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#2e476f",
+                        "background": "#f8f9ff",
+                        "on-secondary-fixed": "#001b3c",
+                        "on-tertiary-fixed": "#410008",
+                        "tertiary-fixed": "#ffdad9",
+                        "on-secondary-container": "#003d79",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-container": "#ff7176",
+                        "outline-variant": "#c4c6cf",
+                        "on-secondary-fixed-variant": "#004689",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#72aafe",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#aec7f7",
+                        "surface-variant": "#d3e4fe",
+                        "secondary": "#175ead",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary-fixed-variant": "#92001f",
+                        "on-background": "#0b1c30",
+                        "outline": "#74777f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "xl": "48px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "lg": "32px",
+                        "container-max": "1440px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Geist"],
+                        "body-md": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "display-lg": ["Geist"],
+                        "label-sm": ["Geist"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant h-16">
+<div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">health_and_safety</span>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">RescueMind AI</h1>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1" data-i18n="nav-dashboard" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" data-i18n="nav-reports" href="#">Reports</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" data-i18n="nav-analytics" href="#">Analytics</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" data-i18n="nav-settings" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="bg-surface-container-high px-sm py-1.5 rounded-lg border border-outline-variant font-label-md text-label-md hover:bg-surface-variant transition-colors flex items-center gap-xs" onclick="toggleLanguage()">
+<span class="material-symbols-outlined text-[18px]">language</span>
+<span id="lang-label">EN / FIL</span>
+</button>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary">help</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Professional headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCU9JBN2gOmvvtTvVk18vvqpe97eEnGhP1O-_nHdDOBjVzZQah8pPI6GUHzL_lG3etIeK_Tn8Frq6flJZhewMMtqMlYy45LFpgKtllN4sTH4PdwRxVq6vbfaZJ1x4cxXzfCxdaVhR7BRAMU6-PDMgh48yBbvZ4LnQGetQ4sOKWqmKl9WEQYRQEIyAO4PL1cKqgJ6q7BE45LQtnVCmovIDWrlaIyhUVfE7hHv9dnElRkY8PmAAL7FhBHvXtpYO_WO-4byqW8e7IpJek"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-32 pb-xl px-gutter max-w-4xl mx-auto w-full">
+<!-- Hero / Input State -->
+<section class="space-y-lg animate-in fade-in duration-500" data-state="active" id="input-state">
+<div class="text-center space-y-sm">
+<h2 class="font-display-lg text-display-lg text-primary tracking-tight" data-i18n="hero-title">How can we help you today?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant" data-i18n="hero-subtitle">Ano ang maipaglilingkod namin sa inyo?</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm bento-card">
+<label class="sr-only" data-i18n="input-label" for="emergency-input">Type your emergency or complaint</label>
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-body-md font-body-md placeholder:text-outline p-0 resize-none" data-i18n-placeholder="input-placeholder" id="emergency-input" placeholder="Describe the situation here... (e.g., 'May baha sa tapat ng aming bahay sa San Jose.')" rows="6"></textarea>
+<div class="flex justify-between items-center mt-md pt-md border-t border-outline-variant">
+<div class="flex gap-sm">
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+<span data-i18n="btn-location">Add Location</span>
+</button>
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+<span data-i18n="btn-photo">Add Photo</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary px-lg py-3 rounded-lg font-label-md text-label-md font-bold hover:opacity-90 active:scale-95 transition-all shadow-md" data-i18n="btn-submit" onclick="submitReport()">
+                    Submit Report
+                </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="p-md border border-outline-variant rounded-xl bg-surface-container-low bento-card">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">emergency_home</span>
+<h3 class="font-label-md text-label-md font-bold" data-i18n="card-1-title">Emergency Dispatch</h3>
+</div>
+<p class="text-label-sm text-on-surface-variant" data-i18n="card-1-body">Quick reporting for medical, fire, or rescue needs.</p>
+</div>
+<div class="p-md border border-outline-variant rounded-xl bg-surface-container-low bento-card">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<h3 class="font-label-md text-label-md font-bold" data-i18n="card-2-title">Community Concerns</h3>
+</div>
+<p class="text-label-sm text-on-surface-variant" data-i18n="card-2-body">Report sanitation, noise, or public safety issues.</p>
+</div>
+</div>
+</section>
+<!-- Loading State -->
+<section class="flex flex-col items-center justify-center py-xl space-y-lg animate-in zoom-in-95 duration-500" data-state="inactive" id="loading-state">
+<div class="relative flex flex-col items-center">
+<div class="loading-ring"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px] animate-pulse">psychology</span>
+</div>
+<div class="mt-4 inline-flex items-center gap-xs px-3 py-1 rounded-full bg-primary-container/10 border border-primary-container/20 text-primary font-label-sm text-[11px] animate-bounce">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+<span>✨ Processing via Local AI (Transformers.js)</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="font-headline-md text-headline-md text-primary" id="loading-title">AI is triaging your report...</h3>
+<p class="font-body-md text-on-surface-variant mt-xs" id="loading-subtitle">Sinusuri ng AI ang iyong ulat para sa mabilis na aksyon.</p>
+</div>
+<div class="w-full max-w-sm space-y-sm">
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-300" id="loading-progress" style="width: 0%"></div>
+</div>
+<div class="flex justify-between text-label-sm text-on-surface-variant">
+<span id="loading-status-text">Analyzing language...</span>
+<span id="progress-text">0%</span>
+</div>
+</div>
+</section>
+<!-- Result State -->
+<section class="space-y-lg animate-in slide-in-from-bottom-10 duration-700" data-state="inactive" id="result-state">
+<div class="flex items-center gap-sm text-secondary font-bold mb-md">
+<span class="material-symbols-outlined">check_circle</span>
+<span class="font-label-md text-label-md" data-i18n="result-success">Report Successfully Submitted</span>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-lg border-l-8 border-l-secondary" id="result-card-border">
+<div class="p-lg">
+<div class="flex flex-wrap justify-between items-start gap-md mb-lg">
+<div class="space-y-base">
+<span class="text-label-sm text-on-surface-variant uppercase tracking-widest" data-i18n="result-tracking-id">Tracking ID</span>
+<div class="font-headline-md text-headline-md font-black tracking-tight" id="dynamic-tracking-id">RM-2026-XXXX</div>
+</div>
+<div class="flex gap-sm">
+<span class="bg-surface-container-high text-on-surface font-label-sm text-label-sm px-sm py-1 rounded-full border border-outline-variant" id="dynamic-category">General</span>
+<span class="bg-error text-on-error font-label-sm text-label-sm px-sm py-1 rounded-full shadow-sm" id="dynamic-priority">Medium</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+<div class="space-y-sm">
+<h4 class="font-label-md text-label-md font-bold text-on-surface-variant" data-i18n="result-assigned">Assigned Office</h4>
+<div class="flex items-center gap-sm p-sm bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-primary">groups</span>
+<span class="font-body-md" id="dynamic-office">Barangay Admin Office</span>
+</div>
+</div>
+<div class="space-y-sm">
+<h4 class="font-label-md text-label-md font-bold text-on-surface-variant" data-i18n="result-estimated">Response Estimated</h4>
+<div class="flex items-center gap-sm p-sm bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<span class="font-body-md">15 - 30 Minutes</span>
+</div>
+</div>
+</div>
+<div class="bg-primary-container/10 text-on-primary-container p-md rounded-xl space-y-sm relative overflow-hidden border border-primary-container/20">
+<div class="absolute -right-4 -top-4 opacity-10">
+<span class="material-symbols-outlined text-[80px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px] text-primary">auto_awesome</span>
+<h4 class="font-label-md text-label-md font-bold text-primary" data-i18n="result-ai-summary">Gemini AI Summary</h4>
+</div>
+<p class="font-body-md leading-relaxed italic text-primary" id="dynamic-ai-summary">
+                        "Nakatanggap na ang aming team ng inyong ulat. Sinusuri na namin ang mga detalye upang makapagpadala ng kaukulang tulong sa lalong madaling panahon."
+                    </p>
+</div>
+</div>
+<div class="px-lg py-md bg-surface-container-low flex justify-between items-center">
+<button class="text-primary font-label-md text-label-md font-bold hover:underline" data-i18n="btn-download">Download Receipt</button>
+<button class="bg-primary text-on-primary px-md py-2 rounded-lg font-label-md text-label-md hover:opacity-90" data-i18n="btn-home" onclick="resetPortal()">Back to Home</button>
+</div>
+</div>
+<div class="h-64 rounded-xl overflow-hidden border border-outline-variant shadow-sm bento-card relative">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDb45PGwVSGeG68ocH9-HlrHpZwhvVc2WvQcQXUwU0tyamqYm8SnI9Wf40yIjFFNJNvF9zaL6kKevo6bCDoJiN8_MrNxRjrOR6DzAovR5xRIYa2LOTRW5ch0aIFY0braQ9eiapWdsG5p7zmkrh7q0zh5bQf6AP1SFbdm9Jp_tm66o2ZMcR28PNEnqxs1jVeNBx5G7SJCE6Hvu8l8qsGOuuLRBbeUtd0zboOvD-lx-kz2O5DvPb-M3aNQg2zLEJAQxqbimIQgQ1fcCo')"></div>
+<div class="absolute bottom-md left-md bg-surface p-sm rounded-lg shadow-md border border-outline-variant">
+<p class="text-label-sm font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-error">location_on</span>
+<span data-i18n="map-incident">Live Incident Location</span>
+</p>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-surface border-t border-outline-variant mt-xl">
+<div class="max-w-container-max mx-auto px-gutter py-lg flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-label-md font-bold text-primary">RescueMind AI</span>
+<span class="text-outline text-label-sm">© 2026 Republic of the Philippines</span>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" data-i18n="footer-privacy" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" data-i18n="footer-contact" href="#">Contact Barangay</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" data-i18n="footer-hotlines" href="#">Emergency Hotlines</a>
+</div>
+</div>
+</footer>
+<script>
+    // Translation System
+    const translations = {
+        en: {
+            "nav-dashboard": "Dashboard",
+            "nav-reports": "Reports",
+            "nav-analytics": "Analytics",
+            "nav-settings": "Settings",
+            "hero-title": "How can we help you today?",
+            "hero-subtitle": "Ano ang maipaglilingkod namin sa inyo?",
+            "input-label": "Type your emergency or complaint",
+            "input-placeholder": "Describe the situation here... (e.g., 'May baha sa tapat ng aming bahay sa San Jose.')",
+            "btn-location": "Add Location",
+            "btn-photo": "Add Photo",
+            "btn-submit": "Submit Report",
+            "card-1-title": "Emergency Dispatch",
+            "card-1-body": "Quick reporting for medical, fire, or rescue needs.",
+            "card-2-title": "Community Concerns",
+            "card-2-body": "Report sanitation, noise, or public safety issues.",
+            "result-success": "Report Successfully Submitted",
+            "result-tracking-id": "Tracking ID",
+            "result-assigned": "Assigned Office",
+            "result-estimated": "Response Estimated",
+            "result-ai-summary": "Gemini AI Summary",
+            "btn-download": "Download Receipt",
+            "btn-home": "Back to Home",
+            "map-incident": "Live Incident Location",
+            "footer-privacy": "Privacy Policy",
+            "footer-contact": "Contact Barangay",
+            "footer-hotlines": "Emergency Hotlines"
+        },
+        fil: {
+            "nav-dashboard": "Dashboard",
+            "nav-reports": "Mga Ulat",
+            "nav-analytics": "Analitika",
+            "nav-settings": "Settings",
+            "hero-title": "Paano kami makakatulong sa inyo?",
+            "hero-subtitle": "Ang inyong kaligtasan ay aming prayoridad.",
+            "input-label": "I-type ang iyong emergency o reklamo",
+            "input-placeholder": "Ilarawan ang sitwasyon dito... (hal., 'May baha sa tapat ng aming bahay sa San Jose.')",
+            "btn-location": "Magdagdag ng Lokasyon",
+            "btn-photo": "Magdagdag ng Larawan",
+            "btn-submit": "Ipadala ang Ulat",
+            "card-1-title": "Mabilis na Saklolo",
+            "card-1-body": "Mabilisang pag-ulat para sa medikal, sunog, o rescue.",
+            "card-2-title": "Usaping Komunidad",
+            "card-2-body": "Isumbong ang mga isyu sa basura, ingay, o kaligtasan.",
+            "result-success": "Matagumpay na Naipadala ang Ulat",
+            "result-tracking-id": "Numero ng Tracking",
+            "result-assigned": "Nakatalagang Tanggapan",
+            "result-estimated": "Inaasahang Oras",
+            "result-ai-summary": "Buod mula sa Gemini AI",
+            "btn-download": "I-download ang Resibo",
+            "btn-home": "Bumalik sa Home",
+            "map-incident": "Lokasyon ng Insidente",
+            "footer-privacy": "Patakaran sa Privacy",
+            "footer-contact": "Kontakin ang Barangay",
+            "footer-hotlines": "Mga Hotline ng Emergency"
+        }
+    };
+
+    let currentLanguage = 'en';
+
+    function toggleLanguage() {
+        currentLanguage = currentLanguage === 'en' ? 'fil' : 'en';
+        document.getElementById('lang-label').innerText = currentLanguage === 'en' ? 'EN / FIL' : 'FIL / EN';
+        updateTranslations();
+    }
+
+    function updateTranslations() {
+        const set = translations[currentLanguage];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (set[key]) el.innerText = set[key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (set[key]) el.placeholder = set[key];
+        });
+    }
+
+    // 3-State Workflow Logic
+    function showState(stateId) {
+        document.querySelectorAll('[data-state]').forEach(el => {
+            el.setAttribute('data-state', 'inactive');
+            el.classList.remove('active');
+        });
+        const activeEl = document.getElementById(stateId);
+        activeEl.setAttribute('data-state', 'active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function generateTrackingId() {
+        return `RM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+
+    function analyzeInput(text) {
+        const inputLower = text.toLowerCase();
+        let category = 'Public Safety';
+        let office = 'Barangay Admin Office';
+        let priority = 'Medium';
+        let borderColor = 'border-l-secondary';
+        let priorityColor = 'bg-secondary-container text-on-secondary-container';
+        let aiSummary = "Nakatanggap na kami ng ulat tungkol sa inyong concern. Sinusuri na ito ng aming admin team.";
+
+        if (inputLower.includes('baha') || inputLower.includes('flood')) {
+            category = 'Disaster / Baha';
+            office = 'Barangay Rescue Team / DPWH';
+            priority = 'Critical';
+            borderColor = 'border-l-error';
+            priorityColor = 'bg-error text-on-error';
+            aiSummary = "Nakatanggap na ang aming team ng inyong ulat tungkol sa baha. Papunta na ang rescue unit para mag-inspect at magbigay ng tulong. Mangyaring manatili sa ligtas na lugar.";
+        } else if (inputLower.includes('sunog') || inputLower.includes('fire')) {
+            category = 'Emergency / Sunog';
+            office = 'Bureau of Fire Protection';
+            priority = 'Critical';
+            borderColor = 'border-l-error';
+            priorityColor = 'bg-error text-on-error';
+            aiSummary = "Alertado na ang BFP tungkol sa inyong ulat ng sunog. Papunta na ang pinakamalapit na fire truck. Siguraduhin ang kaligtasan ng pamilya.";
+        } else if (inputLower.includes('basura') || inputLower.includes('sanitation')) {
+            category = 'Sanitation / Basura';
+            office = 'Sanitation Department';
+            priority = 'Low';
+            borderColor = 'border-l-secondary';
+            priorityColor = 'bg-surface-container-high text-on-surface';
+            aiSummary = "Salamat sa pag-ulat ng isyu sa basura. Ito ay nailista na para sa susunod na collection cycle ng inyong barangay.";
+        }
+
+        return { category, office, priority, borderColor, priorityColor, aiSummary };
+    }
+
+    function submitReport() {
+        const input = document.getElementById('emergency-input').value;
+        if (!input.trim()) {
+            const errorMsg = currentLanguage === 'en' ? "Please provide report details." : "Mangyaring ilagay ang detalye ng inyong ulat.";
+            alert(errorMsg);
+            return;
+        }
+
+        const analysis = analyzeInput(input);
+        
+        showState('loading-state');
+        
+        const statusSteps = [
+            "Analyzing language...",
+            "Detecting intent...",
+            "Running Local AI (Transformers.js)...",
+            "Finalizing report..."
+        ];
+        
+        let progress = 0;
+        const totalDuration = 2500; // 2.5 seconds as requested
+        const intervalTime = 50;
+        const increment = 100 / (totalDuration / intervalTime);
+
+        const progressInterval = setInterval(() => {
+            progress += increment;
+            
+            // Dynamic status text
+            const stepIndex = Math.min(Math.floor((progress / 100) * statusSteps.length), statusSteps.length - 1);
+            document.getElementById('loading-status-text').innerText = statusSteps[stepIndex];
+
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(progressInterval);
+                
+                // Populate Result State
+                document.getElementById('dynamic-tracking-id').innerText = generateTrackingId();
+                document.getElementById('dynamic-category').innerText = analysis.category;
+                document.getElementById('dynamic-office').innerText = analysis.office;
+                document.getElementById('dynamic-ai-summary').innerText = `"${analysis.aiSummary}"`;
+                document.getElementById('dynamic-priority').innerText = analysis.priority;
+                document.getElementById('dynamic-priority').className = `${analysis.priorityColor} font-label-sm text-label-sm px-sm py-1 rounded-full shadow-sm`;
+                document.getElementById('result-card-border').className = `bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-lg border-l-8 ${analysis.borderColor}`;
+
+                setTimeout(() => showState('result-state'), 300);
+            }
+            
+            document.getElementById('loading-progress').style.width = progress + '%';
+            document.getElementById('progress-text').innerText = Math.round(progress) + '%';
+        }, intervalTime);
+    }
+
+    function resetPortal() {
+        document.getElementById('emergency-input').value = '';
+        document.getElementById('loading-progress').style.width = '0%';
+        document.getElementById('progress-text').innerText = '0%';
+        showState('input-state');
+    }
+
+    // Initialize translations on load
+    document.addEventListener('DOMContentLoaded', updateTranslations);
+</script>
+</body></html>

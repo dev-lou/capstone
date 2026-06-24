@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RescueMind AI | Barangay Reporting Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .loading-ring {
+            border: 4px solid rgba(0, 32, 70, 0.1);
+            border-left-color: #0055A4;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .bento-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .bento-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px -5px rgba(0, 32, 70, 0.1);
+        }
+        [data-state] { display: none; }
+        [data-state="active"] { display: block; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#4a000b",
+                        "surface": "#f8f9ff",
+                        "on-primary-fixed": "#001b3d",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-tint": "#465f88",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#44474e",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#aec7f7",
+                        "on-primary-container": "#87a0cd",
+                        "surface-dim": "#cbdbf5",
+                        "primary-fixed": "#d6e3ff",
+                        "secondary-fixed-dim": "#a8c8ff",
+                        "on-surface": "#0b1c30",
+                        "tertiary-container": "#720016",
+                        "primary": "#002046",
+                        "primary-container": "#1b365d",
+                        "inverse-surface": "#213145",
+                        "surface-container-low": "#eff4ff",
+                        "secondary-fixed": "#d5e3ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb3b2",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#2e476f",
+                        "background": "#f8f9ff",
+                        "on-secondary-fixed": "#001b3c",
+                        "on-tertiary-fixed": "#410008",
+                        "tertiary-fixed": "#ffdad9",
+                        "on-secondary-container": "#003d79",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-container": "#ff7176",
+                        "outline-variant": "#c4c6cf",
+                        "on-secondary-fixed-variant": "#004689",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#72aafe",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#aec7f7",
+                        "surface-variant": "#d3e4fe",
+                        "secondary": "#175ead",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary-fixed-variant": "#92001f",
+                        "on-background": "#0b1c30",
+                        "outline": "#74777f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "xl": "48px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "lg": "32px",
+                        "container-max": "1440px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Geist"],
+                        "body-md": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "display-lg": ["Geist"],
+                        "label-sm": ["Geist"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<div class="fixed top-0 w-full z-[60] bg-error text-on-error py-2 text-center font-bold tracking-widest animate-pulse">
+<span class="material-symbols-outlined align-middle mr-2">warning</span>
+    CRITICAL EMERGENCY ALERT
+</div><header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant h-16">
+<div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">health_and_safety</span>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">RescueMind AI</h1>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Reports</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Analytics</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="bg-surface-container-high px-sm py-1.5 rounded-lg border border-outline-variant font-label-md text-label-md hover:bg-surface-variant transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">language</span>
+                    EN / FIL
+                </button>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary">help</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a government administrator in a clean office setting, featuring soft natural lighting and a high-contrast corporate aesthetic consistent with official government portals. The mood is trustworthy and focused." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCU9JBN2gOmvvtTvVk18vvqpe97eEnGhP1O-_nHdDOBjVzZQah8pPI6GUHzL_lG3etIeK_Tn8Frq6flJZhewMMtqMlYy45LFpgKtllN4sTH4PdwRxVq6vbfaZJ1x4cxXzfCxdaVhR7BRAMU6-PDMgh48yBbvZ4LnQGetQ4sOKWqmKl9WEQYRQEIyAO4PL1cKqgJ6q7BE45LQtnVCmovIDWrlaIyhUVfE7hHv9dnElRkY8PmAAL7FhBHvXtpYO_WO-4byqW8e7IpJek"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow pb-xl px-gutter max-w-4xl mx-auto w-full pt-40">
+<!-- Hero / Input State -->
+<section class="space-y-lg animate-in fade-in duration-500" data-state="inactive" id="input-state">
+<div class="text-center space-y-sm">
+<h2 class="font-display-lg text-display-lg text-primary tracking-tight">How can we help you today?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Ano ang maipaglilingkod namin sa inyo?</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm bento-card">
+<label class="sr-only" for="emergency-input">Type your emergency or complaint</label>
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-body-md font-body-md placeholder:text-outline p-0 resize-none" id="emergency-input" placeholder="Describe the situation here... (e.g., 'May baha sa tapat ng aming bahay sa San Jose.')" rows="6"></textarea>
+<div class="flex justify-between items-center mt-md pt-md border-t border-outline-variant">
+<div class="flex gap-sm">
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+                            Add Location
+                        </button>
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+                            Add Photo
+                        </button>
+</div>
+<button class="bg-primary text-on-primary px-lg py-3 rounded-lg font-label-md text-label-md font-bold hover:opacity-90 active:scale-95 transition-all shadow-md" onclick="submitReport()">
+                        Submit Report
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="p-md border border-outline-variant rounded-xl bg-surface-container-low bento-card">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">emergency_home</span>
+<h3 class="font-label-md text-label-md font-bold">Emergency Dispatch</h3>
+</div>
+<p class="text-label-sm text-on-surface-variant">Quick reporting for medical, fire, or rescue needs.</p>
+</div>
+<div class="p-md border border-outline-variant rounded-xl bg-surface-container-low bento-card">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<h3 class="font-label-md text-label-md font-bold">Community Concerns</h3>
+</div>
+<p class="text-label-sm text-on-surface-variant">Report sanitation, noise, or public safety issues.</p>
+</div>
+</div>
+</section>
+<!-- Loading State -->
+<section class="flex flex-col items-center justify-center py-xl space-y-lg animate-in zoom-in-95 duration-500" data-state="inactive" id="loading-state">
+<div class="loading-container relative">
+<div class="loading-ring"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px] animate-pulse">psychology</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="font-headline-md text-headline-md text-primary">AI is triaging your report...</h3>
+<p class="font-body-md text-on-surface-variant mt-xs">Sinusuri ng AI ang iyong ulat para sa mabilis na aksyon.</p>
+</div>
+<div class="w-full max-w-sm space-y-sm">
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" id="loading-progress" style="width: 0%"></div>
+</div>
+<div class="flex justify-between text-label-sm text-on-surface-variant">
+<span>Analyzing language...</span>
+<span id="progress-text">0%</span>
+</div>
+</div>
+</section>
+<!-- Result State -->
+<section class="space-y-lg animate-in slide-in-from-bottom-10 duration-700" data-state="active" id="result-state">
+<div class="flex items-center gap-sm text-secondary font-bold mb-md">
+<span class="material-symbols-outlined">check_circle</span>
+<span class="font-label-md text-label-md">Report Successfully Submitted</span>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-lg border-l-8 border-l-error">
+<div class="p-lg">
+<div class="flex flex-wrap justify-between items-start gap-md mb-lg">
+<div class="space-y-base">
+<span class="text-label-sm text-on-surface-variant uppercase tracking-widest">Tracking ID</span>
+<div class="font-headline-md text-headline-md font-black tracking-tight">RM-20260623-RESCUE</div>
+</div>
+<div class="flex gap-sm"><span class="bg-surface-container-high text-on-surface font-label-sm text-label-sm px-sm py-1 rounded-full border border-outline-variant">Disaster / Flooding</span>
+<span class="bg-error text-on-error font-label-sm text-label-sm px-sm py-1 rounded-full shadow-sm font-bold">CRITICAL</span></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+<div class="space-y-sm">
+<h4 class="font-label-md text-label-md font-bold text-on-surface-variant">Assigned Office</h4>
+<div class="flex items-center gap-sm p-sm bg-surface-container rounded-lg"><span class="bg-surface-container-high text-on-surface font-label-sm text-label-sm px-sm py-1 rounded-full border border-outline-variant">Disaster / Flooding</span>
+<span class="bg-error text-on-error font-label-sm text-label-sm px-sm py-1 rounded-full shadow-sm font-bold">CRITICAL</span></div>
+</div>
+<div class="space-y-sm">
+<h4 class="font-label-md text-label-md font-bold text-on-surface-variant">Response Estimated</h4>
+<div class="flex items-center gap-sm p-sm bg-surface-container rounded-lg"><span class="bg-surface-container-high text-on-surface font-label-sm text-label-sm px-sm py-1 rounded-full border border-outline-variant">Disaster / Flooding</span>
+<span class="bg-error text-on-error font-label-sm text-label-sm px-sm py-1 rounded-full shadow-sm font-bold">CRITICAL</span></div>
+</div>
+</div>
+<div class="bg-primary-container text-on-primary-container p-md rounded-xl space-y-sm relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-10">
+<span class="material-symbols-outlined text-[80px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex items-center gap-sm"><span class="bg-surface-container-high text-on-surface font-label-sm text-label-sm px-sm py-1 rounded-full border border-outline-variant">Disaster / Flooding</span>
+<span class="bg-error text-on-error font-label-sm text-label-sm px-sm py-1 rounded-full shadow-sm font-bold">CRITICAL</span></div>
+<p class="font-body-md leading-relaxed italic">"KRITIKAL: Nakita ang panganib ng baha. Ang inyong ulat ay ipinadala na sa CDRRMO at Barangay Rescue Team para sa agarang aksyon. Manatili sa ligtas na lugar."</p>
+</div>
+</div>
+<div class="px-lg py-md bg-surface-container-low flex justify-between items-center"><button class="bg-error text-on-error px-lg py-2 rounded-lg font-label-md text-label-md font-bold flex items-center gap-xs hover:opacity-90 shadow-md">
+<span class="material-symbols-outlined">call</span>
+    Call Emergency Hotline
+</button>
+<button class="text-primary font-label-md text-label-md font-bold hover:underline">Download Receipt</button>
+<button class="bg-primary text-on-primary px-md py-2 rounded-lg font-label-md text-label-md hover:opacity-90" onclick="resetPortal()">Back to Home</button>
+</div>
+</div>
+<!-- Contextual Map Component -->
+<div class="h-64 rounded-xl overflow-hidden border border-outline-variant shadow-sm bento-card relative bg-surface-container-highest">
+<div class="absolute inset-0 opacity-40">
+        {{DATA:IMAGE:IMAGE_1}}
+    </div>
+<div class="absolute inset-0 flex flex-col items-center justify-center bg-primary/10">
+<div class="bg-white/90 p-md rounded-xl shadow-lg flex items-center gap-md border border-primary">
+<div class="w-12 h-12 bg-error rounded-full flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-white">emergency</span>
+</div>
+<div>
+<h4 class="font-bold text-primary">Dispatching Help...</h4>
+<p class="text-label-sm text-on-surface-variant">Units are en route to your location.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface border-t border-outline-variant mt-xl">
+<div class="max-w-container-max mx-auto px-gutter py-lg flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-label-md font-bold text-primary">RescueMind AI</span>
+<span class="text-outline text-label-sm">© 2026 Republic of the Philippines</span>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Barangay</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Emergency Hotlines</a>
+</div>
+</div>
+</footer>
+<!-- Scripts for micro-interactions -->
+<script>
+        function showState(stateId) {
+            document.querySelectorAll('[data-state]').forEach(el => el.setAttribute('data-state', 'inactive'));
+            document.getElementById(stateId).setAttribute('data-state', 'active');
+        }
+
+        function submitReport() {
+            const input = document.getElementById('emergency-input').value;
+            if (!input.trim()) {
+                alert("Mangyaring ilagay ang detalye ng inyong ulat.");
+                return;
+            }
+
+            showState('loading-state');
+            
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.floor(Math.random() * 20) + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(progressInterval);
+                    setTimeout(() => showState('result-state'), 500);
+                }
+                document.getElementById('loading-progress').style.width = progress + '%';
+                document.getElementById('progress-text').innerText = progress + '%';
+            }, 300);
+        }
+
+        function resetPortal() {
+            document.getElementById('emergency-input').value = '';
+            document.getElementById('loading-progress').style.width = '0%';
+            document.getElementById('progress-text').innerText = '0%';
+            showState('input-state');
+        }
+    </script>
+</body></html>
