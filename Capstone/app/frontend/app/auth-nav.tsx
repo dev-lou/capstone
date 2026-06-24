@@ -136,9 +136,9 @@ export function AuthNav() {
 
   // Not logged in
   return (
-    <Link href="/auth" className="btn btn-primary text-sm py-2 px-4 rounded-full">
-      <IconArrowRight />
+    <Link href="/auth" className="btn btn-accent text-sm py-2 px-5 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
       <span>Sign In</span>
+      <IconArrowRight className="w-3.5 h-3.5" />
     </Link>
   );
 }
