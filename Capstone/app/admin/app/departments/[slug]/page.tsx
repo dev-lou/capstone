@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { getDepartmentBySlug, getDepartmentSlug, DEPARTMENTS } from "@/lib/departments";
+import { reportsToCsv, downloadFile, generateExportFilename } from "@/lib/export";
 
 interface Report {
   id: number;
@@ -113,6 +114,21 @@ export default function DepartmentPage() {
             <span className="text-xs font-bold text-[var(--color-text-muted)] bg-[var(--color-bg-alt)] px-3 py-1 rounded-full">({dept.acronym})</span>
           </h1>
           <p className="text-sm text-[var(--color-text-secondary)] mt-1">{dept.description}</p>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          {reports.length > 0 && (
+            <button
+              onClick={() => {
+                const fieldOrder = ["tracking_id", "category", "urgency", "status", "office", "barangay", "city", "province", "confidence", "needs_human_review", "created_at", "text", "explanation"];
+                const csv = reportsToCsv(reports.map(r => ({...r})), fieldOrder);
+                downloadFile(csv, generateExportFilename(`rescuemind-${dept.slug}-reports`, "csv"), "text/csv");
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-[var(--color-ph-navy)] dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-600 transition-all"
+            >
+              <svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224,152v56a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V152a8,8,0,0,1,16,0v56H208V152a8,8,0,0,1,16,0ZM93.66,77.66,120,51.31V144a8,8,0,0,0,16,0V51.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,77.66Z"/></svg>
+              Export CSV
+            </button>
+          )}
         </div>
       </motion.div>
 

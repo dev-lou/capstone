@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { getDepartmentSlug, getDepartmentBySlug } from "@/lib/departments";
@@ -100,6 +100,7 @@ export default function ReportDetailPage() {
   const params = useParams();
   const id = params.id as string;
 
+  const router = useRouter();
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -271,6 +272,27 @@ export default function ReportDetailPage() {
               {nextAction.action}
             </button>
           )}
+          <button
+            onClick={async () => {
+              if (!window.confirm("Delete this report? This action cannot be undone.")) return;
+              setUpdating(true);
+              try {
+                const res = await fetch(`/api/reports/${encodeURIComponent(id)}`, { method: "DELETE" });
+                if (!res.ok) throw new Error("Failed to delete");
+                router.push(`/departments/${getDepartmentSlug(report.office)}`);
+                router.refresh();
+              } catch (err) {
+                setUpdateError(err instanceof Error ? err.message : "Failed to delete report");
+              } finally {
+                setUpdating(false);
+              }
+            }}
+            disabled={updating}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-red-200 dark:border-red-800 bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-red-950/30 text-red-500 text-xs font-bold transition-all disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]"
+          >
+            <svg width="12" height="12" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM192,208H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"/></svg>
+            Delete
+          </button>
         </div>
       </div>
 

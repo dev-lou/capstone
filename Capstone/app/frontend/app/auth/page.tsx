@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, useCallback } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -131,7 +131,6 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [mode, setMode] = useState<"login" | "signup">("login");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -141,27 +140,32 @@ export default function AuthPage() {
     setLoading(true);
 
     try {
-      if (mode === "signup") {
-        const { error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-        if (signUpError) throw signUpError;
+      if (signInError) throw signInError;
 
-        router.push("/dashboard");
-        router.refresh();
-      } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+      // Check if user has admin role — admins must use the standalone admin portal
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
 
-        if (signInError) throw signInError;
-
-        router.push("/dashboard");
-        router.refresh();
+        if (profile?.role === "admin") {
+          await supabase.auth.signOut();
+          setError("Admin access is restricted to the Admin Portal only. Please use the admin dashboard at the admin URL.");
+          setLoading(false);
+          return;
+        }
       }
+
+      router.push("/dashboard");
+      router.refresh();
     } catch (err) {
       const message =
         err instanceof Error
@@ -173,20 +177,15 @@ export default function AuthPage() {
     }
   };
 
-  const toggleMode = useCallback(() => {
-    setMode((prev) => (prev === "login" ? "signup" : "login"));
-    setError(null);
-  }, []);
-
   return (
-    <div className={`min-h-screen bg-[var(--color-bg)] flex flex-col lg:flex-row ${mode === "signup" ? "lg:flex-row-reverse" : ""} transition-all duration-500 ease-in-out`}>
+    <div className="min-h-screen bg-[var(--color-bg)] flex flex-col lg:flex-row transition-all duration-500 ease-in-out">
       
       {/* ── HALF 1: TRUST & HERO BACKGROUND (w-1/2) ─────────────────────────────────────── */}
       <div className="lg:w-1/2 relative min-h-[380px] lg:min-h-screen flex flex-col justify-between p-8 lg:p-16 overflow-hidden bg-slate-950 text-white">
         {/* Absolute Background Image with Smooth Gradient Overlay */}
         <div className="absolute inset-0 z-0">
           <div 
-            className={`absolute inset-0 bg-cover bg-center transition-all duration-700 scale-105 transform ${mode === "login" ? "bg-[url('/command_center_hero.png')]" : "bg-[url('/bento_resilience_bg.png')]"}`} 
+            className="absolute inset-0 bg-cover bg-center transition-all duration-700 scale-105 transform bg-[url('/command_center_hero.png')]" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/40 backdrop-blur-[2px]" />
         </div>
@@ -208,21 +207,15 @@ export default function AuthPage() {
         <div className="relative z-10 my-auto py-12 max-w-xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-ph-gold)]/15 border border-[var(--color-ph-gold)]/40 text-[var(--color-ph-gold)] text-xs font-bold uppercase tracking-widest mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-ph-gold)] animate-pulse" />
-            {mode === "login" ? "Civic Intelligence Portal" : "Next-Gen LGU Registration"}
+            Civic Intelligence Portal
           </div>
           
           <h1 className="text-3xl lg:text-5xl font-black text-white tracking-tight leading-[1.15] mb-6">
-            {mode === "login" ? (
-              <>Empowering Local Government Units with <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[var(--color-ph-gold-light)] to-[var(--color-ph-gold)]">Civic Intelligence.</span></>
-            ) : (
-              <>Institutional Grade Protection & <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[var(--color-ph-gold-light)] to-[var(--color-ph-gold)]">High-Speed Triage.</span></>
-            )}
+            <>Empowering Local Government Units with <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[var(--color-ph-gold-light)] to-[var(--color-ph-gold)]">Civic Intelligence.</span></>
           </h1>
 
           <p className="text-slate-300 text-base lg:text-lg leading-relaxed mb-8">
-            {mode === "login"
-              ? "Access the unified central dashboard for real-time dispatch, AI-powered citizen intake, and multi-agency coordination across the Philippines."
-              : "Deploy state-of-the-art emergency management infrastructure for your barangay. Built to withstand extreme disaster load with zero downtime."}
+            Access the unified central dashboard for real-time dispatch, AI-powered citizen intake, and multi-agency coordination across the Philippines.
           </p>
 
           {/* Compliance & Standard Badges */}
@@ -293,43 +286,17 @@ export default function AuthPage() {
 
             <div className="mb-8 text-center">
               <h2 className="text-2xl sm:text-3xl font-black text-[var(--color-text-strong)] tracking-tight mb-2">
-                {mode === "login" ? "Welcome Back" : "Create Account"}
+                Welcome Back
               </h2>
               <p className="text-xs sm:text-sm text-[var(--color-text-muted)]">
-                {mode === "login" 
-                  ? "Enter your credentials to access the central triage dashboard" 
-                  : "Register your official LGU dispatch credentials below"}
+                Enter your credentials to access the central triage dashboard
               </p>
             </div>
 
-            {/* Premium Toggle Tabs */}
-            <div className="flex bg-[var(--color-bg-alt)] rounded-xl p-1.5 mb-8" role="tablist">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={mode === "login"}
-                onClick={() => mode !== "login" && toggleMode()}
-                className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 ${
-                  mode === "login"
-                    ? "bg-[var(--color-surface)] text-[var(--color-ph-navy)] dark:text-white shadow-md shadow-black/5"
-                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={mode === "signup"}
-                onClick={() => mode !== "signup" && toggleMode()}
-                className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 ${
-                  mode === "signup"
-                    ? "bg-[var(--color-surface)] text-[var(--color-ph-navy)] dark:text-white shadow-md shadow-black/5"
-                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-                }`}
-              >
-                Sign Up
-              </button>
+            <div className="mb-8 text-center">
+              <p className="text-xs text-[var(--color-text-muted)]">
+                For barangay officials and LGU personnel. Citizens can submit reports without an account.
+              </p>
             </div>
 
             {/* Error / Success Alerts */}
@@ -391,16 +358,10 @@ export default function AuthPage() {
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder={
-                        mode === "signup"
-                          ? "Minimum 6 characters"
-                          : "Enter your password"
-                      }
+                      placeholder="Enter your password"
                       required
                       minLength={6}
-                      autoComplete={
-                        mode === "login" ? "current-password" : "new-password"
-                      }
+                      autoComplete="current-password"
                       className="input pl-12 pr-12 py-3.5 text-sm sm:text-base rounded-xl bg-[var(--color-bg)] focus:bg-[var(--color-surface)]"
                     />
                     <button
@@ -412,11 +373,7 @@ export default function AuthPage() {
                       {showPassword ? <IconEyeSlash className="w-5 h-5" /> : <IconEye className="w-5 h-5" />}
                     </button>
                   </div>
-                  {mode === "signup" && (
-                    <p className="text-xs text-[var(--color-text-muted)] mt-2 font-medium">
-                      Password must be at least 6 characters long
-                    </p>
-                  )}
+
                 </motion.div>
 
                 {/* Submit Button */}
@@ -429,20 +386,11 @@ export default function AuthPage() {
                     {loading ? (
                       <>
                         <IconSpinner className="w-5 h-5" />
-                        <span>
-                          {mode === "login"
-                            ? "Authenticating credentials..."
-                            : "Registering standard..."}
-                        </span>
-                      </>
-                    ) : mode === "login" ? (
-                      <>
-                        <span>Sign In to Portal</span>
-                        <IconArrowRight className="w-4 h-4" />
+                        <span>Authenticating credentials...</span>
                       </>
                     ) : (
                       <>
-                        <span>Complete Registration</span>
+                        <span>Sign In to Portal</span>
                         <IconArrowRight className="w-4 h-4" />
                       </>
                     )}

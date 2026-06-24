@@ -5,31 +5,17 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   getReports,
-  updateReportStatus,
-  deleteReport,
-  clearReports,
   type SavedReport,
-  type ReportStatus,
 } from "@/lib/storage";
 import { useI18n } from "@/lib/i18n";
 import {
-  reportsToCsv,
-  downloadCsv,
-  downloadJson,
-  generateExportFilename,
-} from "@/lib/export";
-import {
   IconChartBar,
   IconCircle,
-  IconCheck,
-  IconTrash,
   IconSearch,
   IconPlus,
-  IconDownload,
   IconBuilding,
   IconClock,
   IconArrowRight,
-  IconShield,
 } from "../components/icons";
 import { ThemeToggle } from "../navigation-shell";
 
@@ -85,11 +71,10 @@ const stagger = {
 export default function DashboardPage() {
   const { t, lang } = useI18n();
   const [reports, setReports] = useState<SavedReport[]>([]);
-  const [filter, setFilter] = useState<"all" | ReportStatus>("all");
+  const [filter, setFilter] = useState<"all" | "pending" | "in-progress" | "resolved">("all");
   const [urgencyFilter, setUrgencyFilter] = useState("");
   const [search, setSearch] = useState("");
   const [isClient, setIsClient] = useState(false);
-  const [exported, setExported] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
@@ -98,46 +83,6 @@ export default function DashboardPage() {
   }, []);
 
   const refreshReports = useCallback(() => setReports(getReports()), []);
-
-  const handleStatusChange = useCallback(
-    (id: string, status: ReportStatus) => {
-      updateReportStatus(id, status);
-      refreshReports();
-    },
-    [refreshReports],
-  );
-
-  const handleDelete = useCallback(
-    (id: string) => {
-      deleteReport(id);
-      refreshReports();
-    },
-    [refreshReports],
-  );
-
-  const handleClearAll = useCallback(() => {
-    if (
-      window.confirm(
-        lang === "fil" ? "Burahin lahat ng reports?" : "Delete all reports?",
-      )
-    ) {
-      clearReports();
-      refreshReports();
-    }
-  }, [lang, refreshReports]);
-
-  const handleExportCsv = useCallback(() => {
-    const csv = reportsToCsv(reports, lang);
-    downloadCsv(csv, generateExportFilename("rescuemind-reports", "csv"));
-    setExported(true);
-    setTimeout(() => setExported(false), 2000);
-  }, [reports, lang]);
-
-  const handleExportJson = useCallback(() => {
-    downloadJson(reports, generateExportFilename("rescuemind-reports", "json"));
-    setExported(true);
-    setTimeout(() => setExported(false), 2000);
-  }, [reports]);
 
   const filtered = useMemo(() => {
     let list = reports;
@@ -255,45 +200,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* SYSTEM ACTIONS */}
-            <div className="w-full">
-              {!sidebarCollapsed && (
-                <div className="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 px-3">
-                  System Actions
-                </div>
-              )}
-              <div className={`space-y-1.5 w-full ${sidebarCollapsed ? "flex flex-col items-center" : ""}`}>
 
-                {reports.length > 0 && (
-                  <>
-                    <button
-                      onClick={handleExportCsv}
-                      className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 mx-auto transition-all" : "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 font-bold text-sm transition-all text-left"}
-                      title={sidebarCollapsed ? "Export CSV" : undefined}
-                    >
-                      <IconDownload className="w-5 h-5 text-green-500 shrink-0" />
-                      {!sidebarCollapsed && <span>Export CSV</span>}
-                    </button>
-                    <button
-                      onClick={handleExportJson}
-                      className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 mx-auto transition-all" : "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 font-bold text-sm transition-all text-left"}
-                      title={sidebarCollapsed ? "Export JSON" : undefined}
-                    >
-                      <IconDownload className="w-5 h-5 text-purple-500 shrink-0" />
-                      {!sidebarCollapsed && <span>Export JSON</span>}
-                    </button>
-                    <button
-                      onClick={handleClearAll}
-                      className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 mx-auto transition-all" : "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 font-bold text-sm transition-all text-left"}
-                      title={sidebarCollapsed ? t("nav.dashboard") : undefined}
-                    >
-                      <IconTrash className="w-5 h-5 text-red-500 shrink-0" />
-                      {!sidebarCollapsed && <span>{t("nav.dashboard")}</span>}
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
           </div>
         </div>
 
@@ -324,13 +231,13 @@ export default function DashboardPage() {
           {/* Official Profile Lockup */}
           {sidebarCollapsed ? (
             <div className="w-12 h-12 rounded-2xl bg-[var(--color-ph-navy)] text-[var(--color-ph-gold)] flex items-center justify-center font-black text-base mx-auto border border-white/10 shadow-md" title="Barangay Admin">
-              🇵🇭
+              <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM128,76a32,32,0,1,1-32,32A32,32,0,0,1,128,76Zm0,48a16,16,0,1,0-16-16A16,16,0,0,0,128,124Zm0,76c-17.57,0-33.22-5.59-44.83-14.54A8,8,0,0,1,91.53,175c8.6,5.45,17.35,9,36.47,9s27.87-3.55,36.47-9a8,8,0,1,1,8.38,13.63C161.22,194.41,145.57,200,128,200Z" /></svg>
             </div>
           ) : (
             <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-md">
               <div className="flex items-center gap-3.5 min-w-0">
                 <div className="w-10 h-10 rounded-2xl bg-[var(--color-ph-navy)] text-[var(--color-ph-gold)] flex items-center justify-center font-black text-base shrink-0 border border-white/10 shadow-sm">
-                  🇵🇭
+                  <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM128,76a32,32,0,1,1-32,32A32,32,0,0,1,128,76Zm0,48a16,16,0,1,0-16-16A16,16,0,0,0,128,124Zm0,76c-17.57,0-33.22-5.59-44.83-14.54A8,8,0,0,1,91.53,175c8.6,5.45,17.35,9,36.47,9s27.87-3.55,36.47-9a8,8,0,1,1,8.38,13.63C161.22,194.41,145.57,200,128,200Z" /></svg>
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="font-extrabold text-sm text-slate-800 dark:text-slate-200 truncate">Barangay Admin</div>
@@ -419,19 +326,7 @@ export default function DashboardPage() {
                 <option value="low">{t("dashboard.low")}</option>
               </select>
 
-              {/* Theme Toggle */}
-              <div className="flex items-center gap-2">
-                <ThemeToggle />
-                {reports.length > 0 && (
-                  <button
-                    onClick={handleExportCsv}
-                    className="p-2 rounded-full border border-slate-200 dark:border-slate-800 hover:border-[var(--color-ph-gold)] bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-xs"
-                    title="Export CSV"
-                  >
-                    <IconDownload className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
+              <ThemeToggle />
             </div>
           </header>
 
@@ -530,15 +425,7 @@ export default function DashboardPage() {
               <h2 className="text-sm font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                 {lang === "fil" ? "Listahan ng mga Aktibong Insidente" : "Active Incident Ledger"}
               </h2>
-              {reports.length > 0 && (
-                <button
-                  onClick={handleClearAll}
-                  className="text-xs font-bold text-red-500 hover:text-red-600 dark:text-red-400 flex items-center gap-1 py-1 px-3 rounded-full hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
-                >
-                  <IconTrash className="w-3.5 h-3.5" />
-                  <span>{t("dashboard.total")}</span>
-                </button>
-              )}
+
             </div>
 
             <AnimatePresence mode="wait">
@@ -654,33 +541,7 @@ export default function DashboardPage() {
                             {statusLabel}
                           </span>
 
-                          <div className="flex items-center gap-2">
-                            {report.status !== "resolved" && (
-                              <button
-                                onClick={() =>
-                                  handleStatusChange(
-                                    report.trackingId,
-                                    report.status === "pending" ? "in-progress" : "resolved"
-                                  )
-                                }
-                                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-[var(--color-ph-navy)] bg-white dark:bg-slate-900 hover:bg-[var(--color-ph-navy)] text-[var(--color-ph-navy)] hover:text-white dark:text-blue-400 dark:hover:text-white transition-all shadow-xs"
-                                title={
-                                  report.status === "pending"
-                                    ? t("dashboard.markInProgress")
-                                    : t("dashboard.markResolved")
-                                }
-                              >
-                                <IconCheck className="w-4 h-4" />
-                              </button>
-                            )}
-                            <button
-                              onClick={() => handleDelete(report.trackingId)}
-                              className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-red-500 bg-white dark:bg-slate-900 hover:bg-red-500 text-red-500 hover:text-white transition-all shadow-xs"
-                              title={t("dashboard.noReports")}
-                            >
-                              <IconTrash className="w-4 h-4" />
-                            </button>
-                          </div>
+
                         </div>
                       </motion.div>
                     );

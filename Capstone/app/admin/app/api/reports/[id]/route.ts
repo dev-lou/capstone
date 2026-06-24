@@ -13,6 +13,36 @@ interface Note {
   created_at: string;
 }
 
+async function getAuthenticatedClient(cookieStore: Awaited<ReturnType<typeof cookies>>) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll(); },
+        setAll() { /* read-only on cookies */ },
+      },
+    }
+  );
+}
+
+async function checkAdmin(supabase: ReturnType<typeof createServerClient>) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role, full_name, email")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role !== "admin") {
+    return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
+  }
+
+  return { user, profile };
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -46,31 +76,10 @@ export async function PATCH(
 
     // ── Auth ──────────────────────────────────────────────
 
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() { return cookieStore.getAll(); },
-          setAll() { /* read-only on cookies */ },
-        },
-      }
-    );
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role, full_name, email")
-      .eq("id", user.id)
-      .single();
-
-    if (profile?.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const supabase = await getAuthenticatedClient(cookieStore);
+    const auth = await checkAdmin(supabase);
+    if (auth.error) return auth.error;
+    const { profile } = auth;
 
     // ── Get existing report ───────────────────────────────
 
@@ -117,6 +126,43 @@ export async function PATCH(
     }
 
     return NextResponse.json({ report: updated, success: true });
+  } catch (err) {
+    console.error("[Admin API] Unexpected error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: trackingId } = await params;
+    const cookieStore = await cookies();
+
+    if (!trackingId) {
+      return NextResponse.json({ error: "Tracking ID is required" }, { status: 400 });
+    }
+
+    // ── Auth ──────────────────────────────────────────────
+
+    const supabase = await getAuthenticatedClient(cookieStore);
+    const auth = await checkAdmin(supabase);
+    if (auth.error) return auth.error;
+
+    // ── Delete ─────────────────────────────────────────────
+
+    const { error: deleteError } = await supabase
+      .from("reports")
+      .delete()
+      .eq("tracking_id", trackingId);
+
+    if (deleteError) {
+      console.error("[Admin API] Delete error:", deleteError);
+      return NextResponse.json({ error: "Failed to delete report" }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[Admin API] Unexpected error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
