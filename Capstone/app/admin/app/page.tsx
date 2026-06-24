@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { Suspense, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 
@@ -55,7 +55,7 @@ function IconArrowRight() {
   );
 }
 
-export default function AdminLoginPage() {
+function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
@@ -294,5 +294,17 @@ export default function AdminLoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#f8f9fc] flex items-center justify-center">
+        <div className="animate-pulse text-slate-400 text-sm font-semibold">Loading...</div>
+      </div>
+    }>
+      <AdminLoginForm />
+    </Suspense>
   );
 }
