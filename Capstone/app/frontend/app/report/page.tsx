@@ -599,8 +599,7 @@ export default function ReportPage() {
       </aside>
 
       {/* ── Main Content Area — Embedded Rounded Content Container (Optimized & Maximized) ─────────────────────────────────────── */}
-      <main className="flex-1 p-3 sm:p-4 md:pl-0 min-w-0 flex flex-col h-screen overflow-hidden">
-        <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl shadow-slate-200/50 dark:shadow-black/40 border border-slate-200 dark:border-slate-800/80 flex-1 flex flex-col p-6 sm:p-8 overflow-y-auto relative">
+      <main className="flex-1 p-3 sm:p-4 md:pl-0 min-w-0 flex flex-col h-screen overflow-hidden">          <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl shadow-slate-200/50 dark:shadow-black/40 border border-slate-200 dark:border-slate-800/80 flex-1 flex flex-col p-6 sm:p-8 pb-24 md:pb-8 overflow-y-auto relative">
           
           {/* ── Top Bar inside Rounded Container ────────────────────────────────────── */}
           <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800/60 shrink-0">
@@ -1207,6 +1206,36 @@ export default function ReportPage() {
 
         </div>
       </main>
+      {/* ── Mobile Bottom Navigation (md:hidden) ──────────────────── */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-2xl shadow-black/20 dark:shadow-black/60 safe-bottom">
+        <div className="flex items-center justify-around py-1.5 px-2 max-w-lg mx-auto">
+          <Link
+            href="/"
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors"
+            aria-label="Home"
+          >
+            <IconBuilding className="w-5 h-5" />
+            <span className="text-[0.55rem] font-bold uppercase tracking-wider">Home</span>
+          </Link>
+          <Link
+            href="/dashboard"
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors"
+            aria-label="Dashboard"
+          >
+            <IconChartBar className="w-5 h-5" />
+            <span className="text-[0.55rem] font-bold uppercase tracking-wider">Dashboard</span>
+          </Link>
+          <Link
+            href="/report"
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl text-[var(--color-ph-navy)] dark:text-[var(--color-ph-gold)] font-bold"
+            aria-label="Report"
+          >
+            <IconPlus className="w-5 h-5" />
+            <span className="text-[0.55rem] font-bold uppercase tracking-wider">Report</span>
+          </Link>
+
+        </div>
+      </nav>
     </div>
   );
 }

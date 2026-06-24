@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { AuthNav } from "./auth-nav";
 import { IconSun, IconMoon } from "./components/icons";
 import { NavLink } from "./components/nav-link";
@@ -14,6 +15,7 @@ export function SiteNavbar() {
   const { t } = useI18n();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +26,15 @@ export function SiteNavbar() {
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileMenuOpen]);
 
   if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/report") || pathname?.startsWith("/auth")) return null;
 
@@ -78,8 +89,91 @@ export function SiteNavbar() {
           <LanguageSelector />
           <ThemeToggle />
           <AuthNav />
+
+          {/* ── Hamburger Menu Button (mobile only) ──────────────── */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-slate-950/60 hover:bg-slate-900/80 border border-white/15 hover:border-[var(--color-ph-gold)]/50 backdrop-blur-2xl text-slate-200 hover:text-white shadow-xl shadow-black/50 transition-all"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? (
+              <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+                <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+                <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z" />
+              </svg>
+            )}
+          </button>
         </div>
       </nav>
+
+      {/* ── Mobile Slide-down Menu ────────────────────────────────── */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <div className="pointer-events-auto md:hidden fixed inset-0 top-0 left-0 right-0 z-40">
+            {/* Backdrop */}
+            <motion.div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="absolute top-20 left-4 right-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border border-slate-200 dark:border-white/10 rounded-[2rem] shadow-2xl shadow-black/30 p-6 space-y-4"
+          >
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-sm transition-all"
+            >
+              <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+                <path d="M218.83,103.77l-80-75.5a16,16,0,0,0-21.66,0l-80,75.5A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77Z" />
+              </svg>
+              Home
+            </Link>
+            <Link
+              href="/report"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-sm transition-all"
+            >
+              <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+                <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z" />
+              </svg>
+              Report
+            </Link>
+            <Link
+              href="/dashboard"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-sm transition-all"
+            >
+              <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+                <path d="M232,208a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V48a8,8,0,0,1,16,0V200H224A8,8,0,0,1,232,208ZM72,168a8,8,0,0,0,16,0V120a8,8,0,0,0-16,0Zm48,0a8,8,0,0,0,16,0V72a8,8,0,0,0-16,0Zm48,0a8,8,0,0,0,16,0V96a8,8,0,0,0-16,0Z" />
+              </svg>
+              Dashboard
+            </Link>
+
+            <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <LanguageSelector />
+                </div>
+                <ThemeToggle />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+      </AnimatePresence>
     </div>
   );
 }

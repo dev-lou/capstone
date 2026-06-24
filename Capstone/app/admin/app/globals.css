@@ -213,6 +213,9 @@
     .dark .alert-warning { background: var(--color-warning-bg); color: #fde68a; border-color: var(--color-warning-border); }
     .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ph-gold); line-height: 1.4; }
     .divider { height: 1px; background: var(--color-border); margin: 1.25rem 0; border: none; }
+    .safe-bottom {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
     .ph-flag-bar { height: 4px; background: linear-gradient(90deg, #0038a8 0%, #0038a8 33.33%, #ce1126 33.33%, #ce1126 66.66%, #fcd116 66.66%, #fcd116 100%); }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-clamp: 2; overflow: hidden; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }

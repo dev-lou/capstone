@@ -249,10 +249,39 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
       {/* ── Main Content ───────────────────────────────────── */}
       <main className="flex-1 p-3 sm:p-4 md:pl-0 min-w-0 flex flex-col h-screen overflow-hidden">
-        <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl shadow-slate-200/50 dark:shadow-black/40 border border-slate-200 dark:border-slate-800/80 flex-1 flex flex-col p-6 sm:p-10 overflow-y-auto">
+        <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl shadow-slate-200/50 dark:shadow-black/40 border border-slate-200 dark:border-slate-800/80 flex-1 flex flex-col p-6 sm:p-10 pb-24 md:pb-10 overflow-y-auto">
           {children}
         </div>
       </main>
+      {/* ── Mobile Bottom Navigation (md:hidden) ──────────────────── */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-2xl shadow-black/20 dark:shadow-black/60 safe-bottom">
+        <div className="flex items-center justify-around py-1.5 px-2 max-w-lg mx-auto">
+          <Link
+            href="/dashboard"
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl text-[var(--color-ph-navy)] dark:text-[var(--color-ph-gold)] font-bold"
+            aria-label="Dashboard"
+          >
+            <IconChartBar className="w-5 h-5" />
+            <span className="text-[0.55rem] font-bold uppercase tracking-wider">Dashboard</span>
+          </Link>
+          <button
+            onClick={toggleTheme}
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors"
+            aria-label="Toggle theme"
+          >
+            {isDark ? <IconSun className="w-5 h-5 text-amber-500" /> : <IconMoon className="w-5 h-5 text-indigo-500" />}
+            <span className="text-[0.55rem] font-bold uppercase tracking-wider">Theme</span>
+          </button>
+          <button
+            onClick={handleSignOut}
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+            aria-label="Sign Out"
+          >
+            <IconSignOut className="w-5 h-5" />
+            <span className="text-[0.55rem] font-bold uppercase tracking-wider">Sign Out</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }

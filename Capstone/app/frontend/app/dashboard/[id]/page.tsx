@@ -22,6 +22,7 @@ import {
   IconTrash,
   IconWarning,
   IconChartBar,
+  IconPlus,
 } from "../../components/icons";
 
 // ── Motion Variants ──────────────────────────────────────────
@@ -228,7 +229,7 @@ export default function ReportDetailPage() {
       </div>
 
       {/* ── Main Content ─────────────────────────────────────── */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
         <motion.div
           variants={fadeUp}
           initial="initial"
@@ -468,6 +469,36 @@ export default function ReportDetailPage() {
           </div>
         </motion.div>
       </div>
+
+      {/* ── Mobile Bottom Navigation (md:hidden) ──────────────────── */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-2xl shadow-black/20 dark:shadow-black/60 safe-bottom">
+        <div className="flex items-center justify-around py-1.5 px-2 max-w-lg mx-auto">
+          <Link
+            href="/"
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors"
+            aria-label="Home"
+          >
+            <IconBuilding className="w-5 h-5" />
+            <span className="text-[0.55rem] font-bold uppercase tracking-wider">Home</span>
+          </Link>
+          <Link
+            href="/dashboard"
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl text-[var(--color-ph-navy)] dark:text-[var(--color-ph-gold)] font-bold"
+            aria-label="Dashboard"
+          >
+            <IconChartBar className="w-5 h-5" />
+            <span className="text-[0.55rem] font-bold uppercase tracking-wider">Dashboard</span>
+          </Link>
+          <Link
+            href="/report"
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors"
+            aria-label="Report"
+          >
+            <IconPlus className="w-5 h-5" />
+            <span className="text-[0.55rem] font-bold uppercase tracking-wider">Report</span>
+          </Link>
+        </div>
+      </nav>
     </div>
   );
 }
