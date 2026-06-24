@@ -3,10 +3,11 @@
 // ────────────────────────────────────────────────────────────
 
 import { type SavedReport } from "./storage";
+import type { Language } from "./i18n";
 
 // ── CSV Export ────────────────────────────────────────────
 
-export function reportsToCsv(reports: SavedReport[], lang: "fil" | "en" = "en"): string {
+export function reportsToCsv(reports: SavedReport[], lang: Language = "en"): string {
   const headers = [
     lang === "fil" ? "Tracking ID" : "Tracking ID",
     lang === "fil" ? "Petsa" : "Date",

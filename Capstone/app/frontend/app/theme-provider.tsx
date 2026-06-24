@@ -64,16 +64,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setThemeState(t);
   }, []);
 
-  // Listen for theme toggle button clicks (rendered in layout)
-  useEffect(() => {
-    if (!mounted) return;
-    const btn = document.getElementById("theme-toggle");
-    if (!btn) return;
-    const handler = () => toggleTheme();
-    btn.addEventListener("click", handler);
-    return () => btn.removeEventListener("click", handler);
-  }, [mounted, theme, toggleTheme]);
-
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}

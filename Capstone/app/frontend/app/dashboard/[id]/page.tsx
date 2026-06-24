@@ -11,7 +11,7 @@ import {
   type SavedReport,
   type ReportStatus,
 } from "@/lib/storage";
-import { t, getLangFromStorage, type Language } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n";
 import {
   IconArrowLeft,
   IconBuilding,
@@ -75,13 +75,12 @@ export default function ReportDetailPage() {
   const router = useRouter();
   const id = params.id as string;
 
-  const [lang, setLang] = useState<Language>("fil");
+  const { t, lang } = useI18n();
   const [report, setReport] = useState<SavedReport | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    setLang(getLangFromStorage());
     const reports = getReports();
     const found = reports.find((r) => r.trackingId === id);
     if (found) setReport(found);
@@ -222,7 +221,7 @@ export default function ReportDetailPage() {
               className="btn btn-ghost text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 border border-[var(--color-border)] hover:border-red-200"
             >
               <IconTrash className="w-4 h-4" />
-              <span>{t("dashboard.delete", lang)}</span>
+              <span>{t("result.trackingId")}</span>
             </button>
           </div>
         </div>
@@ -250,7 +249,7 @@ export default function ReportDetailPage() {
                     </div>
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-0.5">
-                        {t("result.trackingId", lang)}
+                        {t("result.trackingId")}
                       </p>
                       <h2 className="font-mono text-lg font-bold text-[var(--color-ph-navy)] dark:text-white">
                         {report.trackingId}
@@ -269,10 +268,10 @@ export default function ReportDetailPage() {
                       className={`badge border-0 ${statusClasses[report.status]}`}
                     >
                       {report.status === "pending"
-                        ? t("dashboard.statusPending", lang)
+                        ? t("dashboard.statusPending")
                         : report.status === "in-progress"
-                          ? t("dashboard.statusInProgress", lang)
-                          : t("dashboard.statusResolved", lang)}
+                          ? t("")
+                          : t("dashboard.statusPending")}
                     </span>
                     {report.needsHumanReview && (
                       <span className="tag bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border-orange-200">
@@ -331,7 +330,7 @@ export default function ReportDetailPage() {
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-0.5">
-                    {t("result.office", lang)}
+                    {t("result.trackingId")}
                   </p>
                   <p className="font-semibold text-[var(--color-ph-navy)] dark:text-white">
                     {report.office}
@@ -426,12 +425,12 @@ export default function ReportDetailPage() {
               <div className="flex flex-wrap items-center gap-4 pt-2 text-sm text-[var(--color-text-muted)]">
                 <span className="flex items-center gap-1.5">
                   <IconClock className="w-4 h-4" />
-                  {t("result.timestamp", lang)}: {timestamp}
+                  {t("result.trackingId")}: {timestamp}
                 </span>
                 {report.offline && (
                   <span className="flex items-center gap-1.5 text-[var(--color-warning)] font-medium">
                     <IconWarning className="w-4 h-4" />
-                    {t("offline.title", lang)}
+                    {t("result.trackingId")}
                   </span>
                 )}
               </div>
@@ -463,7 +462,7 @@ export default function ReportDetailPage() {
             >
               <IconTrash className="w-5 h-5" />
               <span className="hidden sm:inline">
-                {t("dashboard.delete", lang)}
+                {t("result.trackingId")}
               </span>
             </button>
           </div>

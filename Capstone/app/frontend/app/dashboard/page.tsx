@@ -11,12 +11,7 @@ import {
   type SavedReport,
   type ReportStatus,
 } from "@/lib/storage";
-import {
-  t,
-  getLangFromStorage,
-  setLangInStorage,
-  type Language,
-} from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n";
 import {
   reportsToCsv,
   downloadCsv,
@@ -35,7 +30,6 @@ import {
   IconClock,
   IconArrowRight,
   IconShield,
-  IconGlobe,
 } from "../components/icons";
 import { ThemeToggle } from "../navigation-shell";
 
@@ -89,7 +83,7 @@ const stagger = {
 // ────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const [lang, setLang] = useState<Language>("fil");
+  const { t, lang } = useI18n();
   const [reports, setReports] = useState<SavedReport[]>([]);
   const [filter, setFilter] = useState<"all" | ReportStatus>("all");
   const [urgencyFilter, setUrgencyFilter] = useState("");
@@ -100,15 +94,8 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setIsClient(true);
-    setLang(getLangFromStorage());
     setReports(getReports());
   }, []);
-
-  const toggleLang = useCallback(() => {
-    const next = lang === "fil" ? "en" : "fil";
-    setLang(next);
-    setLangInStorage(next);
-  }, [lang]);
 
   const refreshReports = useCallback(() => setReports(getReports()), []);
 
@@ -233,7 +220,7 @@ export default function DashboardPage() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder={t("dashboard.search", lang)}
+                placeholder={t("dashboard.search")}
                 className="w-full py-2.5 pl-10 pr-4 text-sm rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-[var(--color-ph-gold)] text-slate-800 dark:text-slate-100 font-bold placeholder-slate-400 shadow-sm"
               />
             </div>
@@ -252,18 +239,18 @@ export default function DashboardPage() {
                 <Link
                   href="/dashboard"
                   className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold shadow-md border border-slate-200/80 dark:border-slate-800/80 mx-auto" : "flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold text-sm shadow-md border border-slate-200/80 dark:border-slate-800/80"}
-                  title={sidebarCollapsed ? t("dashboard.title", lang) : undefined}
+                  title={sidebarCollapsed ? t("nav.dashboard") : undefined}
                 >
                   <IconChartBar className="w-5 h-5 text-[var(--color-ph-gold)] shrink-0" />
-                  {!sidebarCollapsed && <span>{t("dashboard.title", lang)}</span>}
+                  {!sidebarCollapsed && <span>{t("nav.dashboard")}</span>}
                 </Link>
                 <Link
                   href="/report"
                   className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 mx-auto transition-all" : "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 font-bold text-sm transition-all"}
-                  title={sidebarCollapsed ? t("form.submit", lang) : undefined}
+                  title={sidebarCollapsed ? t("nav.dashboard") : undefined}
                 >
                   <IconPlus className="w-5 h-5 text-[var(--color-ph-gold)] shrink-0" />
-                  {!sidebarCollapsed && <span>{t("form.submit", lang)}</span>}
+                  {!sidebarCollapsed && <span>{t("nav.dashboard")}</span>}
                 </Link>
               </div>
             </div>
@@ -276,14 +263,7 @@ export default function DashboardPage() {
                 </div>
               )}
               <div className={`space-y-1.5 w-full ${sidebarCollapsed ? "flex flex-col items-center" : ""}`}>
-                <button
-                  onClick={toggleLang}
-                  className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 mx-auto transition-all" : "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 font-bold text-sm transition-all text-left"}
-                  title={sidebarCollapsed ? `Language: ${lang === "fil" ? "🇵🇭 FIL" : "🇺🇸 EN"}` : undefined}
-                >
-                  <IconGlobe className="w-5 h-5 text-blue-500 shrink-0" />
-                  {!sidebarCollapsed && <span>Language: {lang === "fil" ? "🇵🇭 FIL" : "🇺🇸 EN"}</span>}
-                </button>
+
                 {reports.length > 0 && (
                   <>
                     <button
@@ -305,10 +285,10 @@ export default function DashboardPage() {
                     <button
                       onClick={handleClearAll}
                       className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 mx-auto transition-all" : "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 font-bold text-sm transition-all text-left"}
-                      title={sidebarCollapsed ? t("dashboard.clearAll", lang) : undefined}
+                      title={sidebarCollapsed ? t("nav.dashboard") : undefined}
                     >
                       <IconTrash className="w-5 h-5 text-red-500 shrink-0" />
-                      {!sidebarCollapsed && <span>{t("dashboard.clearAll", lang)}</span>}
+                      {!sidebarCollapsed && <span>{t("nav.dashboard")}</span>}
                     </button>
                   </>
                 )}
@@ -379,7 +359,7 @@ export default function DashboardPage() {
                     : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
                 }`}
               >
-                {t("dashboard.allStatuses", lang)} ({stats.total})
+                {t("dashboard.filterAll")} ({stats.total})
               </button>
               <button
                 onClick={() => setFilter("pending")}
@@ -389,7 +369,7 @@ export default function DashboardPage() {
                     : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
                 }`}
               >
-                {t("dashboard.filterPending", lang)} ({stats.byStatus.pending})
+                {t("dashboard.filterPending")} ({stats.byStatus.pending})
               </button>
               <button
                 onClick={() => setFilter("in-progress")}
@@ -399,7 +379,7 @@ export default function DashboardPage() {
                     : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
                 }`}
               >
-                {t("dashboard.filterInProgress", lang)} ({stats.byStatus["in-progress"]})
+                {t("dashboard.filterInProgress")} ({stats.byStatus["in-progress"]})
               </button>
               <button
                 onClick={() => setFilter("resolved")}
@@ -409,7 +389,7 @@ export default function DashboardPage() {
                     : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
                 }`}
               >
-                {t("dashboard.filterResolved", lang)} ({stats.byStatus.resolved})
+                {t("dashboard.filterResolved")} ({stats.byStatus.resolved})
               </button>
             </div>
 
@@ -422,7 +402,7 @@ export default function DashboardPage() {
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder={t("dashboard.search", lang)}
+                  placeholder={t("dashboard.search")}
                   className="w-full py-2 pl-10 pr-4 text-xs rounded-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-[var(--color-ph-gold)] text-slate-800 dark:text-slate-100 font-bold placeholder-slate-400 shadow-xs"
                 />
               </div>
@@ -433,21 +413,14 @@ export default function DashboardPage() {
                 onChange={(e) => setUrgencyFilter(e.target.value)}
                 className="py-2 px-4 text-xs rounded-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold focus:outline-none focus:border-[var(--color-ph-gold)] shadow-xs cursor-pointer"
               >
-                <option value="">{t("dashboard.allUrgencies", lang)}</option>
-                <option value="high">{t("dashboard.high", lang)}</option>
-                <option value="medium">{t("dashboard.medium", lang)}</option>
-                <option value="low">{t("dashboard.low", lang)}</option>
+                <option value="">{t("dashboard.allUrgencies")}</option>
+                <option value="high">{t("dashboard.high")}</option>
+                <option value="medium">{t("dashboard.medium")}</option>
+                <option value="low">{t("dashboard.low")}</option>
               </select>
 
-              {/* Theme Toggle & Language Toggle */}
+              {/* Theme Toggle */}
               <div className="flex items-center gap-2">
-                <button
-                  onClick={toggleLang}
-                  className="px-3 py-2 rounded-full border border-slate-200 dark:border-slate-800 hover:border-[var(--color-ph-gold)] bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-bold transition-all shadow-xs"
-                  title="Switch Language"
-                >
-                  {lang === "fil" ? "🇵🇭 FIL" : "🇺🇸 EN"}
-                </button>
                 <ThemeToggle />
                 {reports.length > 0 && (
                   <button
@@ -476,7 +449,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between text-[0.65rem] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
-                    <span>{t("dashboard.total", lang)}</span>
+                    <span>{t("dashboard.total")}</span>
                     <span className="w-2 h-2 rounded-full bg-blue-500" />
                   </div>
                   <div className="text-4xl font-black text-[var(--color-ph-navy)] dark:text-white tracking-tight">
@@ -498,7 +471,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between text-[0.65rem] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
-                    <span>{t("dashboard.high", lang)}</span>
+                    <span>{t("dashboard.total")}</span>
                     <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   </div>
                   <div className="text-4xl font-black text-red-600 dark:text-red-400 tracking-tight">
@@ -517,7 +490,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between text-[0.65rem] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
-                    <span>{t("dashboard.medium", lang)}</span>
+                    <span>{t("dashboard.total")}</span>
                     <span className="w-2 h-2 rounded-full bg-yellow-500" />
                   </div>
                   <div className="text-4xl font-black text-yellow-600 dark:text-yellow-400 tracking-tight">
@@ -536,7 +509,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between text-[0.65rem] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
-                    <span>{t("dashboard.low", lang)}</span>
+                    <span>{t("dashboard.total")}</span>
                     <span className="w-2 h-2 rounded-full bg-green-500" />
                   </div>
                   <div className="text-4xl font-black text-green-600 dark:text-green-400 tracking-tight">
@@ -563,7 +536,7 @@ export default function DashboardPage() {
                   className="text-xs font-bold text-red-500 hover:text-red-600 dark:text-red-400 flex items-center gap-1 py-1 px-3 rounded-full hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
                 >
                   <IconTrash className="w-3.5 h-3.5" />
-                  <span>{t("dashboard.clearAll", lang)}</span>
+                  <span>{t("dashboard.total")}</span>
                 </button>
               )}
             </div>
@@ -582,7 +555,7 @@ export default function DashboardPage() {
                     <IconSearch className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2 tracking-tight">
-                    {t("dashboard.noReports", lang)}
+                    {t("dashboard.noReports")}
                   </h3>
                   <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 max-w-md mx-auto">
                     {lang === "fil"
@@ -591,7 +564,7 @@ export default function DashboardPage() {
                   </p>
                   <Link href="/report" className="px-6 py-3 rounded-full bg-[var(--color-ph-navy)] text-[var(--color-ph-gold)] hover:bg-[#0a1915] text-xs font-extrabold tracking-wider uppercase transition-all shadow-md inline-flex items-center gap-2">
                     <IconPlus className="w-4 h-4" />
-                    <span>{t("form.submit", lang)}</span>
+                    <span>{t("dashboard.total")}</span>
                   </Link>
                 </motion.div>
               ) : (
@@ -615,10 +588,10 @@ export default function DashboardPage() {
 
                     const statusLabel =
                       report.status === "pending"
-                        ? t("dashboard.statusPending", lang)
+                        ? t("dashboard.statusPending")
                         : report.status === "in-progress"
-                          ? t("dashboard.statusInProgress", lang)
-                          : t("dashboard.statusResolved", lang);
+                          ? t("dashboard.statusInProgress")
+                          : t("dashboard.statusResolved");
 
                     const statusClasses =
                       report.status === "resolved"
@@ -639,10 +612,10 @@ export default function DashboardPage() {
                             <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${urgency.bg} ${urgency.text} ${urgency.border} flex items-center gap-1.5 shadow-xs`}>
                               <IconCircle className={`${urgency.dot} w-2 h-2`} />
                               {report.urgency === "high"
-                                ? t("dashboard.high", lang)
+                                ? t("dashboard.high")
                                 : report.urgency === "medium"
-                                  ? t("dashboard.medium", lang)
-                                  : t("dashboard.low", lang)}
+                                  ? t("dashboard.medium")
+                                  : t("dashboard.low")}
                             </span>
                             <span className="px-3 py-1 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-mono text-xs font-bold text-slate-500 dark:text-slate-400 shadow-xs">
                               {report.trackingId}
@@ -693,8 +666,8 @@ export default function DashboardPage() {
                                 className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-[var(--color-ph-navy)] bg-white dark:bg-slate-900 hover:bg-[var(--color-ph-navy)] text-[var(--color-ph-navy)] hover:text-white dark:text-blue-400 dark:hover:text-white transition-all shadow-xs"
                                 title={
                                   report.status === "pending"
-                                    ? t("dashboard.markInProgress", lang)
-                                    : t("dashboard.markResolved", lang)
+                                    ? t("dashboard.markInProgress")
+                                    : t("dashboard.markResolved")
                                 }
                               >
                                 <IconCheck className="w-4 h-4" />
@@ -703,7 +676,7 @@ export default function DashboardPage() {
                             <button
                               onClick={() => handleDelete(report.trackingId)}
                               className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-red-500 bg-white dark:bg-slate-900 hover:bg-red-500 text-red-500 hover:text-white transition-all shadow-xs"
-                              title={t("dashboard.delete", lang)}
+                              title={t("dashboard.noReports")}
                             >
                               <IconTrash className="w-4 h-4" />
                             </button>
