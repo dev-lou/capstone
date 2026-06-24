@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 import { classifyOffline, enrichWithGemini, getEmbedding, loadPipeline, AI_DISCLAIMER, AI_DISCLAIMER_EN } from "@/lib/ai-engine";
 import { generateTrackingId } from "@/lib/storage";
 import { checkDuplicate, storeComplaint } from "@/lib/complaint-store";
@@ -205,6 +206,45 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           }
         : null,
     };
+
+    // ── Save to Supabase (non-blocking) ──────────────────
+    try {
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            getAll() { return request.cookies.getAll(); },
+            setAll() { /* read-only */ },
+          },
+        }
+      );
+
+      const { data: { user } } = await supabase.auth.getUser();
+
+      await supabase.from("reports").insert({
+        tracking_id: trackingId,
+        user_id: user?.id ?? null,
+        text: text,
+        category: offlineResult.category,
+        confidence: offlineResult.confidence,
+        needs_human_review: offlineResult.needsHumanReview,
+        urgency: offlineResult.urgency,
+        office: offlineResult.office,
+        explanation: enrichment.explanation,
+        offline: enrichment.offline,
+        status: "pending",
+        lat: body.location?.lat ?? null,
+        lng: body.location?.lng ?? null,
+        region: body.location?.region ?? null,
+        province: body.location?.province ?? null,
+        city: body.location?.city ?? null,
+        barangay: body.location?.barangay ?? null,
+      });
+    } catch (dbError) {
+      // Don't fail if Supabase save fails — localStorage still works
+      console.error("Failed to save report to Supabase:", dbError);
+    }
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
