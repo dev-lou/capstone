@@ -423,15 +423,6 @@ export default function DashboardPage() {
               <h2 className="text-sm font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                 {lang !== "en" ? "Listahan ng mga Aktibong Insidente" : "Active Incident Ledger"}
               </h2>
-              {reports.length > 0 && (
-                <button
-                  onClick={handleClearAll}
-                  className="text-xs font-bold text-red-500 hover:text-red-600 dark:text-red-400 flex items-center gap-1 py-1 px-3 rounded-full hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
-                >
-                  <IconTrash className="w-3.5 h-3.5" />
-                  <span>{t("dashboard.clearAll")}</span>
-                </button>
-              )}
             </div>
 
             <AnimatePresence mode="wait">
