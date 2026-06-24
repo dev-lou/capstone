@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/lib/i18n";
 
 // ────────────────────────────────────────────────────────────
 // SVG Icons
@@ -60,6 +61,7 @@ function IconArrowRight({ className = "" }: { className?: string }) {
 
 export function AuthNav() {
   const { user, loading, signOut } = useAuth();
+  const { t, lang } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
 
   // Loading skeleton
@@ -112,7 +114,7 @@ export function AuthNav() {
                   {user.email ? user.email[0].toUpperCase() : "U"}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Signed in as</p>
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{lang !== "en" ? "Naka-sign in bilang" : "Signed in as"}</p>
                   <p className="text-sm font-extrabold text-slate-100 truncate">{user.email}</p>
                 </div>
               </div>
@@ -125,7 +127,7 @@ export function AuthNav() {
                 className="w-full py-3 px-4 rounded-xl bg-red-900/20 hover:bg-red-900/40 border border-red-500/30 hover:border-red-500 text-red-400 font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm"
               >
                 <IconSignOut className="w-4 h-4" />
-                <span>Sign Out</span>
+                <span>{t("auth.signOut")}</span>
               </button>
             </motion.div>
           )}
@@ -137,7 +139,7 @@ export function AuthNav() {
   // Not logged in
   return (
     <Link href="/auth" className="btn btn-accent text-sm py-2 px-5 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
-      <span>Sign In</span>
+      <span>{t("auth.signIn")}</span>
       <IconArrowRight className="w-3.5 h-3.5" />
     </Link>
   );

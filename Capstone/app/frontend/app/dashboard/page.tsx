@@ -192,7 +192,7 @@ export default function DashboardPage() {
                 <Link
                   href="/report"
                   className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 mx-auto transition-all" : "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60 font-bold text-sm transition-all"}
-                  title={sidebarCollapsed ? t("nav.dashboard") : undefined}
+                  title={sidebarCollapsed ? t("nav.report") : undefined}
                 >
                   <IconPlus className="w-5 h-5 text-[var(--color-ph-gold)] shrink-0" />
                   {!sidebarCollapsed && <span>{t("nav.submitReport")}</span>}
@@ -201,6 +201,8 @@ export default function DashboardPage() {
             </div>
 
 
+              </div>
+            </div>
           </div>
         </div>
 
@@ -333,7 +335,7 @@ export default function DashboardPage() {
           {/* ── Section 1: Barangay Triage Analytics (Actual RescueMind Stats) ────────────────────────────────────── */}
           <section className="mb-12">
             <h2 className="text-sm font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-6">
-              {lang === "fil" ? "Pagsusuri ng mga Ulat sa Barangay" : "Barangay Incident Analytics"}
+              {lang !== "en" ? "Pagsusuri ng mga Ulat sa Barangay" : "Barangay Incident Analytics"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               
@@ -352,7 +354,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="mt-8 pt-3 border-t border-blue-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
-                  <span>{lang === "fil" ? "Nalutas na Ulat" : "Resolved Reports"}</span>
+                  <span>{lang !== "en" ? "Nalutas na Ulat" : "Resolved Reports"}</span>
                   <span className="px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-950/50 text-green-700 dark:text-green-400 font-bold text-[0.65rem] border border-green-200 dark:border-green-800">
                     {stats.byStatus.resolved}
                   </span>
@@ -366,7 +368,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between text-[0.65rem] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
-                    <span>{t("dashboard.total")}</span>
+                    <span>{t("dashboard.high")}</span>
                     <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   </div>
                   <div className="text-4xl font-black text-red-600 dark:text-red-400 tracking-tight">
@@ -374,7 +376,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="mt-8 pt-3 border-t border-red-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
-                  <span className="text-red-600 dark:text-red-400">{lang === "fil" ? "Kailangan ng agarang aksyon" : "Immediate action required"}</span>
+                  <span className="text-red-600 dark:text-red-400">{lang !== "en" ? "Kailangan ng agarang aksyon" : "Immediate action required"}</span>
                 </div>
               </div>
 
@@ -385,7 +387,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between text-[0.65rem] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
-                    <span>{t("dashboard.total")}</span>
+                    <span>{t("dashboard.medium")}</span>
                     <span className="w-2 h-2 rounded-full bg-yellow-500" />
                   </div>
                   <div className="text-4xl font-black text-yellow-600 dark:text-yellow-400 tracking-tight">
@@ -393,7 +395,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="mt-8 pt-3 border-t border-yellow-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
-                  <span>{lang === "fil" ? "Katamtamang priyoridad" : "Medium priority level"}</span>
+                  <span>{lang !== "en" ? "Katamtamang priyoridad" : "Medium priority level"}</span>
                 </div>
               </div>
 
@@ -404,7 +406,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between text-[0.65rem] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
-                    <span>{t("dashboard.total")}</span>
+                    <span>{t("dashboard.low")}</span>
                     <span className="w-2 h-2 rounded-full bg-green-500" />
                   </div>
                   <div className="text-4xl font-black text-green-600 dark:text-green-400 tracking-tight">
@@ -412,7 +414,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="mt-8 pt-3 border-t border-green-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
-                  <span>{lang === "fil" ? "Karaniwang priyoridad" : "Standard priority level"}</span>
+                  <span>{lang !== "en" ? "Karaniwang priyoridad" : "Standard priority level"}</span>
                 </div>
               </div>
 
@@ -423,9 +425,17 @@ export default function DashboardPage() {
           <section>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-sm font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-                {lang === "fil" ? "Listahan ng mga Aktibong Insidente" : "Active Incident Ledger"}
+                {lang !== "en" ? "Listahan ng mga Aktibong Insidente" : "Active Incident Ledger"}
               </h2>
-
+              {reports.length > 0 && (
+                <button
+                  onClick={handleClearAll}
+                  className="text-xs font-bold text-red-500 hover:text-red-600 dark:text-red-400 flex items-center gap-1 py-1 px-3 rounded-full hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
+                >
+                  <IconTrash className="w-3.5 h-3.5" />
+                  <span>{t("dashboard.clearAll")}</span>
+                </button>
+              )}
             </div>
 
             <AnimatePresence mode="wait">
@@ -445,13 +455,13 @@ export default function DashboardPage() {
                     {t("dashboard.noReports")}
                   </h3>
                   <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 max-w-md mx-auto">
-                    {lang === "fil"
+                    {lang !== "en"
                       ? "Wala pang mga ulat na tumutugma sa inyong filter o paghahanap."
                       : "No incident reports match your active filter or search query."}
                   </p>
                   <Link href="/report" className="px-6 py-3 rounded-full bg-[var(--color-ph-navy)] text-[var(--color-ph-gold)] hover:bg-[#0a1915] text-xs font-extrabold tracking-wider uppercase transition-all shadow-md inline-flex items-center gap-2">
                     <IconPlus className="w-4 h-4" />
-                    <span>{t("dashboard.total")}</span>
+                    <span>{t("nav.report")}</span>
                   </Link>
                 </motion.div>
               ) : (
@@ -509,7 +519,7 @@ export default function DashboardPage() {
                             </span>
                             {report.needsHumanReview && (
                               <span className="px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800 text-xs font-bold shadow-xs">
-                                {lang === "fil" ? "Para sa Review" : "For Review"}
+                                {lang !== "en" ? "Para sa Review" : "For Review"}
                               </span>
                             )}
                           </div>
@@ -557,9 +567,9 @@ export default function DashboardPage() {
                 animate={{ opacity: 1 }}
                 className="mt-10 text-center text-xs font-bold text-slate-400 bg-slate-50 dark:bg-slate-950/60 py-3 px-6 rounded-full border border-slate-200 dark:border-slate-800 max-w-xs mx-auto shadow-xs"
               >
-                {filtered.length} {lang === "fil" ? "sa" : "of"} {reports.length}{" "}
-                {lang === "fil" ? "mga report" : "reports"}
-                {filter !== "all" && (lang === "fil" ? " ang ipinapakita" : " shown")}
+                {filtered.length} {lang !== "en" ? "sa" : "of"} {reports.length}{" "}
+                {lang !== "en" ? "mga report" : "reports"}
+                {filter !== "all" && (lang !== "en" ? " ang ipinapakita" : " shown")}
               </motion.p>
             )}
           </section>

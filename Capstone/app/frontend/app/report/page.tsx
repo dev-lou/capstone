@@ -445,7 +445,7 @@ export default function ReportPage() {
 
   const formatTimestamp = useCallback(
     (iso: string) => {
-      return new Date(iso).toLocaleString(lang === "fil" ? "fil-PH" : "en-PH", {
+      return new Date(iso).toLocaleString(lang !== "en" ? "fil-PH" : "en-PH", {
         timeZone: "Asia/Manila",
         year: "numeric",
         month: "long",
@@ -480,7 +480,7 @@ export default function ReportPage() {
   const urgencyConfig = result ? URGENCY_CONFIG[result.urgency] : null;
 
   const stepLabels =
-    lang === "fil"
+    lang !== "en"
       ? ["Isulat ang Ulat", "AI Pagsusuri", "Opisyal na Resulta"]
       : ["Write Report", "AI Classify", "Official Result"];
 
@@ -525,15 +525,15 @@ export default function ReportPage() {
                   title={sidebarCollapsed ? t("nav.dashboard") : undefined}
                 >
                   <IconChartBar className="w-5 h-5 text-slate-400 shrink-0" />
-                  {!sidebarCollapsed && <span>{t("form.description")}</span>}
+                  {!sidebarCollapsed && <span>{t("nav.dashboard")}</span>}
                 </Link>
                 <Link
                   href="/report"
                   className={sidebarCollapsed ? "w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold shadow-md border border-slate-200/80 dark:border-slate-800/80 mx-auto" : "flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white dark:bg-slate-900 text-[var(--color-ph-navy)] dark:text-white font-bold text-sm shadow-md border border-slate-200/80 dark:border-slate-800/80"}
-                  title={sidebarCollapsed ? t("nav.dashboard") : undefined}
+                  title={sidebarCollapsed ? t("nav.report") : undefined}
                 >
                   <IconPlus className="w-5 h-5 text-[var(--color-ph-gold)] shrink-0" />
-                  {!sidebarCollapsed && <span>{t("form.description")}</span>}
+                  {!sidebarCollapsed && <span>{t("nav.report")}</span>}
                 </Link>
               </div>
             </div>
@@ -687,7 +687,7 @@ export default function ReportPage() {
                           htmlFor="complaint-text"
                           className="block text-sm font-extrabold text-[var(--color-ph-navy)] dark:text-white mb-2"
                         >
-                          {lang === "fil"
+                          {lang !== "en"
                             ? "Ilarawan ang inyong ulat / Incident Description"
                             : "Incident Description"}
                           <span className="text-red-500 ml-1.5">*</span>
@@ -709,7 +709,7 @@ export default function ReportPage() {
                                 ?.requestSubmit();
                             }
                           }}
-                          placeholder={t("form.description")}
+                          placeholder={t("form.placeholder")}
                           className="w-full p-4 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm font-medium placeholder-slate-400 focus:outline-none focus:border-[var(--color-ph-gold)] focus:ring-2 focus:ring-[var(--color-ph-gold)]/20 min-h-[130px] resize-y leading-relaxed transition-all shadow-inner flex-1"
                           rows={4}
                         />
@@ -736,10 +736,10 @@ export default function ReportPage() {
                             </div>
                             <div>
                               <div className="font-extrabold text-sm text-slate-900 dark:text-white">
-                                {t("form.description")}
+                                {t("form.location")}
                               </div>
                               <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                                {lang === "fil" ? "Tumutulong sa mas mabilis na pag-ruta sa ahensya" : "Helps with accurate government agency routing"}
+                                {lang !== "en" ? "Tumutulong sa mas mabilis na pag-ruta sa ahensya" : "Helps with accurate government agency routing"}
                               </div>
                             </div>
                           </div>
@@ -752,12 +752,12 @@ export default function ReportPage() {
                             {location.detecting ? (
                               <>
                                 <IconSpinner className="w-4 h-4 animate-spin" />
-                                <span>{lang === "fil" ? "Naghahanap..." : "Detecting..."}</span>
+                                <span>{lang !== "en" ? "Naghahanap..." : "Detecting..."}</span>
                               </>
                             ) : (
                               <>
                                 <IconMapPin className="w-4 h-4 text-[var(--color-ph-gold)]" />
-                                <span>{t("form.description")}</span>
+                                <span>{t("form.detectLocation")}</span>
                               </>
                             )}
                           </button>
@@ -775,7 +775,7 @@ export default function ReportPage() {
                               <div className="flex items-center gap-3 text-xs font-bold text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/40 rounded-2xl px-4 py-3 mb-4 border border-green-200 dark:border-green-800 shadow-xs">
                                 <IconCheck className="shrink-0 text-green-600 dark:text-green-400 w-4 h-4" />
                                 <span>
-                                  {lang === "fil" ? "Awtomatikong natukoy ang lokasyon:" : "Location auto-detected:"} {getRegionByCode(location.region)?.name || "Philippines"} {getProvinceByCode(location.province) ? `(${getProvinceByCode(location.province)?.name})` : ""}
+                                  {t("form.locationDetected")}: {getRegionByCode(location.region)?.name || "Philippines"} {getProvinceByCode(location.province) ? `(${getProvinceByCode(location.province)?.name})` : ""}
                                 </span>
                               </div>
                             </motion.div>
@@ -796,8 +796,8 @@ export default function ReportPage() {
                             id="region-select"
                             value={location.region}
                             onChange={handleRegionChange}
-                            placeholder={`${t("form.description")} ${t("form.description")}`}
-                            label={t("form.description")}
+                            placeholder={t("location.select")}
+                            label={t("location.region")}
                             options={REGIONS.map((r: Region) => ({
                               value: r.code,
                               label: r.name,
@@ -809,8 +809,8 @@ export default function ReportPage() {
                             onChange={(val) =>
                               setLocation((prev) => ({ ...prev, province: val }))
                             }
-                            placeholder={`${t("form.description")} ${t("form.description")}`}
-                            label={t("form.description")}
+                            placeholder={t("location.select")}
+                            label={t("location.province")}
                             options={availableProvinces.map((p: Province) => ({
                               value: p.code,
                               label: p.name,
@@ -827,7 +827,7 @@ export default function ReportPage() {
                           disabled={!text.trim()}
                           className="w-full py-4 rounded-2xl bg-[var(--color-ph-navy)] hover:bg-[#0a1915] text-[var(--color-ph-gold)] font-black text-base shadow-lg shadow-[var(--color-ph-navy)]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 border border-[var(--color-ph-gold)]/30"
                         >
-                          <span>{t("form.description")}</span>
+                          <span>{t("form.submit")}</span>
                           <IconPaperPlane className="w-5 h-5" />
                         </button>
                       </div>
@@ -854,13 +854,13 @@ export default function ReportPage() {
                       </div>
 
                       <h3 className="text-lg font-black tracking-tight text-white leading-snug mb-2">
-                        {lang === "fil"
+                        {lang !== "en"
                           ? "Awtomatikong Pagsusuri at Pag-Ruta sa Ahensya"
                           : "Automatic AI Classification & Agency Routing"}
                       </h3>
 
                       <p className="text-xs text-slate-300 leading-relaxed font-medium mb-6">
-                        {lang === "fil"
+                        {lang !== "en"
                           ? "Habang isinusulat ninyo ang detalye ng insidente, agad itong inaanalisa ng ating offline AI neural engine upang matukoy ang priyoridad at ang pinaka-angkop na sangay ng gobyerno."
                           : "As you write your incident report, our offline neural engine instantly parses the context to determine the urgency level and the correct government branch for immediate action."}
                       </p>
@@ -909,7 +909,7 @@ export default function ReportPage() {
                       <IconWarning className="w-4 h-4" />
                     </div>
                     <p className="text-xs font-bold text-blue-900 dark:text-blue-200 leading-relaxed pt-0.5">
-                      {t("form.description")}
+                      {t("form.tip")}
                     </p>
                   </div>
                 </div>
@@ -935,10 +935,10 @@ export default function ReportPage() {
                   </div>
 
                   <h3 className="text-2xl font-black text-[var(--color-ph-navy)] dark:text-white mb-3 tracking-tight">
-                    {t("form.description")}
+                    {t("loading.title")}
                   </h3>
                   <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed font-medium">
-                    {t("form.description")}
+                    {t("loading.description")}
                   </p>
 
                   {/* Steps progress list */}
@@ -1000,7 +1000,7 @@ export default function ReportPage() {
                     </div>
                     <div>
                       <p className="text-base font-bold text-yellow-900 dark:text-yellow-200">
-                        {lang === "fil"
+                        {lang !== "en"
                           ? "Posibleng Duplicate na Ulat / Possible Duplicate"
                           : "Possible Duplicate Report"}
                       </p>
@@ -1022,7 +1022,7 @@ export default function ReportPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-[var(--color-ph-gold-light)] uppercase font-bold tracking-wider mb-1">
-                        {t("form.description")}
+                        {t("result.trackingId")}
                       </p>
                       <p className="font-mono font-black text-white text-xl sm:text-2xl leading-tight truncate">
                         {result.trackingId}
@@ -1037,13 +1037,13 @@ export default function ReportPage() {
                       <>
                         <IconCheck className="w-4 h-4 text-[var(--color-ph-gold)]" />
                         <span className="text-[var(--color-ph-gold)]">
-                          {lang === "fil" ? "Nakopya!" : "Copied!"}
+                          {lang !== "en" ? "Nakopya!" : "Copied!"}
                         </span>
                       </>
                     ) : (
                       <>
                         <IconClipboard className="w-4 h-4" />
-                        <span>{lang === "fil" ? "Kopyahin ID" : "Copy ID"}</span>
+                        <span>{lang !== "en" ? "Kopyahin ID" : "Copy ID"}</span>
                       </>
                     )}
                   </button>
@@ -1060,7 +1060,7 @@ export default function ReportPage() {
                     </div>
                     <div>
                       <span className="text-base font-bold text-amber-900 dark:text-amber-200 block">
-                        {t("form.description")}
+                        {t("result.humanReview")}
                       </span>
                       <span className="block text-xs mt-1 text-amber-800 dark:text-amber-300 font-bold">
                         AI Confidence Level: {result.confidence}%
@@ -1081,7 +1081,7 @@ export default function ReportPage() {
                       {urgencyConfig.label}
                     </span>
                     <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                      {result.confidence}% {t("form.description")}
+                      {result.confidence}% {t("result.confidence")}
                     </span>
                   </div>
 
@@ -1090,7 +1090,7 @@ export default function ReportPage() {
                     {/* Category name */}
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                        {lang === "fil" ? "Na-classify na Kategorya" : "Classified Category"}
+                        {lang !== "en" ? "Na-classify na Kategorya" : "Classified Category"}
                       </div>
                       <h2 className="text-3xl font-black text-[var(--color-ph-navy)] dark:text-white leading-tight">
                         {result.category}
@@ -1104,7 +1104,7 @@ export default function ReportPage() {
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">
-                          {t("form.description")}
+                          {t("result.office")}
                         </p>
                         <p className="text-lg font-extrabold text-slate-900 dark:text-white">
                           {result.office}
@@ -1121,7 +1121,7 @@ export default function ReportPage() {
                           </div>
                           <div>
                             <p className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">
-                              {lang === "fil" ? "Lokasyon ng Insidente" : "Incident Location"}
+                              {lang !== "en" ? "Lokasyon ng Insidente" : "Incident Location"}
                             </p>
                             <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                               {[
@@ -1141,7 +1141,7 @@ export default function ReportPage() {
                     {/* Explanation */}
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-                        {lang === "fil" ? "Paliwanag ng AI Engine" : "AI Engine Explanation"}
+                        {lang !== "en" ? "Paliwanag ng AI Engine" : "AI Engine Explanation"}
                       </div>
                       <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-line font-medium">
                         {result.explanation}
@@ -1152,7 +1152,7 @@ export default function ReportPage() {
                     <div className="flex items-center gap-2.5 text-xs font-bold text-slate-400 pt-4 border-t border-slate-200 dark:border-slate-800">
                       <IconClock className="w-4 h-4 text-[var(--color-ph-gold)] shrink-0" />
                       <span>
-                        {t("form.description")}: {formatTimestamp(result.timestamp)}
+                        {t("result.timestamp")}: {formatTimestamp(result.timestamp)}
                       </span>
                     </div>
 
@@ -1175,7 +1175,7 @@ export default function ReportPage() {
                     </div>
                     <div>
                       <span className="text-base font-bold text-amber-900 dark:text-amber-200 block">
-                        {t("form.description")}
+                        {t("offline.title")}
                       </span>
                       <p className="text-xs mt-1 text-amber-800 dark:text-amber-300 leading-relaxed font-medium">
                         {result.explanation}
@@ -1190,14 +1190,14 @@ export default function ReportPage() {
                     onClick={resetForm}
                     className="flex-1 py-4 px-6 rounded-full bg-[var(--color-ph-navy)] hover:bg-[#0a1915] text-[var(--color-ph-gold)] font-black text-xs uppercase tracking-wider shadow-lg shadow-[var(--color-ph-navy)]/10 transition-all flex items-center justify-center gap-2 border border-[var(--color-ph-gold)]/30"
                   >
-                    <span>{t("form.description")}</span>
+                    <span>{t("result.reportAgain")}</span>
                     <IconRefresh className="w-4 h-4" />
                   </button>
                   <Link
                     href="/dashboard"
                     className="flex-1 py-4 px-6 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-black text-xs uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-2"
                   >
-                    <span>Barangay Dashboard</span>
+                    <span>{t("nav.dashboard")}</span>
                     <IconChartBar className="w-4 h-4" />
                   </Link>
                 </motion.div>

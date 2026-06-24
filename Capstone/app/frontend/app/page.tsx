@@ -51,49 +51,80 @@ const scaleIn = {
 };
 
 // ── Features ───────────────────────────────────────────────────
+// ── Features ───────────────────────────────────────────────────
 const FEATURES = [
   {
     icon: IconLightning,
     titleFil: "AI-Powered Triage",
     titleEn: "AI-Powered Triage",
+    titleCeb: "AI-Powered Triage",
+    titleIlo: "AI-Powered Triage",
     descFil:
       "Awtomatikong nagki-classify ng insidente — gamit ang offline-first AI na hindi nangangailangan ng internet.",
     descEn:
       "Automatically classifies incidents using offline-first AI that works without internet.",
+    descCeb:
+      "Awtomatikong mag-classify sa insidente — gamit ang offline-first AI nga wala kinahanglana ang internet.",
+    descIlo:
+      "Awtomatiko nga ag-classify ti pasamak — babaen ti offline-first AI nga saan a masapul ti internet.",
   },
   {
     icon: IconShield,
     titleFil: "Offline-First Architecture",
     titleEn: "Offline-First Architecture",
+    titleCeb: "Offline-First Architecture",
+    titleIlo: "Offline-First Architecture",
     descFil:
       "Gumagana kahit walang koneksyon. Perpekto para sa malalayong barangay.",
     descEn:
       "Works without any internet connection. Perfect for remote barangays.",
+    descCeb:
+      "Mogana bisan walay koneksyon. Hingpit alang sa mga hilit nga barangay.",
+    descIlo:
+      "Agandar uray awan ti koneksion. Mayat para kadagiti adayo a barangay.",
   },
   {
     icon: IconGlobe,
     titleFil: "Bilingual (Filipino / English)",
     titleEn: "Bilingual (Filipino / English)",
+    titleCeb: "Daghan ug Pinulongan (Cebuano / English / Filipino)",
+    titleIlo: "Nadumaduma a Pagsasao (Ilocano / English / Filipino)",
     descFil:
       "Buong suporta sa Tagalog at English — ginawa para sa bawat Pilipino.",
     descEn: "Full Tagalog and English support — built for every Filipino.",
+    descCeb:
+      "Bug-os nga suporta sa Cebuano, Tagalog, ug Ingles — gihimo alang sa matag Pilipino.",
+    descIlo:
+      "Adda suporta ti Ilocano, Tagalog, ken Ingles — nadisenio para iti tunggal Pilipino.",
   },
   {
     icon: IconTarget,
     titleFil: "PSGC Location Routing",
     titleEn: "PSGC Location Routing",
+    titleCeb: "PSGC Location Routing",
+    titleIlo: "PSGC Location Routing",
     descFil:
       "Gamit ang Philippine Standard Geographic Codes para sa tamang routing sa tamang opisina.",
     descEn:
       "Uses Philippine Standard Geographic Codes for accurate office routing.",
+    descCeb:
+      "Gamit ang Philippine Standard Geographic Codes alang sa saktong pag-ruta sa saktong opisina.",
+    descIlo:
+      "Usaren ti Philippine Standard Geographic Codes para iti husto a panangipatulod iti husto nga opisina.",
   },
   {
     icon: IconHeart,
     titleFil: "Ligtas at Secure",
     titleEn: "Safe & Secure",
+    titleCeb: "Luwas ug Sigurado",
+    titleIlo: "Salbar ken Sigurado",
     descFil:
       "Supabase authentication at rate-limited API para sa seguridad ng datos.",
     descEn: "Supabase authentication and rate-limited API for data security.",
+    descCeb:
+      "Supabase authentication ug rate-limited API alang sa kasigurohan sa datos.",
+    descIlo:
+      "Supabase authentication ken rate-limited API para iti seguridad ti datos.",
   },
 ];
 
@@ -102,17 +133,19 @@ const CATEGORIES = [
   {
     labelFil: "Baha / Drainage",
     labelEn: "Flood / Drainage",
+    labelCeb: "Baha / Drainage",
+    labelIlo: "Layus / Drainage",
     icon: IconShield,
   },
-  { labelFil: "Sirang Kalsada", labelEn: "Road Damage", icon: IconTarget },
-  { labelFil: "Basura", labelEn: "Garbage / Waste", icon: IconHeart },
-  { labelFil: "Ingay", labelEn: "Noise Complaint", icon: IconLightning },
-  { labelFil: "Kalusugan", labelEn: "Health / Medical", icon: IconHeart },
-  { labelFil: "Permit", labelEn: "Permit / License", icon: IconTarget },
-  { labelFil: "Tubig", labelEn: "Water Supply", icon: IconGlobe },
-  { labelFil: "Kuryente", labelEn: "Electricity", icon: IconLightning },
-  { labelFil: "Public Safety", labelEn: "Public Safety", icon: IconShield },
-  { labelFil: "Iba Pa", labelEn: "Others", icon: IconStar },
+  { labelFil: "Sirang Kalsada", labelEn: "Road Damage", labelCeb: "Guba nga Kalsada", labelIlo: "Dadael a Kalsada", icon: IconTarget },
+  { labelFil: "Basura", labelEn: "Garbage / Waste", labelCeb: "Basura", labelIlo: "Basura", icon: IconHeart },
+  { labelFil: "Ingay", labelEn: "Noise Complaint", labelCeb: "Kasaba", labelIlo: "Riribok / Singasing", icon: IconLightning },
+  { labelFil: "Kalusugan", labelEn: "Health / Medical", labelCeb: "Panglawas / Medikal", labelIlo: "Salun-at / Medikal", icon: IconHeart },
+  { labelFil: "Permit", labelEn: "Permit / License", labelCeb: "Permit / Lisensya", labelIlo: "Permit / Lisensia", icon: IconTarget },
+  { labelFil: "Tubig", labelEn: "Water Supply", labelCeb: "Suplay sa Tubig", labelIlo: "Suplay ti Danum", icon: IconGlobe },
+  { labelFil: "Kuryente", labelEn: "Electricity", labelCeb: "Kuryente", labelIlo: "Kuryente", icon: IconLightning },
+  { labelFil: "Public Safety", labelEn: "Public Safety", labelCeb: "Kaluwasan sa Publiko", labelIlo: "Katalgedan ti Publiko", icon: IconShield },
+  { labelFil: "Iba Pa", labelEn: "Others", labelCeb: "Uban pa", labelIlo: "Dadduma pa", icon: IconStar },
 ];
 
 // ── How It Works Steps ─────────────────────────────────────────
@@ -122,30 +155,48 @@ const STEPS = [
     icon: IconPaperPlane,
     titleFil: "Isulat ang Reklamo",
     titleEn: "Write Your Report",
+    titleCeb: "Isulat ang Reklamo",
+    titleIlo: "Isurat ti Reklamo",
     descFil:
       "Ilarawan ang insidente sa Filipino o English. Pumili ng lokasyon gamit ang PSGC.",
     descEn:
       "Describe the incident in Filipino or English. Select your location via PSGC.",
+    descCeb:
+      "Ilarawan ang insidente sa inyong kaugalingong pinulongan. Pilia ang lokasyon gamit ang PSGC.",
+    descIlo:
+      "Iladawan ti pasamak iti bukodyo a pagsasao. Pilien ti lokasion babaen ti PSGC.",
   },
   {
     num: "02",
     icon: IconLightning,
     titleFil: "AI Mag-aanalisa",
     titleEn: "AI Analyzes Report",
+    titleCeb: "AI Mag-analisa",
+    titleIlo: "AI ti Ag-analisa",
     descFil:
       "Ang offline AI ang awtomatikong nagki-classify ng inyong report sa tamang kategorya.",
     descEn:
       "The offline AI automatically classifies your report into the correct category.",
+    descCeb:
+      "Ang offline AI ang awtomatikong mag-classify sa inyong report sa saktong kategorya.",
+    descIlo:
+      "Ti offline AI ti awtomatiko nga ag-classify iti reportyo iti husto nga kategoria.",
   },
   {
     num: "03",
     icon: IconShield,
     titleFil: "Ipinadala sa Opisina",
     titleEn: "Routed to Right Office",
+    titleCeb: "Ipadala sa Saktong Opisina",
+    titleIlo: "Maipatulod iti Husto nga Opisina",
     descFil:
       "Ang report ay naka-ruta sa tamang ahensya ng gobyerno para sa mabilis na aksyon.",
     descEn:
       "The report is routed to the appropriate government office for immediate action.",
+    descCeb:
+      "Ang report i-ruta sa saktong ahensya sa gobyerno para sa paspas nga aksyon.",
+    descIlo:
+      "Ti report ket maipatulod iti husto nga opisina ti gobyerno para iti napardas nga aksion.",
   },
 ];
 
@@ -185,6 +236,27 @@ export default function HomePage() {
     setIsClient(true);
     setReportCount(getReports().length);
   }, []);
+
+  const getLabel = (item: any) => {
+    if (lang === "ceb" && item.labelCeb) return item.labelCeb;
+    if (lang === "ilo" && item.labelIlo) return item.labelIlo;
+    if (lang !== "en" && item.labelFil) return item.labelFil;
+    return item.labelEn;
+  };
+
+  const getTitle = (item: any) => {
+    if (lang === "ceb" && item.titleCeb) return item.titleCeb;
+    if (lang === "ilo" && item.titleIlo) return item.titleIlo;
+    if (lang !== "en" && item.titleFil) return item.titleFil;
+    return item.titleEn;
+  };
+
+  const getDesc = (item: any) => {
+    if (lang === "ceb" && item.descCeb) return item.descCeb;
+    if (lang === "ilo" && item.descIlo) return item.descIlo;
+    if (lang !== "en" && item.descFil) return item.descFil;
+    return item.descEn;
+  };
 
   if (!isClient) {
     return (
@@ -228,12 +300,32 @@ export default function HomePage() {
 
               {/* Primary heading */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black tracking-tighter leading-[1.05] text-white">
-                Report Barangay <br />Issues Instantly.
+                {lang === "ceb" ? (
+                  <>
+                    I-report Agad ang mga <br />Isyu sa Barangay.
+                  </>
+                ) : lang === "ilo" ? (
+                  <>
+                    I-report Dagus dagiti <br />Pansamak iti Barangay.
+                  </>
+                ) : lang !== "en" ? (
+                  <>
+                    Iulat Agad ang mga <br />Isyu sa Barangay.
+                  </>
+                ) : (
+                  <>
+                    Report Barangay <br />Issues Instantly.
+                  </>
+                )}
               </h1>
 
               {/* Refined description */}
               <p className="text-base sm:text-lg lg:text-xl text-slate-300 leading-relaxed max-w-xl font-medium tracking-wide">
-                {lang === "fil"
+                {lang === "ceb"
+                  ? "Walang komplikadong porma o linya sa paghulat. I-describe lang ang problema sa inyong komunidad—sama sa baha, guba nga kalsada, o pagkapalong sa kuryente—ug ipadala dayon kini sa atong AI sa saktong opisina."
+                  : lang === "ilo"
+                  ? "Awan ti nariribok a porma wenno panagpipila. Iladawan laeng ti problema iti komunidaddatayo—kas iti layus, dadael a kalsada, wenno awan kuryente—ken ipatulod dayta ti AI iti husto nga opisina."
+                  : lang !== "en"
                   ? "Walang kumplikadong pormularyo o pagpila. Ilarawan lamang ang problema sa inyong komunidad—tulad ng baha, sirang kalsada, o nawawalang kuryente—at agad itong ipapadala ng ating AI sa tamang sangay."
                   : "No confusing forms or waiting in line. Simply describe your community concern—from street floods to broken lights—and our smart system immediately alerts the correct government office."}
               </p>
@@ -355,10 +447,10 @@ export default function HomePage() {
                 <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-[0.65rem] font-bold text-slate-400">
                   <div className="flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-blue-500" />
-                    <span>All systems operational</span>
+                    <span>{lang !== "en" ? "Lahat ng sistema ay gumagana" : "All systems operational"}</span>
                   </div>
                   <Link href="/report" className="text-blue-400 hover:underline">
-                    Mag-file ng report &rarr;
+                    {lang !== "en" ? "Mag-file ng report" : "File a report"} &rarr;
                   </Link>
                 </div>
               </div>
@@ -369,7 +461,7 @@ export default function HomePage() {
         {/* ── Scroll Indicator (Image 2 Ref) ────────────────────────────────────── */}
         <div className="absolute bottom-16 sm:bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 text-center z-20 pointer-events-none animate-bounce">
           <div className="text-[0.65rem] font-black uppercase tracking-widest text-slate-400 mb-1">
-            Scroll the Record
+            {lang !== "en" ? "I-scroll ang Tala" : "Scroll the Record"}
           </div>
           <div className="text-[var(--color-ph-gold)] font-bold text-sm">
             &darr;
@@ -396,7 +488,7 @@ export default function HomePage() {
       <section className="bg-[var(--color-bg)] py-10 sm:py-12 border-b border-[var(--color-border)] dark:border-white/5 relative z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <p className="text-center text-[0.65rem] sm:text-xs font-black uppercase tracking-[0.25em] text-[var(--color-text-secondary)] mb-8">
-            {lang === "fil" ? "Dinisenyo para sa Local Government Units" : "Engineered for Philippine Local Government Units"}
+            {lang !== "en" ? "Dinisenyo para sa Local Government Units" : "Engineered for Philippine Local Government Units"}
           </p>
           
           <div className="flex overflow-hidden relative w-full [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]">
@@ -519,7 +611,7 @@ export default function HomePage() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-[var(--color-ph-gold)]/30 text-[var(--color-ph-gold)] text-xs font-black uppercase tracking-widest bg-[var(--color-ph-gold)]/5">
               <IconTarget className="w-3.5 h-3.5" />
-              <span>{lang === "fil" ? "Bento System v2" : "Bento System v2"}</span>
+              <span>{lang !== "en" ? "Bento System v2" : "Bento System v2"}</span>
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[var(--color-text)] tracking-tight leading-[1.1]">
               {t("landing.featuresTitle")}
@@ -546,10 +638,10 @@ export default function HomePage() {
                     <IconLightning className="w-8 h-8" />
                   </div>
                   <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
-                    {lang === "fil" ? FEATURES[0].titleFil : FEATURES[0].titleEn}
+                    {getTitle(FEATURES[0])}
                   </h3>
                   <p className="text-lg sm:text-xl text-slate-300 leading-relaxed font-medium">
-                    {lang === "fil" ? FEATURES[0].descFil : FEATURES[0].descEn}
+                    {getDesc(FEATURES[0])}
                   </p>
                 </div>
                 <div className="relative z-10 pt-8 mt-12 border-t border-white/15 flex flex-wrap items-center justify-between gap-4 text-xs font-black uppercase tracking-widest text-[var(--color-ph-gold-light)]">
@@ -567,10 +659,10 @@ export default function HomePage() {
                     <IconShield className="w-7 h-7" />
                   </div>
                   <h3 className="text-2xl font-bold text-[var(--color-ph-navy)] dark:text-white tracking-tight">
-                    {lang === "fil" ? FEATURES[1].titleFil : FEATURES[1].titleEn}
+                    {getTitle(FEATURES[1])}
                   </h3>
                   <p className="text-base text-[var(--color-text-secondary)] leading-relaxed">
-                    {lang === "fil" ? FEATURES[1].descFil : FEATURES[1].descEn}
+                    {getDesc(FEATURES[1])}
                   </p>
                 </div>
                 <div className="pt-6 mt-6 border-t border-[var(--color-border)] text-xs font-bold uppercase tracking-wider text-[var(--color-ph-gold)]">
@@ -587,10 +679,10 @@ export default function HomePage() {
                     <IconGlobe className="w-7 h-7" />
                   </div>
                   <h3 className="text-2xl font-bold text-[var(--color-ph-navy)] dark:text-white tracking-tight">
-                    {lang === "fil" ? FEATURES[2].titleFil : FEATURES[2].titleEn}
+                    {getTitle(FEATURES[2])}
                   </h3>
                   <p className="text-base text-[var(--color-text-secondary)] leading-relaxed">
-                    {lang === "fil" ? FEATURES[2].descFil : FEATURES[2].descEn}
+                    {getDesc(FEATURES[2])}
                   </p>
                 </div>
                 <div className="pt-6 mt-6 border-t border-[var(--color-border)] text-xs font-bold uppercase tracking-wider text-[var(--color-ph-gold)]">
@@ -607,10 +699,10 @@ export default function HomePage() {
                     <IconTarget className="w-7 h-7" />
                   </div>
                   <h3 className="text-2xl font-bold text-[var(--color-ph-navy)] dark:text-white tracking-tight">
-                    {lang === "fil" ? FEATURES[3].titleFil : FEATURES[3].titleEn}
+                    {getTitle(FEATURES[3])}
                   </h3>
                   <p className="text-base text-[var(--color-text-secondary)] leading-relaxed">
-                    {lang === "fil" ? FEATURES[3].descFil : FEATURES[3].descEn}
+                    {getDesc(FEATURES[3])}
                   </p>
                 </div>
                 <div className="pt-6 mt-6 border-t border-[var(--color-border)] text-xs font-bold uppercase tracking-wider text-[var(--color-ph-gold)]">
@@ -627,10 +719,10 @@ export default function HomePage() {
                     <IconHeart className="w-7 h-7" />
                   </div>
                   <h3 className="text-2xl font-bold text-[var(--color-ph-navy)] dark:text-white tracking-tight">
-                    {lang === "fil" ? FEATURES[4].titleFil : FEATURES[4].titleEn}
+                    {getTitle(FEATURES[4])}
                   </h3>
                   <p className="text-base text-[var(--color-text-secondary)] leading-relaxed">
-                    {lang === "fil" ? FEATURES[4].descFil : FEATURES[4].descEn}
+                    {getDesc(FEATURES[4])}
                   </p>
                 </div>
                 <div className="pt-6 mt-6 border-t border-[var(--color-border)] text-xs font-bold uppercase tracking-wider text-[var(--color-ph-gold)]">
@@ -659,13 +751,13 @@ export default function HomePage() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest bg-blue-500/5">
               <IconChartBar className="w-3.5 h-3.5" />
-              <span>{lang === "fil" ? "Paano Gumagana" : "How It Works"}</span>
+              <span>{lang !== "en" ? "Paano Gumagana" : "How It Works"}</span>
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[var(--color-text)] tracking-tight">
-              {lang === "fil" ? "Tatlong Hakbang Lamang" : "Three Simple Steps"}
+              {lang !== "en" ? "Tatlong Hakbang Lamang" : "Three Simple Steps"}
             </h2>
             <p className="mt-6 text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed font-medium">
-              {lang === "fil"
+              {lang !== "en"
                 ? "Mabilis, madali, at tumpak. Gumagana kahit offline para sa lahat ng mamamayan."
                 : "Fast, simple, and accurate. Works even without internet for all citizens."}
             </p>
@@ -703,10 +795,10 @@ export default function HomePage() {
                   {/* Node Content */}
                   <div className="space-y-4 max-w-sm">
                     <h3 className="text-2xl font-black text-[var(--color-text)] tracking-tight">
-                      {lang === "fil" ? step.titleFil : step.titleEn}
+                      {getTitle(step)}
                     </h3>
                     <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed font-medium">
-                      {lang === "fil" ? step.descFil : step.descEn}
+                      {getDesc(step)}
                     </p>
                   </div>
                 </motion.div>
@@ -732,7 +824,7 @@ export default function HomePage() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest bg-blue-500/5">
               <IconChartBar className="w-3.5 h-3.5" />
-              <span>{lang === "fil" ? "Mga Kategorya" : "Categories"}</span>
+              <span>{lang !== "en" ? "Mga Kategorya" : "Categories"}</span>
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[var(--color-text)] tracking-tight">
               {t("landing.categoriesTitle")}
@@ -762,7 +854,7 @@ export default function HomePage() {
                     <cat.icon className="w-7 h-7" />
                   </div>
                   <div className="text-base font-black text-[var(--color-text)] leading-snug tracking-wide relative z-10">
-                    {lang === "fil" ? cat.labelFil : cat.labelEn}
+                    {getLabel(cat)}
                   </div>
                 </div>
               </motion.div>
@@ -791,7 +883,7 @@ export default function HomePage() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest bg-blue-500/5">
               <IconStar className="w-3.5 h-3.5" />
-              <span>{lang === "fil" ? "Testimonya" : "Testimonials"}</span>
+              <span>{lang !== "en" ? "Testimonya" : "Testimonials"}</span>
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[var(--color-text)] tracking-tight">
               {t("landing.testimonialsTitle")}
@@ -816,7 +908,7 @@ export default function HomePage() {
                     {/* 5 gold stars */}
                     <div
                       className="flex gap-1.5 mb-8"
-                      aria-label={lang === "fil" ? "5 bituin" : "5 stars"}
+                      aria-label={lang !== "en" ? "5 bituin" : "5 stars"}
                     >
                       {Array.from({ length: 5 }).map((_, j) => (
                         <IconStar
@@ -884,7 +976,7 @@ export default function HomePage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--color-ph-gold)]/30 text-[var(--color-ph-gold)] text-xs font-black uppercase tracking-widest bg-slate-950/80 shadow-[0_0_20px_rgba(200,145,30,0.15)] backdrop-blur-md">
                 <IconTarget className="w-3.5 h-3.5" />
-                <span>{lang === "fil" ? "Handa Ka Na Ba?" : "Are You Ready?"}</span>
+                <span>{lang !== "en" ? "Handa Ka Na Ba?" : "Are You Ready?"}</span>
               </div>
 
               <h2 className="text-5xl sm:text-6xl md:text-[4.5rem] font-black text-white tracking-tighter leading-[1.05]">
@@ -901,7 +993,7 @@ export default function HomePage() {
                   <IconArrowRight className="w-5 h-5" />
                 </Link>
                 <Link href={user ? "/dashboard" : "/auth"} className="w-full sm:w-auto px-8 py-4 sm:py-4.5 rounded-full bg-slate-900/60 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-500 text-white font-bold text-base tracking-wide shadow-lg hover:-translate-y-1 transition-all text-center flex items-center justify-center gap-2.5 backdrop-blur-xl">
-                  <span>{user ? (lang === "fil" ? "Pumunta sa Dashboard" : "Go to Dashboard") : t("landing.signIn")}</span>
+                  <span>{user ? (lang !== "en" ? "Pumunta sa Dashboard" : "Go to Dashboard") : t("landing.signIn")}</span>
                 </Link>
               </div>
             </div>

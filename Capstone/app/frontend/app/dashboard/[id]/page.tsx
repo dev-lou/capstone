@@ -94,7 +94,7 @@ export default function ReportDetailPage() {
   const handleDelete = () => {
     if (
       window.confirm(
-        lang === "fil" ? "Burahin ang report na ito?" : "Delete this report?",
+        lang !== "en" ? "Burahin ang report na ito?" : "Delete this report?",
       )
     ) {
       deleteReport(id);
@@ -133,17 +133,17 @@ export default function ReportDetailPage() {
             <IconClipboard className="w-8 h-8 text-[var(--color-ph-navy)] dark:text-[var(--color-primary)]" />
           </div>
           <h2 className="text-2xl font-bold text-[var(--color-ph-navy)] dark:text-white mb-2">
-            {lang === "fil" ? "Hindi Nakita ang Report" : "Report Not Found"}
+            {lang !== "en" ? "Hindi Nakita ang Report" : "Report Not Found"}
           </h2>
           <p className="text-[var(--color-text-secondary)] mb-8 leading-relaxed">
-            {lang === "fil"
+            {lang !== "en"
               ? "Walang nakitang report na may ganitong tracking ID."
               : "No report found with this tracking ID."}
           </p>
           <Link href="/dashboard" className="btn btn-primary inline-flex">
             <IconArrowLeft />
             <span>
-              {lang === "fil" ? "Bumalik sa Dashboard" : "Back to Dashboard"}
+              {lang !== "en" ? "Bumalik sa Dashboard" : "Back to Dashboard"}
             </span>
           </Link>
         </div>
@@ -153,7 +153,7 @@ export default function ReportDetailPage() {
 
   const urgency = URGENCY_META[report.urgency] ?? URGENCY_META.medium;
   const timestamp = new Date(report.timestamp).toLocaleString(
-    lang === "fil" ? "fil-PH" : "en-PH",
+    lang !== "en" ? "fil-PH" : "en-PH",
     {
       timeZone: "Asia/Manila",
       year: "numeric",
@@ -210,10 +210,10 @@ export default function ReportDetailPage() {
                 className="inline-flex items-center gap-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-ph-navy)] dark:hover:text-white transition-colors mb-2"
               >
                 <IconArrowLeft className="w-4 h-4" />
-                {lang === "fil" ? "Bumalik sa Dashboard" : "Back to Dashboard"}
+                {lang !== "en" ? "Bumalik sa Dashboard" : "Back to Dashboard"}
               </Link>
               <h1 className="text-2xl font-bold text-[var(--color-ph-navy)] dark:text-white">
-                {lang === "fil" ? "Detalye ng Report" : "Report Details"}
+                {lang !== "en" ? "Detalye ng Report" : "Report Details"}
               </h1>
             </div>
             <button
@@ -221,7 +221,7 @@ export default function ReportDetailPage() {
               className="btn btn-ghost text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 border border-[var(--color-border)] hover:border-red-200"
             >
               <IconTrash className="w-4 h-4" />
-              <span>{t("result.trackingId")}</span>
+              <span>{t("dashboard.delete")}</span>
             </button>
           </div>
         </div>
@@ -270,12 +270,12 @@ export default function ReportDetailPage() {
                       {report.status === "pending"
                         ? t("dashboard.statusPending")
                         : report.status === "in-progress"
-                          ? t("")
-                          : t("dashboard.statusPending")}
+                          ? t("dashboard.statusInProgress")
+                          : t("dashboard.statusResolved")}
                     </span>
                     {report.needsHumanReview && (
                       <span className="tag bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border-orange-200">
-                        {lang === "fil" ? "Para sa Review" : "Needs Review"}
+                        {lang !== "en" ? "Para sa Review" : "Needs Review"}
                       </span>
                     )}
                   </div>
@@ -287,7 +287,7 @@ export default function ReportDetailPage() {
           {/* ── Status Update Card ───────────────────────────── */}
           <div className="card p-5 sm:p-6">
             <p className="label mb-3">
-              {lang === "fil" ? "I-update ang Katayuan" : "Update Status"}
+              {lang !== "en" ? "I-update ang Katayuan" : "Update Status"}
             </p>
             <div className="flex gap-2 flex-wrap">
               {STATUS_OPTIONS.map((opt) => (
@@ -304,7 +304,7 @@ export default function ReportDetailPage() {
                   {report.status === opt.value && (
                     <IconCheck className="w-4 h-4" />
                   )}
-                  {lang === "fil" ? opt.labelFil : opt.labelEn}
+                  {lang !== "en" ? opt.labelFil : opt.labelEn}
                 </button>
               ))}
             </div>
@@ -316,7 +316,7 @@ export default function ReportDetailPage() {
               {/* Category */}
               <div>
                 <p className="section-label mb-2">
-                  {lang === "fil" ? "Kategorya" : "Category"}
+                  {lang !== "en" ? "Kategorya" : "Category"}
                 </p>
                 <h3 className="text-2xl font-bold text-[var(--color-ph-navy)] dark:text-white">
                   {report.category}
@@ -330,7 +330,7 @@ export default function ReportDetailPage() {
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-0.5">
-                    {t("result.trackingId")}
+                    {t("result.office")}
                   </p>
                   <p className="font-semibold text-[var(--color-ph-navy)] dark:text-white">
                     {report.office}
@@ -347,7 +347,7 @@ export default function ReportDetailPage() {
                     </div>
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-0.5">
-                        {lang === "fil" ? "Lokasyon" : "Location"}
+                        {lang !== "en" ? "Lokasyon" : "Location"}
                       </p>
                       <p className="text-[var(--color-text)] font-medium">
                         {[
@@ -367,7 +367,7 @@ export default function ReportDetailPage() {
               {/* Original Report Text */}
               <div>
                 <p className="section-label mb-3">
-                  {lang === "fil" ? "Orihinal na Report" : "Original Report"}
+                  {lang !== "en" ? "Orihinal na Report" : "Original Report"}
                 </p>
                 <div className="bg-[var(--color-surface-dim)] border border-[var(--color-border)] rounded-xl p-5">
                   <p className="text-[var(--color-text)] leading-relaxed whitespace-pre-wrap">
@@ -379,7 +379,7 @@ export default function ReportDetailPage() {
               {/* AI Explanation */}
               <div>
                 <p className="section-label mb-3">
-                  {lang === "fil" ? "Paliwanag ng AI" : "AI Explanation"}
+                  {lang !== "en" ? "Paliwanag ng AI" : "AI Explanation"}
                 </p>
                 <p className="text-[var(--color-text-secondary)] leading-relaxed whitespace-pre-line">
                   {report.explanation}
@@ -390,7 +390,7 @@ export default function ReportDetailPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-semibold text-[var(--color-text-secondary)]">
-                    {lang === "fil"
+                    {lang !== "en"
                       ? "Antas ng Kumpiyansa"
                       : "Confidence Level"}
                   </p>
@@ -425,12 +425,12 @@ export default function ReportDetailPage() {
               <div className="flex flex-wrap items-center gap-4 pt-2 text-sm text-[var(--color-text-muted)]">
                 <span className="flex items-center gap-1.5">
                   <IconClock className="w-4 h-4" />
-                  {t("result.trackingId")}: {timestamp}
+                  {t("result.timestamp")}: {timestamp}
                 </span>
                 {report.offline && (
                   <span className="flex items-center gap-1.5 text-[var(--color-warning)] font-medium">
                     <IconWarning className="w-4 h-4" />
-                    {t("result.trackingId")}
+                    {t("offline.title")}
                   </span>
                 )}
               </div>
@@ -439,7 +439,7 @@ export default function ReportDetailPage() {
               <div className="alert-warning">
                 <IconWarning className="shrink-0 w-5 h-5 mt-0.5" />
                 <span className="text-sm">
-                  {lang === "fil"
+                  {lang !== "en"
                     ? "Ang resulta na ito ay AI-assisted classification lamang. Ang final action at routing ay responsibilidad ng barangay."
                     : "This result is AI-assisted classification only. Final action and routing are the responsibility of the barangay."}
                 </span>
@@ -454,7 +454,7 @@ export default function ReportDetailPage() {
               className="btn btn-secondary flex-1 py-3 text-base justify-center"
             >
               <IconArrowLeft className="w-5 h-5" />
-              {lang === "fil" ? "Bumalik sa Dashboard" : "Back to Dashboard"}
+              {lang !== "en" ? "Bumalik sa Dashboard" : "Back to Dashboard"}
             </Link>
             <button
               onClick={handleDelete}
@@ -462,7 +462,7 @@ export default function ReportDetailPage() {
             >
               <IconTrash className="w-5 h-5" />
               <span className="hidden sm:inline">
-                {t("result.trackingId")}
+                {t("dashboard.delete")}
               </span>
             </button>
           </div>

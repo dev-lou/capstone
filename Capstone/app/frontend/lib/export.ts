@@ -9,20 +9,20 @@ import type { Language } from "./i18n";
 
 export function reportsToCsv(reports: SavedReport[], lang: Language = "en"): string {
   const headers = [
-    lang === "fil" ? "Tracking ID" : "Tracking ID",
-    lang === "fil" ? "Petsa" : "Date",
-    lang === "fil" ? "Kategorya" : "Category",
-    lang === "fil" ? "Urgency" : "Urgency",
-    lang === "fil" ? "Opisina" : "Office",
-    lang === "fil" ? "Katayuan" : "Status",
-    lang === "fil" ? "Kumpiyansa (%)" : "Confidence (%)",
-    lang === "fil" ? "Rehiyon" : "Region",
-    lang === "fil" ? "Lalawigan" : "Province",
-    lang === "fil" ? "Lungsod" : "City",
-    lang === "fil" ? "Barangay" : "Barangay",
-    lang === "fil" ? "Kailangan ng Review" : "Needs Review",
-    lang === "fil" ? "Text ng Report" : "Report Text",
-    lang === "fil" ? "Paliwanag" : "Explanation",
+    lang !== "en" ? "Tracking ID" : "Tracking ID",
+    lang !== "en" ? "Petsa" : "Date",
+    lang !== "en" ? "Kategorya" : "Category",
+    lang !== "en" ? "Urgency" : "Urgency",
+    lang !== "en" ? "Opisina" : "Office",
+    lang !== "en" ? "Katayuan" : "Status",
+    lang !== "en" ? "Kumpiyansa (%)" : "Confidence (%)",
+    lang !== "en" ? "Rehiyon" : "Region",
+    lang !== "en" ? "Lalawigan" : "Province",
+    lang !== "en" ? "Lungsod" : "City",
+    lang !== "en" ? "Barangay" : "Barangay",
+    lang !== "en" ? "Kailangan ng Review" : "Needs Review",
+    lang !== "en" ? "Text ng Report" : "Report Text",
+    lang !== "en" ? "Paliwanag" : "Explanation",
   ];
 
   const rows = reports.map((r) => [
@@ -37,7 +37,7 @@ export function reportsToCsv(reports: SavedReport[], lang: Language = "en"): str
     escapeCsvField(r.location?.province ?? ""),
     escapeCsvField(r.location?.city ?? ""),
     escapeCsvField(r.location?.barangay ?? ""),
-    r.needsHumanReview ? (lang === "fil" ? "Oo" : "Yes") : (lang === "fil" ? "Hindi" : "No"),
+    r.needsHumanReview ? (lang !== "en" ? "Oo" : "Yes") : (lang !== "en" ? "Hindi" : "No"),
     escapeCsvField(r.text),
     escapeCsvField(r.explanation),
   ]);

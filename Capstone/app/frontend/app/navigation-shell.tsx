@@ -8,8 +8,10 @@ import { IconSun, IconMoon } from "./components/icons";
 import { NavLink } from "./components/nav-link";
 import { LanguageSelector } from "./components/language-selector";
 import { useTheme } from "./theme-provider";
+import { useI18n } from "@/lib/i18n";
 
 export function SiteNavbar() {
+  const { t } = useI18n();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
@@ -65,9 +67,9 @@ export function SiteNavbar() {
 
           {/* Primary nav links */}
           <div className="flex items-center gap-1 sm:gap-4">
-            <NavLink href="/" label="Home" scrolled={scrolled} />
-            <NavLink href="/report" label="Mag-Report" scrolled={scrolled} />
-            <NavLink href="/dashboard" label="Dashboard" scrolled={scrolled} />
+            <NavLink href="/" label={t("nav.home")} scrolled={scrolled} />
+            <NavLink href="/report" label={t("nav.report")} scrolled={scrolled} />
+            <NavLink href="/dashboard" label={t("nav.dashboard")} scrolled={scrolled} />
           </div>
         </div>
 
@@ -83,6 +85,7 @@ export function SiteNavbar() {
 }
 
 export function SiteFooter() {
+  const { t } = useI18n();
   const pathname = usePathname();
   if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/report") || pathname?.startsWith("/auth")) return null;
 
@@ -136,13 +139,13 @@ export function SiteFooter() {
             </h3>
             <ul className="space-y-3.5">
               <li>
-                <FooterLink href="/report" label="Mag-Report ng Insidente" />
+                <FooterLink href="/report" label={t("form.title")} />
               </li>
               <li>
-                <FooterLink href="/dashboard" label="Barangay Dashboard" />
+                <FooterLink href="/dashboard" label={`${t("landing.barangay")} ${t("nav.dashboard")}`} />
               </li>
               <li>
-                <FooterLink href="/auth" label="Sign In (Officials)" />
+                <FooterLink href="/auth" label={`${t("auth.signIn")} (Officials)`} />
               </li>
             </ul>
           </div>
