@@ -4,6 +4,41 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 
+function IconShield() {
+  return (
+    <svg width="40" height="40" viewBox="0 0 256 256" fill="none" aria-hidden="true">
+      <path d="M128 24L48 52V112C48 172.8 82.4 228.8 128 240C173.6 228.8 208 172.8 208 112V52L128 24Z" fill="currentColor" opacity="0.2" />
+      <path d="M208 52V112C208 172.8 173.6 228.8 128 240C82.4 228.8 48 172.8 48 112V52L128 24L208 52Z" stroke="currentColor" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path d="M169.6 101.6L117.6 153.6L86.4 122.4" stroke="currentColor" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
+
+function IconExclamationTriangle() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+      <path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,96a8,8,0,0,1,16,0v48a8,8,0,0,1-16,0Zm8,80a12,12,0,1,1,12-12A12,12,0,0,1,128,176Z" />
+    </svg>
+  );
+}
+
+function IconSpinner() {
+  return (
+    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+    </svg>
+  );
+}
+
+function IconArrowRight() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+      <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
+    </svg>
+  );
+}
+
 export default function AdminAuthPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -26,7 +61,6 @@ export default function AdminAuthPage() {
 
       if (signInError) throw signInError;
 
-      // Check if user has admin role
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: profile } = await supabase
@@ -49,7 +83,7 @@ export default function AdminAuthPage() {
       setError(
         err instanceof Error
           ? err.message
-          : "May error na naganap. Pakisubukan muli."
+          : "Authentication failed. Please verify your credentials."
       );
     } finally {
       setLoading(false);
@@ -57,111 +91,97 @@ export default function AdminAuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12 relative overflow-hidden font-sans">
-      {/* Background Effects */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.03)_0%,transparent_70%)]" />
-        {/* Grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]" />
+    <div className="min-h-screen bg-gradient-to-b from-[#0f172a] via-[#0c1f3e] to-[#0f172a] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-[0.04]">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(30deg, #ffffff 12%, transparent 12.5%),
+            linear-gradient(150deg, #ffffff 12%, transparent 12.5%),
+            linear-gradient(270deg, #ffffff 12%, transparent 12.5%),
+            linear-gradient(90deg, #ffffff 12%, transparent 12.5%)
+          `,
+          backgroundSize: '60px 60px'
+        }} />
       </div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-[#c8911e]/6 via-transparent to-transparent rounded-full" />
 
-      <div className="w-full max-w-[440px] z-10 relative">
-        {/* High-end Glass Card */}
-        <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden relative group">
-          
-          {/* Subtle Top Border Glow */}
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-sky-500/50 to-transparent" />
-
+      <div className="w-full max-w-[420px] relative z-10">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="px-8 pt-10 pb-6 text-center border-b border-slate-800/50 bg-slate-900/40">
-            <div className="w-16 h-16 mx-auto rounded-xl bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center mb-5 shadow-[0_0_15px_rgba(14,165,233,0.15)] relative">
-              <div className="absolute inset-0 rounded-xl ring-1 ring-sky-500/20 animate-pulse" />
-              <svg width="28" height="28" viewBox="0 0 256 256" fill="currentColor" className="text-sky-400" aria-hidden="true">
-                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM128,76a32,32,0,1,1-32,32A32,32,0,0,1,128,76Zm0,48a16,16,0,1,0-16-16A16,16,0,0,0,128,124Zm0,76c-17.57,0-33.22-5.59-44.83-14.54A8,8,0,0,1,91.53,175c8.6,5.45,17.35,9,36.47,9s27.87-3.55,36.47-9a8,8,0,1,1,8.38,13.63C161.22,194.41,145.57,200,128,200Z" />
-              </svg>
+          <div className="px-8 pt-10 pb-6 text-center border-b border-white/5">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-white/10 to-white/5 border border-white/10 flex items-center justify-center mx-auto mb-5 shadow-lg">
+              <div className="text-[#c8911e]/80"><IconShield /></div>
             </div>
-            <h1 className="text-2xl font-semibold text-slate-100 tracking-tight mb-1">RescueMind Nexus</h1>
-            <div className="flex items-center justify-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
-              <p className="text-sky-400/80 text-xs font-mono uppercase tracking-widest">Admin Command Center</p>
-            </div>
+            <h1 className="text-xl font-bold text-white tracking-tight">RescueMind Auth</h1>
+            <p className="text-slate-400 text-xs mt-1 font-medium">Admin Command Center</p>
           </div>
 
-          {/* Form Content */}
           <div className="p-8">
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-4 rounded-lg flex items-start gap-3 mb-6 shadow-[0_0_15px_rgba(239,68,68,0.1)]" role="alert">
-                <svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor" className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true">
-                  <path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09Zm-15.63,14a8.29,8.29,0,0,1-7.27,4.19H40.55a8.29,8.29,0,0,1-7.27-4.19,7.56,7.56,0,0,1,0-8l87.5-151.87a8.68,8.68,0,0,1,14.44,0l87.5,151.87A7.56,7.56,0,0,1,221.17,202.09Z" />
-                </svg>
+              <div className="flex items-start gap-3 p-4 mb-6 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm" role="alert">
+                <div className="shrink-0 mt-0.5"><IconExclamationTriangle /></div>
                 <span className="leading-relaxed">{error}</span>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-1.5">
-                <label htmlFor="admin-email" className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest ml-1">Secure ID (Email)</label>
-                <div className="relative">
-                  <input
-                    id="admin-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@barangay.gov.ph"
-                    required
-                    autoComplete="email"
-                    className="w-full bg-slate-950/50 border border-slate-700/50 text-slate-200 placeholder:text-slate-600 rounded-lg px-4 py-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all duration-200 shadow-inner"
-                  />
-                </div>
+                <label htmlFor="auth-email" className="text-xs font-semibold text-slate-300 block">
+                  Email address
+                </label>
+                <input
+                  id="auth-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@barangay.gov.ph"
+                  required
+                  autoComplete="email"
+                  autoFocus
+                  className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-[#c8911e]/30 focus:border-[#c8911e]/50 transition-all duration-200"
+                />
               </div>
 
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between ml-1">
-                  <label htmlFor="admin-password" className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest">Access Protocol (Password)</label>
-                </div>
-                <div className="relative">
-                  <input
-                    id="admin-password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    required
-                    minLength={6}
-                    autoComplete="current-password"
-                    className="w-full bg-slate-950/50 border border-slate-700/50 text-slate-200 placeholder:text-slate-600 rounded-lg px-4 py-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all duration-200 tracking-widest font-mono shadow-inner"
-                  />
-                </div>
+                <label htmlFor="auth-password" className="text-xs font-semibold text-slate-300 block">
+                  Password
+                </label>
+                <input
+                  id="auth-password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  required
+                  minLength={6}
+                  autoComplete="current-password"
+                  className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-[#c8911e]/30 focus:border-[#c8911e]/50 transition-all duration-200"
+                />
               </div>
 
-              <button 
-                type="submit" 
-                disabled={loading || !email || !password} 
-                className="w-full mt-4 bg-gradient-to-b from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-medium py-3.5 rounded-lg shadow-[0_0_20px_rgba(14,165,233,0.2)] transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 border border-sky-400/20"
+              <button
+                type="submit"
+                disabled={loading || !email || !password}
+                className="w-full h-11 bg-gradient-to-r from-[#c8911e] to-[#d4a42a] hover:from-[#b07d18] hover:to-[#c8911e] text-[#0c1f3e] font-semibold text-sm rounded-xl transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2.5 shadow-lg active:scale-[0.99]"
               >
                 {loading ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    <IconSpinner />
                     <span>Authenticating...</span>
                   </>
                 ) : (
-                  <span>Initialize Session</span>
+                  <>
+                    <span>Authenticate</span>
+                    <IconArrowRight />
+                  </>
                 )}
               </button>
             </form>
-          </div>
-          
-          {/* Footer Info */}
-          <div className="px-8 py-5 bg-slate-900/80 border-t border-slate-800/50">
-            <div className="flex items-start gap-2.5">
-              <svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor" className="text-amber-500/70 shrink-0 mt-0.5">
-                <path d="M112,176a8,8,0,0,1,16,0v32a8,8,0,0,1-16,0Zm16-96a8,8,0,0,0-8,8v48a8,8,0,0,0,16,0V88A8,8,0,0,0,128,80ZM236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09Zm-15.63,14a8.29,8.29,0,0,1-7.27,4.19H40.55a8.29,8.29,0,0,1-7.27-4.19,7.56,7.56,0,0,1,0-8l87.5-151.87a8.68,8.68,0,0,1,14.44,0l87.5,151.87A7.56,7.56,0,0,1,221.17,202.09Z" />
-              </svg>
-              <p className="text-[11px] leading-relaxed text-slate-400">
-                <span className="font-semibold text-slate-300">Level 4 Clearance Required.</span> Unauthorized access is monitored. Requires <code className="font-mono text-[10px] bg-slate-950 border border-slate-800 text-sky-400 px-1 py-0.5 rounded">admin</code> role in the central registry.
+
+            <div className="mt-6 p-4 rounded-xl bg-amber-500/5 border border-amber-500/10">
+              <p className="text-xs text-amber-400/80 leading-relaxed">
+                <span className="font-semibold text-amber-300">Authorized personnel only.</span> Requires an <code className="px-1 py-0.5 rounded bg-amber-500/10 text-amber-300 font-mono text-[11px]">admin</code> role in Supabase. Unauthorized access is monitored.
               </p>
             </div>
           </div>

@@ -72,7 +72,11 @@ export default function DepartmentPage() {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="text-6xl mb-4">❓</div>
+          <div className="mb-4 flex justify-center">
+            <svg width="64" height="64" viewBox="0 0 256 256" fill="currentColor" className="text-slate-300 dark:text-slate-600" aria-hidden="true">
+              <path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,96a8,8,0,0,1,16,0v48a8,8,0,0,1-16,0Zm8,80a12,12,0,1,1,12-12A12,12,0,0,1,128,176Z" />
+            </svg>
+          </div>
           <h2 className="text-2xl font-bold text-[var(--color-text)] mb-2">Department Not Found</h2>
           <Link href="/" className="btn btn-primary">Back to Dashboard</Link>
         </div>
@@ -104,7 +108,7 @@ export default function DepartmentPage() {
             <span className="text-sm font-bold text-[var(--color-text)]">{dept.shortName}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-ph-navy)] dark:text-white tracking-tight flex items-center gap-3">
-            <span className="text-2xl">{dept.icon}</span>
+            <span className="text-2xl" dangerouslySetInnerHTML={{ __html: dept.icon }} />
             {dept.name}
             <span className="text-xs font-bold text-[var(--color-text-muted)] bg-[var(--color-bg-alt)] px-3 py-1 rounded-full">({dept.acronym})</span>
           </h1>
@@ -155,7 +159,11 @@ export default function DepartmentPage() {
       {/* Report List */}
       {filtered.length === 0 ? (
         <motion.div variants={fadeUp} className="p-16 text-center">
-          <div className="text-5xl mb-4">{dept.icon}</div>
+          <div className="mb-4 flex justify-center text-slate-300 dark:text-slate-600">
+            <svg width="48" height="48" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+              <path d="M216,40V216a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V40A16,16,0,0,1,56,24H88a8,8,0,0,1,8-8h64a8,8,0,0,1,8,8h32A16,16,0,0,1,216,40ZM184,40H168a8,8,0,0,1-8-8H96a8,8,0,0,1-8,8H72V216H184ZM88,112a8,8,0,0,0,16,0,8,8,0,0,1,8-8h32a8,8,0,0,1,8,8,8,8,0,0,0,16,0,24,24,0,0,0-24-24H112A24,24,0,0,0,88,112Zm80,72a8,8,0,0,0-8-8H96a8,8,0,0,0,0,16h64A8,8,0,0,0,168,184Zm0-32a8,8,0,0,0-8-8H96a8,8,0,0,0,0,16h64A8,8,0,0,0,168,152Z" />
+            </svg>
+          </div>
           <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">No Reports Yet</h3>
           <p className="text-[var(--color-text-muted)] text-sm max-w-md mx-auto">No reports have been routed to {dept.name} yet. Reports submitted in the main RescueMind app will appear here once saved to the database.</p>
         </motion.div>
@@ -188,7 +196,10 @@ export default function DepartmentPage() {
                     <p className="text-sm text-[var(--color-text-secondary)] line-clamp-2 leading-relaxed">{report.text}</p>
                     {report.barangay && (
                       <p className="text-xs text-[var(--color-text-muted)] mt-2">
-                        📍 {[report.barangay, report.city, report.province].filter(Boolean).join(", ")}
+                        <span className="inline-flex items-center gap-1">
+                        <svg width="12" height="12" viewBox="0 0 256 256" fill="currentColor" className="shrink-0" aria-hidden="true"><path d="M128,16a88.1,88.1,0,0,0-88,88c0,75.3,80,132.17,83.41,134.55a8,8,0,0,0,9.18,0C136,236.17,216,179.3,216,104A88.1,88.1,0,0,0,128,16Zm0,56a32,32,0,1,1-32,32A32,32,0,0,1,128,72Z" /></svg>
+                        {[report.barangay, report.city, report.province].filter(Boolean).join(", ")}
+                      </span>
                       </p>
                     )}
                   </div>

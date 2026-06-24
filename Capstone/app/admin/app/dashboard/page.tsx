@@ -110,7 +110,8 @@ export default function AdminDashboardPage() {
                 className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-lg transition-all duration-300 group"
               >
                 <div className="flex items-center gap-4 mb-4">
-                  <span className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xl shadow-sm shrink-0">{dept.icon}</span>
+                  <span className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xl shadow-sm shrink-0"
+                    dangerouslySetInnerHTML={{ __html: dept.icon }} />
                   <div className="min-w-0">
                     <div className="font-bold text-sm text-[var(--color-text)] truncate">{dept.shortName}</div>
                     <div className="text-xs text-[var(--color-text-muted)] font-medium">{dept.acronym}</div>

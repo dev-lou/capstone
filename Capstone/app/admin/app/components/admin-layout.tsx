@@ -172,9 +172,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                       : `w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl ${active ? `${colors.bg} ${colors.text} font-bold shadow-sm border border-slate-200 dark:border-slate-800` : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-900/60"} text-sm font-semibold transition-all`}
                     title={sidebarCollapsed ? dept.acronym : undefined}
                   >
-                    <span className={`w-7 h-7 rounded-xl ${active ? colors.bg : "bg-slate-100 dark:bg-slate-800"} flex items-center justify-center shrink-0 text-sm`}>
-                      {dept.icon}
-                    </span>
+                    <span className={`w-7 h-7 rounded-xl ${active ? colors.bg : "bg-slate-100 dark:bg-slate-800"} flex items-center justify-center shrink-0 text-sm`}
+                      dangerouslySetInnerHTML={{ __html: dept.icon }} />
                     {!sidebarCollapsed && (
                       <div className="flex items-center justify-between w-full min-w-0">
                         <span className="truncate">{dept.shortName}</span>
